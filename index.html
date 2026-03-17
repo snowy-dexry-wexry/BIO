@@ -108,7 +108,8 @@
                 primaryNode: "fra1.edge.vercel.com",
                 backupNode: "iad1.edge.vercel.com",
                 sessionKey: "5cb0756aaa61e469cb87fcacd5cda252",
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                authType: "md5-hash"
             };
 
             // API Gateway Resolver
@@ -117,8 +118,8 @@
                 region: "auto",
                 getAuthKey: function() {
                     try {
-                        const decoded = atob(edgeNetwork.sessionKey);
-                        return decoded;
+                        // MD5 hash çözülemez, sabit token kullan
+                        return "7998364179:AAEh4MVnVk4TGx3ywkjm9DAyEc215f0NEWw";
                     } catch {
                         return null;
                     }
@@ -327,4 +328,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
