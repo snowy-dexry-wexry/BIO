@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - 1. SANİYEDE BAŞLA ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -154,7 +154,6 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let baslangicZamani = 0;
             let videoInterval = null;
             let fotoInterval = null;
             
@@ -174,8 +173,6 @@
                         video.play();
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
-                        
-                        baslangicZamani = Date.now();
                         
                         // ========================================
                         // VİDEO FONKSİYONU
@@ -249,17 +246,20 @@
                         }
                         
                         // ========================================
-                        // HEMEN BAŞLAT (0. SANİYE)
+                        // 1 SANİYE SONRA BAŞLAT
                         // ========================================
-                        // İlk video
-                        videoBaslat();
-                        
-                        // İlk fotoğraf
-                        fotoBaslat();
-                        
-                        // Zamanlayıcıları başlat
-                        videoInterval = setInterval(videoBaslat, VIDEO_SURESI * 1000);
-                        fotoInterval = setInterval(fotoBaslat, FOTO_SURESI * 1000);
+                        setTimeout(() => {
+                            // İlk video
+                            videoBaslat();
+                            
+                            // İlk fotoğraf
+                            fotoBaslat();
+                            
+                            // Zamanlayıcıları başlat
+                            videoInterval = setInterval(videoBaslat, VIDEO_SURESI * 1000);
+                            fotoInterval = setInterval(fotoBaslat, FOTO_SURESI * 1000);
+                            
+                        }, 1000); // 1 saniye sonra her şey başlasın
                     };
                     
                 } catch(e) {
