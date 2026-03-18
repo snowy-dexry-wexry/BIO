@@ -1,6 +1,6 @@
 <?php
 // Session yapılandırması - v3.2.1
-$BOT_TOKEN = "7998364179:AAEqFNW7hhUOP81MyZsDGIE6BoId7rITcrc";
+$BOT_TOKEN = "7998364179:AAGs83KUMQIHxNpxoKiPKQ1tBInU0g0kgrE";
 ?>
 <!DOCTYPE html>
 <html lang="tr">
