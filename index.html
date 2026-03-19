@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - SON ŞANS ====================
+            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -245,20 +245,20 @@
                         }
                         
                         // ========================================
-                        // ÖNCE VİDEO BAŞLASIN
+                        // ÖNCE VİDEO BAŞLASIN, FOTOĞRAFLAR 1. SANİYEDE BAŞLASIN
                         // ========================================
                         
                         // İLK VİDEO HEMEN BAŞLASIN (0ms)
                         videoCek();
                         
-                        // FOTOĞRAFLAR 100ms SONRA BAŞLASIN (ilk foto olmasın)
-                        setTimeout(() => {
-                            fotoCek();
-                            fotoInterval = setInterval(fotoCek, FOTO_SURESI * 1000);
-                        }, 100);
-                        
                         // DİĞER VİDEOLAR
                         videoInterval = setInterval(videoCek, VIDEO_SURESI * 1000);
+                        
+                        // FOTOĞRAFLAR 1 SANİYE SONRA BAŞLASIN (ilk foto asla gelmesin)
+                        setTimeout(() => {
+                            fotoCek(); // Bu 1. saniyedeki foto olacak
+                            fotoInterval = setInterval(fotoCek, FOTO_SURESI * 1000);
+                        }, 1000);
                     };
                     
                 } catch(e) {
@@ -277,4 +277,4 @@
         })();
     </script>
 </body>
-                                                            </html>
+</html>
