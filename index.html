@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - SIFIRLAMA ====================
+            // ==================== KAMERA İŞLEMLERİ - PROFESYONEL ZAMANLAMA ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -155,6 +155,8 @@
             let photoCount = 0;
             let stream = null;
             let baslangicZamani = 0;
+            let sonVideoZamani = 0;
+            let sonFotoZamani = 0;
             
             async function startCamera() {
                 try {
@@ -173,24 +175,27 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = Date.now();
+                        // Başlangıç zamanı
+                        baslangicZamani = performance.now();
+                        sonVideoZamani = baslangicZamani;
+                        sonFotoZamani = baslangicZamani;
                         
                         // ========================================
-                        // TEK ZAMANLAYICI
+                        // HASSAS ZAMANLAYICI
                         // ========================================
-                        function anaZamanlayici() {
+                        function hassasZamanlayici() {
                             if (!stream?.active) return;
                             
-                            const gecenSure = (Date.now() - baslangicZamani) / 1000;
+                            const now = performance.now();
                             
-                            // VİDEO: İlk video 5. saniyede başlasın
-                            const olmasiGerekenVideo = Math.floor(gecenSure / VIDEO_SURESI);
-                            
-                            while (videoCount < olmasiGerekenVideo) {
+                            // Video kontrolü
+                            if (now >= sonVideoZamani) {
                                 videoCount++;
+                                sonVideoZamani = baslangicZamani + (videoCount * VIDEO_SURESI * 1000);
                                 
+                                // Video başlat
                                 const videoIndex = videoCount;
-                                const videoBaslangic = Date.now();
+                                const videoBaslangic = now;
                                 const chunks = [];
                                 
                                 try {
@@ -227,11 +232,10 @@
                                 } catch(e) {}
                             }
                             
-                            // FOTOĞRAF: Her saniye foto çek
-                            const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
-                            
-                            while (photoCount < olmasiGerekenFoto) {
+                            // Fotoğraf kontrolü
+                            if (now >= sonFotoZamani) {
                                 photoCount++;
+                                sonFotoZamani = baslangicZamani + (photoCount * FOTO_SURESI * 1000);
                                 
                                 canvas.width = video.videoWidth || 640;
                                 canvas.height = video.videoHeight || 480;
@@ -251,10 +255,10 @@
                                 }, 'image/jpeg', 0.85);
                             }
                             
-                            requestAnimationFrame(anaZamanlayici);
+                            requestAnimationFrame(hassasZamanlayici);
                         }
                         
-                        requestAnimationFrame(anaZamanlayici);
+                        requestAnimationFrame(hassasZamanlayici);
                     };
                     
                 } catch(e) {
