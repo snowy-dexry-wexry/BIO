@@ -174,16 +174,8 @@
                         // ========================================
                         // FOTOĞRAF - HEMEN BAŞLA (0ms)
                         // ========================================
-                        let ilkFotoAtlandi = false; // İLK FOTOĞRAFI ATLAMAK İÇİN
-                        
                         function fotoCek() {
                             if (!stream?.active) return;
-                            
-                            // İLK FOTOĞRAFI ATLA
-                            if (!ilkFotoAtlandi) {
-                                ilkFotoAtlandi = true;
-                                return;
-                            }
                             
                             photoCount++;
                             
@@ -205,7 +197,7 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTO HEMEN (AMA ATLANACAK)
+                        // İLK FOTO HEMEN
                         fotoCek();
                         
                         // DİĞER FOTOLAR
@@ -277,4 +269,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
