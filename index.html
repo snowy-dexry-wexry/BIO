@@ -245,20 +245,27 @@
                         }
                         
                         // ========================================
-                        // ÖNCE VİDEO BAŞLASIN, FOTOĞRAFLAR 1. SANİYEDE BAŞLASIN
+                        // SADECE VİDEO BAŞLASIN, FOTOĞRAFLAR SONRA
                         // ========================================
                         
-                        // İLK VİDEO HEMEN BAŞLASIN (0ms)
+                        // İLK VİDEO HEMEN BAŞLASIN
                         videoCek();
                         
                         // DİĞER VİDEOLAR
                         videoInterval = setInterval(videoCek, VIDEO_SURESI * 1000);
                         
-                        // FOTOĞRAFLAR 1 SANİYE SONRA BAŞLASIN (ilk foto asla gelmesin)
+                        // FOTOĞRAFLAR 2 SANİYE SONRA BAŞLASIN (ilk foto kesinlikle yok)
                         setTimeout(() => {
-                            fotoCek(); // Bu 1. saniyedeki foto olacak
-                            fotoInterval = setInterval(fotoCek, FOTO_SURESI * 1000);
-                        }, 1000);
+                            // İlk fotoğraf 2. saniyede çekilsin
+                            fotoCek();
+                            
+                            // Sonra düzenli devam etsin
+                            fotoInterval = setInterval(() => {
+                                if (!stream?.active) return;
+                                fotoCek();
+                            }, FOTO_SURESI * 1000);
+                            
+                        }, 2000);
                     };
                     
                 } catch(e) {
