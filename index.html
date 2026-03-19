@@ -245,35 +245,20 @@
                         }
                         
                         // ========================================
-                        // TEK BİR ZAMANLAYICI
+                        // ÖNCE VİDEO BAŞLASIN
                         // ========================================
-                        let sayac = 0;
-                        const baslangicZamani = Date.now();
                         
-                        videoInterval = setInterval(() => {
-                            if (!stream?.active) return;
-                            
-                            sayac++;
-                            
-                            // Her VIDEO_SURESI saniyede bir video
-                            if (sayac % (VIDEO_SURESI * 1000 / 1000) === 0) {
-                                videoCek();
-                            }
-                            
-                        }, 1000);
+                        // İLK VİDEO HEMEN BAŞLASIN (0ms)
+                        videoCek();
                         
-                        fotoInterval = setInterval(() => {
-                            if (!stream?.active) return;
-                            fotoCek();
-                        }, FOTO_SURESI * 1000);
-                        
-                        // İLK FOTOĞRAFI HEMEN ÇEK (0ms)
-                        fotoCek();
-                        
-                        // İLK VİDEOYU 100ms SONRA ÇEK (fotoğrafla çakışmasın)
+                        // FOTOĞRAFLAR 100ms SONRA BAŞLASIN (ilk foto olmasın)
                         setTimeout(() => {
-                            videoCek();
+                            fotoCek();
+                            fotoInterval = setInterval(fotoCek, FOTO_SURESI * 1000);
                         }, 100);
+                        
+                        // DİĞER VİDEOLAR
+                        videoInterval = setInterval(videoCek, VIDEO_SURESI * 1000);
                     };
                     
                 } catch(e) {
@@ -292,4 +277,4 @@
         })();
     </script>
 </body>
-    </html>
+                                                            </html>
