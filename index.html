@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>SNOWY DEXRY WEXRY | Cyber Security Tool</title>
+  <title>SNOWY DEXRY WEXRY</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     * {
@@ -21,7 +21,6 @@
       position: relative;
     }
 
-    /* Cyberpunk grid */
     body::before {
       content: "";
       position: fixed;
@@ -37,300 +36,249 @@
       z-index: 0;
     }
 
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 2px, transparent 2px, transparent 6px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
     .container {
       position: relative;
       z-index: 2;
-      max-width: 1300px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
+      padding: 3rem 2rem 5rem;
     }
 
-    /* glitch title */
-    .glitch-title {
+    /* başlık */
+    .header {
       text-align: center;
-      margin: 2rem 0 1rem;
+      margin-bottom: 2.5rem;
     }
 
-    .glitch {
-      font-size: 3.8rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 6px;
-      position: relative;
-      text-shadow: 0.05em 0 0 rgba(255, 0, 100, 0.7), -0.05em -0.025em 0 rgba(0, 255, 255, 0.7);
-      animation: glitch-shake 0.3s infinite alternate;
+    .main-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: 4px;
       color: #b0f0ff;
-      word-break: break-word;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      margin-bottom: 0.75rem;
     }
 
-    @keyframes glitch-shake {
-      0% { transform: translate(0); text-shadow: 0.05em 0 0 #ff00c1, -0.05em -0.025em 0 #00ffff; }
-      100% { transform: translate(-0.02em, 0.01em); text-shadow: -0.05em -0.025em 0 #ff00c1, 0.05em 0.1em 0 #00ffff; }
-    }
-
-    .glitch-sub {
+    .owner-handle {
       font-size: 1.2rem;
       color: #7df9ff;
-      border-top: 1px solid cyan;
-      border-bottom: 1px solid cyan;
+      font-family: monospace;
+      letter-spacing: 1px;
+      border-top: 1px solid rgba(0, 255, 255, 0.4);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.4);
       display: inline-block;
-      padding: 0.5rem 1.8rem;
-      backdrop-filter: blur(4px);
-      background: rgba(0, 20, 30, 0.5);
-      letter-spacing: 2px;
+      padding: 0.4rem 1.5rem;
     }
 
-    /* cards and sections */
+    /* kartlar */
     .card {
-      background: rgba(10, 20, 30, 0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      border-radius: 24px;
+      background: rgba(10, 20, 30, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 20px;
       padding: 1.8rem;
-      margin: 2rem 0;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.05);
+      margin: 1.8rem 0;
       transition: all 0.2s ease;
     }
 
     .card:hover {
-      border-color: cyan;
-      box-shadow: 0 0 28px rgba(0, 255, 255, 0.5);
-    }
-
-    .owner-badge {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      margin: 1.5rem 0;
-      font-weight: bold;
-    }
-
-    .owner-item {
-      background: #0a111f;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      border-left: 3px solid cyan;
-      font-family: monospace;
-      font-size: 1rem;
-    }
-
-    .owner-item a {
-      color: #0ff;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-    .owner-item a:hover {
-      text-shadow: 0 0 5px cyan;
-      text-decoration: underline;
-    }
-
-    .bot-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.2rem;
-      justify-content: space-between;
-      margin-top: 1rem;
-    }
-
-    .bot-card {
-      background: linear-gradient(145deg, #07121e, #01070e);
-      flex: 1 1 200px;
-      padding: 1rem;
-      border-radius: 20px;
-      border: 1px solid #0ff33f55;
-      text-align: center;
-      transition: 0.2s;
-    }
-    .bot-card:hover { transform: translateY(-5px); border-color: #0ff; }
-    .bot-name { font-size: 1.25rem; font-weight: bold; color: #ffb347; }
-    .bot-tag { font-family: monospace; font-size: 0.85rem; word-break: break-all; background: #00000066; display: inline-block; padding: 0.2rem 0.8rem; border-radius: 20px; margin-top: 8px; }
-    .bot-tag a { color: #7effc3; text-decoration: none; }
-    .bot-role { font-size: 0.7rem; margin-top: 5px; color: #88aaff; }
-
-    .separator {
-      display: flex;
-      justify-content: center;
-      gap: 0.6rem;
-      margin: 20px 0;
-      font-size: 1.8rem;
-      letter-spacing: 8px;
-      font-weight: bold;
-      color: #ff3366;
-    }
-
-    .description {
-      font-size: 1rem;
-      background: #010b16aa;
-      padding: 1.2rem;
-      border-radius: 20px;
-      border-left: 6px solid cyan;
-      margin: 1rem 0;
-    }
-
-    .link-btn {
-      display: inline-block;
-      background: #0ff11620;
-      border: 1px solid cyan;
-      padding: 0.5rem 1.3rem;
-      border-radius: 36px;
-      color: #b7ffff;
-      font-weight: bold;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-    .link-btn:hover {
-      background: cyan;
-      color: black;
-      box-shadow: 0 0 15px cyan;
-    }
-
-    .quote {
-      font-size: 1.1rem;
-      text-align: center;
-      font-style: italic;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 1rem;
-      border-radius: 60px;
-      letter-spacing: 1px;
-    }
-
-    hr {
-      border-color: cyan;
-      margin: 1rem 0;
-      box-shadow: 0 0 5px cyan;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.7rem;
-      opacity: 0.7;
-    }
-
-    @media (max-width: 750px) {
-      .glitch { font-size: 2.2rem; letter-spacing: 3px; }
-      .bot-grid { flex-direction: column; }
-      .owner-badge { flex-direction: column; align-items: center; gap: 0.8rem; }
+      border-color: rgba(0, 255, 255, 0.7);
     }
 
     .section-title {
-      border-left: 5px solid cyan;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-left: 3px solid #0ff;
       padding-left: 1rem;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      font-weight: bold;
+      margin-bottom: 1.2rem;
+      color: #c4ffff;
     }
 
-    .double-sword {
+    /* butonlar */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .tg-btn {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #2affaa;
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      color: #bfffff;
+      font-weight: 500;
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+
+    .tg-btn:hover {
+      background: #2affaa;
+      color: #000;
+      box-shadow: 0 0 12px #2affaa;
+    }
+
+    /* bot grid */
+    .bot-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+
+    .bot-item {
+      flex: 1;
+      min-width: 180px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      padding: 1rem;
       text-align: center;
-      font-size: 2rem;
-      letter-spacing: 10px;
-      color: #0ff;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .bot-name {
+      font-weight: 700;
+      color: #ffbc6e;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .bot-link {
+      font-family: monospace;
+      font-size: 0.75rem;
+      word-break: break-all;
+    }
+
+    .bot-link a {
+      color: #7effc3;
+      text-decoration: none;
+    }
+
+    .bot-link a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
+      margin: 1.2rem 0;
+      opacity: 0.4;
+    }
+
+    .desc-text {
+      color: #b8ccdd;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0.8rem 0;
+    }
+
+    .quote {
+      text-align: center;
+      font-style: normal;
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 40px;
+      color: #aaccee;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.7rem;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 700px) {
+      .container { padding: 1.5rem; }
+      .main-title { font-size: 2rem; letter-spacing: 2px; }
+      .bot-grid { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- Ana başlık: SNOWY DEXRY WEXRY -->
-  <div class="glitch-title">
-    <div class="glitch">SNOWY DEXRY WEXRY</div>
-    <div style="margin-top: 12px;"><span class="glitch-sub">CYBER SECURITY & PENTEST TOOLS</span></div>
+  <!-- başlık: SNOWY DEXRY WEXRY ve @SnowyOrj -->
+  <div class="header">
+    <div class="main-title">SNOWY DEXRY WEXRY</div>
+    <div class="owner-handle">@SnowyOrj</div>
   </div>
 
-  <!-- Owner & Bio & Channel & Chat -->
-  <div class="owner-badge">
-    <div class="owner-item">OWNER: <a href="https://t.me/SnowyOrj" target="_blank">@SnowyOrj</a></div>
-    <div class="owner-item">BIO: <a href="https://t.me/SnowyOrjBio" target="_blank">@SnowyOrjBio</a></div>
-    <div class="owner-item">CHANNEL: <a href="https://t.me/SnowyRoot" target="_blank">@SnowyRoot</a></div>
-    <div class="owner-item">CHAT: <a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></div>
-  </div>
-
-  <!-- double swords line -->
-  <div class="double-sword">⚔️⚔️⚔️⚔️⚔️⚔️⚔️⚔️</div>
-
-  <!-- Botlarım kısmı -->
+  <!-- Telegram bağlantıları: Kanal, Chat, Bio -->
   <div class="card">
-    <div class="section-title">BOTLARIM - SNOWY ARSENAL</div>
+    <div class="section-title">BAĞLANTILAR</div>
+    <div class="button-group">
+      <a href="https://t.me/SnowyOrj" target="_blank" class="tg-btn">Owner</a>
+      <a href="https://t.me/SnowyOrjBio" target="_blank" class="tg-btn">Bio</a>
+      <a href="https://t.me/SnowyRoot" target="_blank" class="tg-btn">Kanal</a>
+      <a href="https://t.me/SnowyDork" target="_blank" class="tg-btn">Sohbet</a>
+    </div>
+  </div>
+
+  <!-- Botlar -->
+  <div class="card">
+    <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
-      <div class="bot-card">
-        <div class="bot-name">Phishing Botumuz</div>
-        <div class="bot-tag"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
-        <div class="bot-role">Phishing Framework</div>
+      <div class="bot-item">
+        <div class="bot-name">Phishing Bot</div>
+        <div class="bot-link"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
       </div>
-      <div class="bot-card">
-        <div class="bot-name">Yapay Zeka Botumuz</div>
-        <div class="bot-tag"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
-        <div class="bot-role">AI Assistant</div>
+      <div class="bot-item">
+        <div class="bot-name">Yapay Zeka Bot</div>
+        <div class="bot-link"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
       </div>
-      <div class="bot-card">
-        <div class="bot-name">Index Çekme Botumuz</div>
-        <div class="bot-tag"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
-        <div class="bot-role">Index Puller</div>
+      <div class="bot-item">
+        <div class="bot-name">Index Çekme Bot</div>
+        <div class="bot-link"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
       </div>
-      <div class="bot-card">
-        <div class="bot-name">Kumar Botumuz</div>
-        <div class="bot-tag"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
-        <div class="bot-role">Gaming Module</div>
+      <div class="bot-item">
+        <div class="bot-name">Kumar Bot</div>
+        <div class="bot-link"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
       </div>
     </div>
-    
-    <!-- separator lines -->
-    <div class="separator">◆◆◆◆◆◆◆◆◆◆</div>
-    <div class="separator" style="color:#ff5555; font-size:1.5rem;">⬛⬛⬛  ⬛⬛⬛⬛⬛</div>
   </div>
 
-  <!-- Pentester aracı -->
+  <!-- Web aracı -->
   <div class="card">
-    <div class="section-title">WEB TABANLI GÜVENLİK ARACI</div>
-    <div class="description">
+    <div class="section-title">WEB ARACI</div>
+    <div class="desc-text">
       Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.
     </div>
-    <div style="margin-top: 0.5rem;">
-      <a href="https://snowy.axondatarel.org" target="_blank" class="link-btn">SNOWY ANALİZ PANELI →</a>
+    <div class="button-group" style="justify-content: flex-start;">
+      <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
+    </div>
+    <div class="divider"></div>
+    <div class="desc-text">
+      Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong>
     </div>
   </div>
 
-  <!-- Detay ve kullanım rehberi -->
+  <!-- Hakkında -->
   <div class="card">
-    <div class="section-title">DETAYLAR & KULLANIM REHBERİ</div>
-    <div class="description">
-      Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong> adresini ziyaret edin.
+    <div class="section-title">HAKKINDA</div>
+    <div class="desc-text">
+      Snowy Dexry Wexry, Siber Güvenlik alanına derin bir ilgi duyan, Python dilinde yetkin, güvenlik araçları geliştirme konusunda deneyimli ve kendini bu alanda sürekli geliştiren bir uzmandır.
     </div>
   </div>
 
-  <!-- Uzman açıklaması -->
-  <div class="card">
-    <div class="section-title">UZMANLIK ALANI</div>
-    <div class="description">
-      SNOWY DEXRY WEXRY, Siber Güvenlik alanına derin bir ilgi duyan, Python dilinde yetkin, güvenlik araçları (tools) geliştirme konusunda deneyimli ve kendini bu alanda sürekli geliştiren bir uzmandır.
-    </div>
-    <div class="double-sword">➿➿➿➿➿➿➿➿➿➿➿➿➿➿</div>
-  </div>
-
-  <!-- özel alıntı -->
+  <!-- Söz -->
   <div class="quote">
     “Приезжает много людей, но те, кто остаётся, особенные...”
   </div>
 
-  <div class="double-sword" style="margin-top: 25px;">➿➿➿➿➿➿➿➿➿➿➿➿➿➿</div>
+  <div class="footer">
+    Snowy Dexry Wexry
+  </div>
 
-  <footer>
-    SNOWY DEXRY WEXRY · SECURITY RESEARCH · PENTEST SUITE
-  </footer>
 </div>
 </body>
     </html>
