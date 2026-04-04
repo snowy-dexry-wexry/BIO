@@ -39,19 +39,18 @@
     .container {
       position: relative;
       z-index: 2;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 3rem 2rem 5rem;
     }
 
-    /* başlık */
     .header {
       text-align: center;
       margin-bottom: 2.5rem;
     }
 
     .main-title {
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       font-weight: 800;
       letter-spacing: 4px;
       color: #b0f0ff;
@@ -60,7 +59,7 @@
     }
 
     .owner-handle {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #7df9ff;
       font-family: monospace;
       letter-spacing: 1px;
@@ -70,7 +69,6 @@
       padding: 0.4rem 1.5rem;
     }
 
-    /* kartlar */
     .card {
       background: rgba(10, 20, 30, 0.6);
       backdrop-filter: blur(10px);
@@ -95,36 +93,44 @@
       color: #c4ffff;
     }
 
-    /* butonlar */
-    .button-group {
+    .link-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin: 1rem 0;
+      flex-direction: column;
+      gap: 0.8rem;
     }
 
-    .tg-btn {
-      display: inline-block;
-      background: transparent;
-      border: 1px solid #2affaa;
-      padding: 0.6rem 1.5rem;
-      border-radius: 40px;
-      color: #bfffff;
-      font-weight: 500;
-      text-decoration: none;
-      font-family: monospace;
+    .link-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+    }
+
+    .link-label {
+      width: 70px;
+      font-weight: 600;
+      color: #7df9ff;
       font-size: 0.85rem;
+    }
+
+    .link-address {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+
+    .link-address a {
+      color: #bfffff;
+      text-decoration: none;
       transition: 0.2s;
     }
 
-    .tg-btn:hover {
-      background: #2affaa;
-      color: #000;
-      box-shadow: 0 0 12px #2affaa;
+    .link-address a:hover {
+      color: #0ff;
+      text-decoration: underline;
     }
 
-    /* bot grid */
     .bot-grid {
       display: flex;
       flex-wrap: wrap;
@@ -179,6 +185,25 @@
       margin: 0.8rem 0;
     }
 
+    .tg-button {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #2affaa;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      color: #bfffff;
+      font-weight: 500;
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+
+    .tg-button:hover {
+      background: #2affaa;
+      color: #000;
+    }
+
     .quote {
       text-align: center;
       font-style: normal;
@@ -201,30 +226,43 @@
       .container { padding: 1.5rem; }
       .main-title { font-size: 2rem; letter-spacing: 2px; }
       .bot-grid { flex-direction: column; }
+      .link-row { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+      .link-label { width: auto; }
     }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- başlık: SNOWY DEXRY WEXRY ve @SnowyOrj -->
   <div class="header">
     <div class="main-title">SNOWY DEXRY WEXRY</div>
     <div class="owner-handle">@SnowyOrj</div>
   </div>
 
-  <!-- Telegram bağlantıları: Kanal, Chat, Bio -->
+  <!-- BAĞLANTILAR - adresler buton gibi değil düz yazılı -->
   <div class="card">
     <div class="section-title">BAĞLANTILAR</div>
-    <div class="button-group">
-      <a href="https://t.me/SnowyOrj" target="_blank" class="tg-btn">Owner</a>
-      <a href="https://t.me/SnowyOrjBio" target="_blank" class="tg-btn">Bio</a>
-      <a href="https://t.me/SnowyRoot" target="_blank" class="tg-btn">Kanal</a>
-      <a href="https://t.me/SnowyDork" target="_blank" class="tg-btn">Sohbet</a>
+    <div class="link-list">
+      <div class="link-row">
+        <span class="link-label">Owner</span>
+        <span class="link-address"><a href="https://t.me/SnowyOrj" target="_blank">@SnowyOrj</a></span>
+      </div>
+      <div class="link-row">
+        <span class="link-label">Bio</span>
+        <span class="link-address"><a href="https://t.me/SnowyOrjBio" target="_blank">@SnowyOrjBio</a></span>
+      </div>
+      <div class="link-row">
+        <span class="link-label">Kanal</span>
+        <span class="link-address"><a href="https://t.me/SnowyRoot" target="_blank">@SnowyRoot</a></span>
+      </div>
+      <div class="link-row">
+        <span class="link-label">Sohbet</span>
+        <span class="link-address"><a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></span>
+      </div>
     </div>
   </div>
 
-  <!-- Botlar -->
+  <!-- BOTLAR -->
   <div class="card">
     <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
@@ -247,14 +285,14 @@
     </div>
   </div>
 
-  <!-- Web aracı -->
+  <!-- WEB ARACI -->
   <div class="card">
     <div class="section-title">WEB ARACI</div>
     <div class="desc-text">
       Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.
     </div>
-    <div class="button-group" style="justify-content: flex-start;">
-      <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
+    <div style="margin: 0.8rem 0;">
+      <a href="https://snowy.axondatarel.org" target="_blank" class="tg-button">snowy.axondatarel.org</a>
     </div>
     <div class="divider"></div>
     <div class="desc-text">
@@ -262,7 +300,7 @@
     </div>
   </div>
 
-  <!-- Hakkında -->
+  <!-- HAKKINDA -->
   <div class="card">
     <div class="section-title">HAKKINDA</div>
     <div class="desc-text">
@@ -270,7 +308,6 @@
     </div>
   </div>
 
-  <!-- Söz -->
   <div class="quote">
     “Приезжает много людей, но те, кто остаётся, особенные...”
   </div>
@@ -281,4 +318,4 @@
 
 </div>
 </body>
-    </html>
+  </html>
