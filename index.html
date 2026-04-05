@@ -226,6 +226,34 @@
       box-shadow: 0 0 12px #2affaa;
     }
 
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .contact-label {
+      font-weight: 700;
+      color: #7df9ff;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+
+    .contact-value a {
+      color: #bfffff;
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 0.85rem;
+    }
+
+    .contact-value a:hover {
+      color: #0ff;
+      text-decoration: underline;
+    }
+
     .bot-grid {
       display: flex;
       flex-wrap: wrap;
@@ -370,6 +398,7 @@
     @media (max-width: 700px) {
       .container { padding: 1.5rem; }
       .bot-grid { flex-direction: column; }
+      .contact-item { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
     }
   </style>
 </head>
@@ -392,14 +421,24 @@
     </div>
   </div>
 
-  <!-- BAĞLANTILAR -->
+  <!-- BAĞLANTILAR - etiketli -->
   <div class="card">
     <div class="section-title">BAĞLANTILAR</div>
-    <div class="button-group">
-      <a href="https://t.me/SnowyOrj" target="_blank" class="tg-btn">@SnowyOrj</a>
-      <a href="https://t.me/SnowyOrjBio" target="_blank" class="tg-btn">@SnowyOrjBio</a>
-      <a href="https://t.me/SnowyRoot" target="_blank" class="tg-btn">@SnowyRoot</a>
-      <a href="https://t.me/SnowyDork" target="_blank" class="tg-btn">@SnowyDork</a>
+    <div class="contact-item">
+      <span class="contact-label">OWNER:</span>
+      <span class="contact-value"><a href="https://t.me/SnowyOrj" target="_blank">@SnowyOrj</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">BIO:</span>
+      <span class="contact-value"><a href="https://t.me/SnowyOrjBio" target="_blank">@SnowyOrjBio</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">CHANNEL:</span>
+      <span class="contact-value"><a href="https://t.me/SnowyRoot" target="_blank">@SnowyRoot</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">CHAT:</span>
+      <span class="contact-value"><a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></span>
     </div>
   </div>
 
@@ -444,13 +483,11 @@
       <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
     </div>
     
-    <!-- SİTE KULLANICI SAYISI -->
     <div class="divider"></div>
     <div class="desc-text" style="text-align: center; font-size:0.85rem;">Aktif Kullanıcılar</div>
     <div class="big-stat" id="siteUserCount">+12.847</div>
     <div class="desc-text" style="text-align: center; font-size:0.7rem;">son 30 gün içinde</div>
     
-    <!-- SNOWY.AXONDATAREL.ORG İÇİN YORUM EKLEME -->
     <div class="divider"></div>
     <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">SİTE YORUMLARI</div>
     <textarea class="comment-input" id="siteCommentInput" rows="2" placeholder="snowy.axondatarel.org hakkında yorumunuz..."></textarea>
@@ -508,7 +545,7 @@
     userCountElem.innerHTML = '+' + userCount.toLocaleString('tr-TR');
   }, 45000);
 
-  // ========== SİTE YORUMLARI (snowy.axondatarel.org için) ==========
+  // SİTE YORUMLARI
   let siteComments = [];
 
   function loadSiteComments() {
@@ -559,7 +596,7 @@
     }
   });
 
-  // ========== BOT YORUMLARI ==========
+  // BOT YORUMLARI
   let botComments = [];
 
   function loadBotComments() {
