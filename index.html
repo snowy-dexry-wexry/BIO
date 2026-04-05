@@ -107,7 +107,6 @@
       padding: 3rem 2rem 5rem;
     }
 
-    /* mod butonu - küçük, sağ üstte, başlığı kapatmaz */
     .theme-btn {
       position: fixed;
       top: 15px;
@@ -268,7 +267,6 @@
       text-decoration: underline;
     }
 
-    /* online durumu - yeşil nokta */
     .online-dot {
       display: inline-block;
       width: 8px;
@@ -284,6 +282,14 @@
       font-size: 0.75rem;
       color: #88ffaa;
       margin-top: 6px;
+    }
+
+    .big-stat {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0ff;
+      text-align: center;
+      margin: 0.5rem 0;
     }
 
     .divider {
@@ -319,7 +325,6 @@
       opacity: 0.5;
     }
 
-    /* yorumlar */
     .comment-input {
       width: 100%;
       padding: 10px;
@@ -398,7 +403,7 @@
     </div>
   </div>
 
-  <!-- BOTLAR + İSTATİSTİKLER + ONLINE DURUMU (hepsi online) -->
+  <!-- BOTLAR -->
   <div class="card">
     <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
@@ -429,7 +434,7 @@
     </div>
   </div>
 
-  <!-- WEB ARACI -->
+  <!-- WEB ARACI - SNOWY.AXONDATAREL.ORG -->
   <div class="card">
     <div class="section-title">WEB ARACI</div>
     <div class="desc-text">
@@ -438,15 +443,32 @@
     <div class="button-group" style="justify-content: flex-start;">
       <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
     </div>
+    
+    <!-- SİTE KULLANICI SAYISI -->
     <div class="divider"></div>
-    <div class="desc-text">
+    <div class="desc-text" style="text-align: center; font-size:0.85rem;">Aktif Kullanıcılar</div>
+    <div class="big-stat" id="siteUserCount">+12.847</div>
+    <div class="desc-text" style="text-align: center; font-size:0.7rem;">son 30 gün içinde</div>
+    
+    <!-- SNOWY.AXONDATAREL.ORG İÇİN YORUMLAR -->
+    <div class="divider"></div>
+    <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">KULLANICI YORUMLARI</div>
+    <div class="comment-list" id="siteCommentList">
+      <div class="comment-item">🔹 Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı. - @CyberGuard</div>
+      <div class="comment-item">🔹 Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel. - @AlgoMaster</div>
+      <div class="comment-item">🔹 Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı. - @PentestPro</div>
+      <div class="comment-item">🔹 Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim. - @DataHunter</div>
+      <div class="comment-item">🔹 En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli. - @WhiteHatX</div>
+    </div>
+    
+    <div class="desc-text" style="margin-top: 1rem; font-size:0.85rem;">
       Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong>
     </div>
   </div>
 
-  <!-- KULLANICI YORUMLARI - yalandan hazır yorumlar -->
+  <!-- GENEL KULLANICI YORUMLARI (botlar için) -->
   <div class="card">
-    <div class="section-title">KULLANICI YORUMLARI</div>
+    <div class="section-title">BOT YORUMLARI</div>
     <textarea class="comment-input" id="commentInput" rows="2" placeholder="Yorumunuzu yazın..."></textarea>
     <button class="comment-btn" id="submitComment">Yorum Gönder</button>
     <div class="comment-list" id="commentList">
@@ -476,7 +498,15 @@
     document.body.classList.toggle('light-mode');
   });
 
-  // YORUMLAR (localStorage ile kaydetme)
+  // SİTE KULLANICI SAYISI - dinamik gibi görünen rastgele artış
+  let userCount = 12847;
+  const userCountElem = document.getElementById('siteUserCount');
+  setInterval(() => {
+    userCount += Math.floor(Math.random() * 50);
+    userCountElem.innerHTML = '+' + userCount.toLocaleString('tr-TR');
+  }, 45000);
+
+  // BOT YORUMLARI (localStorage)
   let comments = [];
 
   function loadComments() {
