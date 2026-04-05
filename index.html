@@ -407,13 +407,11 @@
 <button class="theme-btn" id="themeToggle">🌓</button>
 
 <div class="container">
-
   <div class="header">
     <div class="main-title">SNOWY DEXRY WEXRY</div>
     <div class="subtitle">CYBER SECURITY</div>
   </div>
 
-  <!-- HAKKINDA -->
   <div class="card">
     <div class="section-title">HAKKINDA</div>
     <div class="desc-text">
@@ -421,7 +419,6 @@
     </div>
   </div>
 
-  <!-- BAĞLANTILAR - etiketli -->
   <div class="card">
     <div class="section-title">BAĞLANTILAR</div>
     <div class="contact-item">
@@ -442,7 +439,6 @@
     </div>
   </div>
 
-  <!-- BOTLAR -->
   <div class="card">
     <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
@@ -468,26 +464,19 @@
       </div>
     </div>
     <div class="divider"></div>
-    <div class="desc-text" style="font-size:0.7rem; text-align:center;">
-      Tüm botlar aktif ve çevrimiçi
-    </div>
+    <div class="desc-text" style="font-size:0.7rem; text-align:center;">Tüm botlar aktif ve çevrimiçi</div>
   </div>
 
-  <!-- WEB ARACI - SNOWY.AXONDATAREL.ORG -->
   <div class="card">
     <div class="section-title">WEB ARACI</div>
-    <div class="desc-text">
-      Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.
-    </div>
+    <div class="desc-text">Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.</div>
     <div class="button-group" style="justify-content: flex-start;">
       <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
     </div>
-    
     <div class="divider"></div>
     <div class="desc-text" style="text-align: center; font-size:0.85rem;">Aktif Kullanıcılar</div>
     <div class="big-stat" id="siteUserCount">+12.847</div>
     <div class="desc-text" style="text-align: center; font-size:0.7rem;">son 30 gün içinde</div>
-    
     <div class="divider"></div>
     <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">SİTE YORUMLARI</div>
     <textarea class="comment-input" id="siteCommentInput" rows="2" placeholder="snowy.axondatarel.org hakkında yorumunuz..."></textarea>
@@ -499,13 +488,9 @@
       <div class="comment-item">🔹 Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim. - @DataHunter</div>
       <div class="comment-item">🔹 En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli. - @WhiteHatX</div>
     </div>
-    
-    <div class="desc-text" style="margin-top: 1rem; font-size:0.85rem;">
-      Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong>
-    </div>
+    <div class="desc-text" style="margin-top: 1rem; font-size:0.85rem;">Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong></div>
   </div>
 
-  <!-- BOT YORUMLARI -->
   <div class="card">
     <div class="section-title">BOT YORUMLARI</div>
     <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuz..."></textarea>
@@ -519,25 +504,41 @@
     </div>
   </div>
 
-  <!-- Söz -->
-  <div class="quote">
-    “Приезжает много людей, но те, кто остаётся, особенные...”
-  </div>
-
-  <div class="footer">
-    Snowy Dexry Wexry
-  </div>
-
+  <div class="quote">“Приезжает много людей, но те, кто остаётся, особенные...”</div>
+  <div class="footer">Snowy Dexry Wexry</div>
 </div>
 
 <script>
-  // DARK/LIGHT MOD
+  // MÜZİK - sayfada herhangi bir yere tıklayınca başlasın
+  let audio = null;
+  let musicStarted = false;
+
+  function initMusic() {
+    if (musicStarted) return;
+    try {
+      audio = new Audio('https://snowy-dexry-wexry.github.io/Snowy/Hermès%202.0.mp3');
+      audio.loop = true;
+      audio.volume = 0.5;
+      audio.play().then(() => {
+        musicStarted = true;
+      }).catch(e => console.log('Müzik başlatılamadı:', e));
+    } catch(e) { console.log(e); }
+  }
+
+  // Tüm sayfaya tıklama dinleyicisi
+  document.body.addEventListener('click', function() {
+    if (!musicStarted) {
+      initMusic();
+    }
+  }, { once: false });
+
+  // Dark/Light Mod
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
   });
 
-  // SİTE KULLANICI SAYISI
+  // Site Kullanıcı Sayısı
   let userCount = 12847;
   const userCountElem = document.getElementById('siteUserCount');
   setInterval(() => {
@@ -545,25 +546,19 @@
     userCountElem.innerHTML = '+' + userCount.toLocaleString('tr-TR');
   }, 45000);
 
-  // SİTE YORUMLARI
+  // Site Yorumları
   let siteComments = [];
-
   function loadSiteComments() {
     const saved = localStorage.getItem('snowy_site_comments');
-    if (saved) {
-      siteComments = JSON.parse(saved);
-    } else {
-      siteComments = [
-        { text: "Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı.", author: "@CyberGuard" },
-        { text: "Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel.", author: "@AlgoMaster" },
-        { text: "Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı.", author: "@PentestPro" },
-        { text: "Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim.", author: "@DataHunter" },
-        { text: "En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli.", author: "@WhiteHatX" }
-      ];
-    }
+    siteComments = saved ? JSON.parse(saved) : [
+      { text: "Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı.", author: "@CyberGuard" },
+      { text: "Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel.", author: "@AlgoMaster" },
+      { text: "Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı.", author: "@PentestPro" },
+      { text: "Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim.", author: "@DataHunter" },
+      { text: "En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli.", author: "@WhiteHatX" }
+    ];
     renderSiteComments();
   }
-
   function renderSiteComments() {
     const list = document.getElementById('siteCommentList');
     list.innerHTML = '';
@@ -574,7 +569,6 @@
       list.appendChild(div);
     });
   }
-
   function addSiteComment(text) {
     if (!text.trim()) return;
     let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
@@ -585,36 +579,25 @@
     localStorage.setItem('snowy_site_comments', JSON.stringify(siteComments));
     renderSiteComments();
   }
-
   document.getElementById('submitSiteComment').addEventListener('click', () => {
     const input = document.getElementById('siteCommentInput');
-    if (input.value.trim()) {
-      addSiteComment(input.value.trim());
-      input.value = '';
-    } else {
-      alert('Lütfen bir yorum yazın.');
-    }
+    if (input.value.trim()) { addSiteComment(input.value.trim()); input.value = ''; }
+    else alert('Lütfen bir yorum yazın.');
   });
 
-  // BOT YORUMLARI
+  // Bot Yorumları
   let botComments = [];
-
   function loadBotComments() {
     const saved = localStorage.getItem('snowy_bot_comments');
-    if (saved) {
-      botComments = JSON.parse(saved);
-    } else {
-      botComments = [
-        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
-        { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
-        { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
-        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
-        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
-      ];
-    }
+    botComments = saved ? JSON.parse(saved) : [
+      { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
+      { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
+      { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
+      { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
+      { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
+    ];
     renderBotComments();
   }
-
   function renderBotComments() {
     const list = document.getElementById('botCommentList');
     list.innerHTML = '';
@@ -625,7 +608,6 @@
       list.appendChild(div);
     });
   }
-
   function addBotComment(text) {
     if (!text.trim()) return;
     let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
@@ -636,15 +618,10 @@
     localStorage.setItem('snowy_bot_comments', JSON.stringify(botComments));
     renderBotComments();
   }
-
   document.getElementById('submitBotComment').addEventListener('click', () => {
     const input = document.getElementById('botCommentInput');
-    if (input.value.trim()) {
-      addBotComment(input.value.trim());
-      input.value = '';
-    } else {
-      alert('Lütfen bir yorum yazın.');
-    }
+    if (input.value.trim()) { addBotComment(input.value.trim()); input.value = ''; }
+    else alert('Lütfen bir yorum yazın.');
   });
 
   loadSiteComments();
