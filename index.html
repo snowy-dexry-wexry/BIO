@@ -44,29 +44,6 @@
       padding: 3rem 2rem 5rem;
     }
 
-    /* müzik butonu - sol üstte küçük */
-    .music-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      background: rgba(0, 255, 255, 0.2);
-      border: 1px solid rgba(0, 255, 255, 0.5);
-      border-radius: 30px;
-      padding: 5px 12px;
-      font-size: 0.7rem;
-      font-family: monospace;
-      color: #0ff;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: 0.2s;
-    }
-
-    .music-btn:hover {
-      background: rgba(0, 255, 255, 0.4);
-      color: #fff;
-    }
-
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -230,15 +207,10 @@
     @media (max-width: 700px) {
       .container { padding: 1.5rem; }
       .bot-grid { flex-direction: column; }
-      .music-btn { top: 10px; left: 10px; padding: 3px 8px; font-size: 0.6rem; }
     }
   </style>
 </head>
 <body>
-
-<!-- müzik butonu - sol üstte küçük -->
-<div class="music-btn" id="startMusicBtn">Şarkı Başlat</div>
-
 <div class="container">
 
   <div class="header">
@@ -246,7 +218,7 @@
     <div class="subtitle">CYBER SECURITY</div>
   </div>
 
-  <!-- HAKKINDA -->
+  <!-- HAKKINDA - en üstte -->
   <div class="card">
     <div class="section-title">HAKKINDA</div>
     <div class="desc-text">
@@ -303,7 +275,7 @@
     </div>
   </div>
 
-  <!-- Söz -->
+  <!-- Söz - en altta Rusça -->
   <div class="quote">
     “Приезжает много людей, но те, кто остаётся, особенные...”
   </div>
@@ -314,46 +286,18 @@
 
 </div>
 
-<!-- YouTube iframe - başlangıçta gizli -->
-<div id="musicContainer" style="position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; z-index: -1;"></div>
+<!-- YouTube müzik embed - arka planda çalacak, buton yok, loop var -->
+<div style="position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; z-index: -1;">
+  <iframe id="bgMusic" width="1" height="1" src="https://www.youtube.com/embed/9OuvUfaQJ-c?autoplay=1&loop=1&playlist=9OuvUfaQJ-c&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&mute=0" style="border: none; width: 1px; height: 1px;" allow="autoplay; encrypted-media"></iframe>
+</div>
 
+<!-- Müziğin otomatik başlaması için ek script -->
 <script>
-  let playerReady = false;
-  let player = null;
-  let isPlaying = false;
-
-  document.getElementById('startMusicBtn').addEventListener('click', function() {
-    if (playerReady && player) {
-      // zaten varsa devam
-      if (!isPlaying) {
-        player.playVideo();
-        isPlaying = true;
-      }
-      return;
-    }
-    
-    // iframe oluştur ve ekle
-    var container = document.getElementById('musicContainer');
-    var iframe = document.createElement('iframe');
-    iframe.id = 'bgMusic';
-    iframe.width = '1';
-    iframe.height = '1';
-    iframe.style.border = 'none';
-    iframe.src = 'https://www.youtube.com/embed/9OuvUfaQJ-c?autoplay=1&loop=1&playlist=9OuvUfaQJ-c&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0';
-    iframe.allow = 'autoplay; encrypted-media';
-    container.appendChild(iframe);
-    
-    // iframe yüklendikten sonra API ile kontrol edebilmek için (basit)
-    setTimeout(function() {
-      playerReady = true;
-      isPlaying = true;
-    }, 1000);
-    
-    // buton yazısını değiştir
-    document.getElementById('startMusicBtn').innerHTML = 'Müzik Çalıyor';
-    document.getElementById('startMusicBtn').style.opacity = '0.5';
-    document.getElementById('startMusicBtn').style.cursor = 'default';
+  // Sayfa yüklendiğinde müziğin çaldığından emin ol
+  window.addEventListener('load', function() {
+    var iframe = document.getElementById('bgMusic');
+    // YouTube iframe'i zaten autoplay ile geliyor, ekstra bir şey gerekmez
   });
 </script>
 </body>
-  </html>
+        </html>
