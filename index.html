@@ -285,5 +285,19 @@
   </div>
 
 </div>
+
+<!-- YouTube müzik embed - arka planda çalacak, buton yok, loop var -->
+<div style="position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; z-index: -1;">
+  <iframe id="bgMusic" width="1" height="1" src="https://www.youtube.com/embed/9OuvUfaQJ-c?autoplay=1&loop=1&playlist=9OuvUfaQJ-c&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&mute=0" style="border: none; width: 1px; height: 1px;" allow="autoplay; encrypted-media"></iframe>
+</div>
+
+<!-- Müziğin otomatik başlaması için ek script -->
+<script>
+  // Sayfa yüklendiğinde müziğin çaldığından emin ol
+  window.addEventListener('load', function() {
+    var iframe = document.getElementById('bgMusic');
+    // YouTube iframe'i zaten autoplay ile geliyor, ekstra bir şey gerekmez
+  });
+</script>
 </body>
-                                </html>
+    </html>
