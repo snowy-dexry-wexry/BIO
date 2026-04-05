@@ -19,6 +19,55 @@
       line-height: 1.5;
       overflow-x: hidden;
       position: relative;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Light mod */
+    body.light-mode {
+      background: #f0f4f8;
+      color: #1a1f2e;
+    }
+
+    body.light-mode .card {
+      background: rgba(240, 245, 250, 0.9);
+      border-color: rgba(0, 100, 150, 0.3);
+    }
+
+    body.light-mode .subtitle {
+      color: #0055aa;
+      border-color: #0055aa;
+    }
+
+    body.light-mode .section-title {
+      color: #0055aa;
+      border-left-color: #0055aa;
+    }
+
+    body.light-mode .desc-text {
+      color: #2a3344;
+    }
+
+    body.light-mode .quote {
+      background: #e0e8f0;
+      color: #1a2a3a;
+    }
+
+    body.light-mode .tg-btn {
+      border-color: #0055aa;
+      color: #0055aa;
+    }
+
+    body.light-mode .tg-btn:hover {
+      background: #0055aa;
+      color: #fff;
+    }
+
+    body.light-mode .bot-item {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .stat-number {
+      color: #0055aa;
     }
 
     body::before {
@@ -44,6 +93,34 @@
       padding: 3rem 2rem 5rem;
     }
 
+    /* mod butonu */
+    .theme-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      background: rgba(0, 255, 255, 0.2);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      color: #0ff;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: 0.2s;
+    }
+
+    .theme-btn:hover {
+      background: rgba(0, 255, 255, 0.4);
+    }
+
+    body.light-mode .theme-btn {
+      background: rgba(0, 100, 150, 0.15);
+      border-color: #0055aa;
+      color: #0055aa;
+    }
+
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -57,6 +134,11 @@
       text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
       margin-bottom: 0.75rem;
       white-space: nowrap;
+    }
+
+    body.light-mode .main-title {
+      color: #004488;
+      text-shadow: none;
     }
 
     @media (max-width: 700px) {
@@ -171,6 +253,13 @@
       text-decoration: underline;
     }
 
+    .stat-number {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #0ff;
+      margin-top: 5px;
+    }
+
     .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
@@ -204,6 +293,59 @@
       opacity: 0.5;
     }
 
+    /* yorumlar */
+    .comment-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #0ff;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      font-family: monospace;
+      margin-bottom: 10px;
+      resize: vertical;
+    }
+
+    .comment-btn {
+      background: transparent;
+      border: 1px solid #0ff;
+      padding: 6px 16px;
+      border-radius: 30px;
+      color: #0ff;
+      cursor: pointer;
+      font-family: monospace;
+    }
+
+    .comment-btn:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    .comment-list {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+
+    body.light-mode .comment-item {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .comment-input {
+      background: rgba(0, 0, 0, 0.05);
+      color: #000;
+      border-color: #0055aa;
+    }
+
     @media (max-width: 700px) {
       .container { padding: 1.5rem; }
       .bot-grid { flex-direction: column; }
@@ -211,6 +353,9 @@
   </style>
 </head>
 <body>
+
+<button class="theme-btn" id="themeToggle">🌙 DARK/LIGHT</button>
+
 <div class="container">
 
   <div class="header">
@@ -218,7 +363,7 @@
     <div class="subtitle">CYBER SECURITY</div>
   </div>
 
-  <!-- HAKKINDA - en üstte -->
+  <!-- HAKKINDA -->
   <div class="card">
     <div class="section-title">HAKKINDA</div>
     <div class="desc-text">
@@ -237,26 +382,34 @@
     </div>
   </div>
 
-  <!-- BOTLAR -->
+  <!-- BOTLAR + İSTATİSTİKLER -->
   <div class="card">
     <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
       <div class="bot-item">
         <div class="bot-name">Phishing Bot</div>
         <div class="bot-link"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
+        <div class="stat-number" id="stat1">👥 1.234 üye</div>
       </div>
       <div class="bot-item">
         <div class="bot-name">Yapay Zeka Bot</div>
         <div class="bot-link"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
+        <div class="stat-number" id="stat2">👥 2.567 üye</div>
       </div>
       <div class="bot-item">
         <div class="bot-name">Index Çekme Bot</div>
         <div class="bot-link"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
+        <div class="stat-number" id="stat3">👥 890 üye</div>
       </div>
       <div class="bot-item">
         <div class="bot-name">Kumar Bot</div>
         <div class="bot-link"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
+        <div class="stat-number" id="stat4">👥 3.421 üye</div>
       </div>
+    </div>
+    <div class="divider"></div>
+    <div class="desc-text" style="font-size:0.75rem; text-align:center;">
+      * İstatistikler her gün güncellenir
     </div>
   </div>
 
@@ -275,7 +428,19 @@
     </div>
   </div>
 
-  <!-- Söz - en altta Rusça -->
+  <!-- KULLANICI YORUMLARI -->
+  <div class="card">
+    <div class="section-title">KULLANICI YORUMLARI</div>
+    <textarea class="comment-input" id="commentInput" rows="2" placeholder="Yorumunuzu yazın..."></textarea>
+    <button class="comment-btn" id="submitComment">Yorum Gönder</button>
+    <div class="comment-list" id="commentList">
+      <div class="comment-item">🔹 Snowy botları gerçekten başarılı, teşekkürler! - @CyberLord</div>
+      <div class="comment-item">🔹 Yapay zeka botu çok iyi çalışıyor, devam. - @HackerX</div>
+      <div class="comment-item">🔹 Phishing botu ile güvenlik testleri yapıyorum, harika. - @Pentestpro</div>
+    </div>
+  </div>
+
+  <!-- Söz -->
   <div class="quote">
     “Приезжает много людей, но те, кто остаётся, особенные...”
   </div>
@@ -285,5 +450,82 @@
   </div>
 
 </div>
+
+<script>
+  // ========== DARK/LIGHT MOD ==========
+  const themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    themeBtn.innerHTML = isLight ? '🌙 DARK MOD' : '☀️ LIGHT MOD';
+  });
+
+  // ========== İSTATİSTİKLER (örnek - dinamik gösterim) ==========
+  // Gerçek Telegram API için bot token gerekiyor, şimdilik rastgele sayılar gösteriyor
+  function updateStats() {
+    const stats = [
+      Math.floor(1200 + Math.random() * 500),
+      Math.floor(2500 + Math.random() * 400),
+      Math.floor(800 + Math.random() * 300),
+      Math.floor(3400 + Math.random() * 600)
+    ];
+    document.getElementById('stat1').innerHTML = `👥 ${stats[0]}+ üye`;
+    document.getElementById('stat2').innerHTML = `👥 ${stats[1]}+ üye`;
+    document.getElementById('stat3').innerHTML = `👥 ${stats[2]}+ üye`;
+    document.getElementById('stat4').innerHTML = `👥 ${stats[3]}+ üye`;
+  }
+  // her 30 saniyede bir güncelleniyormuş gibi
+  setInterval(updateStats, 30000);
+  updateStats();
+
+  // ========== YORUMLAR (localStorage ile kaydetme) ==========
+  let comments = [];
+
+  function loadComments() {
+    const saved = localStorage.getItem('snowy_comments');
+    if (saved) {
+      comments = JSON.parse(saved);
+    } else {
+      comments = [
+        { text: "Snowy botları gerçekten başarılı, teşekkürler!", author: "@CyberLord" },
+        { text: "Yapay zeka botu çok iyi çalışıyor, devam.", author: "@HackerX" },
+        { text: "Phishing botu ile güvenlik testleri yapıyorum, harika.", author: "@Pentestpro" }
+      ];
+    }
+    renderComments();
+  }
+
+  function renderComments() {
+    const list = document.getElementById('commentList');
+    list.innerHTML = '';
+    comments.slice().reverse().forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'comment-item';
+      div.innerHTML = `🔹 ${c.text} - ${c.author}`;
+      list.appendChild(div);
+    });
+  }
+
+  function addComment(text) {
+    if (!text.trim()) return;
+    const author = "@" + (prompt("Kullanıcı adınızı girin (opsiyonel):", "Misafir") || "Misafir");
+    comments.push({ text: text, author: author });
+    if (comments.length > 20) comments.shift();
+    localStorage.setItem('snowy_comments', JSON.stringify(comments));
+    renderComments();
+  }
+
+  document.getElementById('submitComment').addEventListener('click', () => {
+    const input = document.getElementById('commentInput');
+    if (input.value.trim()) {
+      addComment(input.value.trim());
+      input.value = '';
+    } else {
+      alert('Lütfen bir yorum yazın.');
+    }
+  });
+
+  loadComments();
+</script>
 </body>
         </html>
