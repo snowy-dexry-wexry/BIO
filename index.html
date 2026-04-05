@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>SNOWY DEXRY WEXRY</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>SNOWY DEXRY WEXRY | Cyber Security Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,152 +13,276 @@
     }
 
     body {
-      background: #0c0f15;
-      font-family: 'Inter', 'JetBrains Mono', monospace;
-      color: #e6edf3;
+      background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
+      font-family: 'Orbitron', 'Share Tech Mono', monospace;
+      color: #e0f0ff;
       line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* arka plan cyberpunk grid */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .container {
-      max-width: 700px;
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 3rem 1.5rem;
+      padding: 2rem 2rem 4rem;
     }
 
-    /* başlık */
-    .name {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: #ffffff;
-      margin-bottom: 0.25rem;
+    /* glitch efekti başlık */
+    .glitch-title {
+      text-align: center;
+      margin: 2rem 0 1.5rem;
     }
 
-    .username {
+    .glitch {
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      position: relative;
+      text-shadow: 0.05em 0 0 rgba(255, 0, 100, 0.6), -0.05em -0.025em 0 rgba(0, 255, 255, 0.6);
+      animation: glitch-shake 0.25s infinite alternate;
+      color: #c4f5ff;
+      word-break: break-word;
+    }
+
+    @keyframes glitch-shake {
+      0% { transform: translate(0); text-shadow: 0.05em 0 0 #ff00c1, -0.05em -0.025em 0 #00ffff; }
+      100% { transform: translate(-0.02em, 0.01em); text-shadow: -0.05em -0.025em 0 #ff00c1, 0.05em 0.1em 0 #00ffff; }
+    }
+
+    .glitch-sub {
       font-size: 1rem;
-      color: #8b9bb0;
-      font-family: monospace;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #2a2f3a;
-    }
-
-    /* bağlantı listesi - sadece taglar */
-    .links-section {
-      margin: 1.5rem 0;
-    }
-
-    .link-item {
-      display: block;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #1e222a;
-    }
-
-    .link-item a {
-      color: #5bc0ff;
-      text-decoration: none;
-      font-family: monospace;
-      font-size: 0.95rem;
-      transition: 0.2s;
-    }
-
-    .link-item a:hover {
-      color: #8fd4ff;
-      text-decoration: underline;
+      color: #88ffff;
+      border-top: 1px solid #0ff;
+      border-bottom: 1px solid #0ff;
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      backdrop-filter: blur(4px);
+      background: rgba(0, 20, 30, 0.5);
+      letter-spacing: 3px;
+      font-weight: 400;
+      margin-top: 12px;
     }
 
     /* kartlar */
     .card {
-      background: #11161f;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
-      border: 1px solid #222732;
+      background: rgba(8, 18, 28, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      border-radius: 28px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), inset 0 0 10px rgba(0, 255, 255, 0.02);
+      transition: all 0.3s ease;
     }
 
-    .description {
-      font-size: 0.9rem;
-      color: #bcc9db;
-      line-height: 1.6;
+    .card:hover {
+      border-color: #0ff;
+      box-shadow: 0 0 28px rgba(0, 255, 255, 0.3);
     }
 
-    .quote {
+    /* rozet satırı */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.8rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .badge {
+      background: #0a121f;
+      padding: 0.6rem 1.5rem;
+      border-radius: 60px;
+      border-left: 3px solid #0ff;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .badge a {
+      color: #2effff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .badge a:hover {
+      text-shadow: 0 0 5px cyan;
+      text-decoration: underline;
+    }
+
+    /* bölüm başlıkları */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border-left: 5px solid #0ff;
+      padding-left: 1.2rem;
+      margin-bottom: 1.8rem;
+      color: #b5ffff;
+    }
+
+    /* bot grid düzenli */
+    .bot-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+      justify-content: space-between;
+    }
+
+    .bot-card {
+      background: linear-gradient(145deg, #07121e, #01070e);
+      flex: 1 1 210px;
+      padding: 1.3rem 1rem;
+      border-radius: 24px;
+      border: 1px solid #2affaa33;
       text-align: center;
-      font-size: 0.9rem;
-      color: #8fafcf;
+      transition: 0.2s;
+    }
+    .bot-card:hover {
+      transform: translateY(-6px);
+      border-color: #0ff;
+      background: #0a1422;
+    }
+    .bot-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffbc6e;
+      margin-bottom: 8px;
+    }
+    .bot-tag {
       font-family: monospace;
-      padding: 1rem;
-      background: #0e121b;
-      border-radius: 12px;
-      margin: 1rem 0;
+      font-size: 0.8rem;
+      background: #000000aa;
+      display: inline-block;
+      padding: 0.25rem 0.8rem;
+      border-radius: 30px;
+      margin-top: 6px;
     }
-
-    .footer {
-      text-align: center;
-      margin-top: 2rem;
+    .bot-tag a {
+      color: #7effb0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .bot-role {
       font-size: 0.7rem;
-      color: #5a6a7a;
+      margin-top: 8px;
+      color: #8bb;
+      letter-spacing: 0.5px;
     }
 
-    hr {
-      border: none;
+    /* ayraçlar - sadece çizgiler */
+    .divider {
+      width: 100%;
       height: 1px;
-      background: #222732;
+      background: linear-gradient(90deg, transparent, #0ff, #0ff, #0ff, transparent);
+      margin: 1.2rem 0;
+      opacity: 0.5;
+    }
+
+    .thin-divider {
+      width: 80%;
+      margin: 1rem auto;
+      height: 1px;
+      background: #2affaa33;
+    }
+
+    .text-block {
+      background: #010b16aa;
+      padding: 1.2rem 1.8rem;
+      border-radius: 20px;
+      border-left: 4px solid #0ff;
+      font-size: 1rem;
       margin: 1rem 0;
+    }
+
+    .link-button {
+      display: inline-block;
+      background: transparent;
+      border: 1.5px solid #0ff;
+      padding: 0.6rem 1.6rem;
+      border-radius: 40px;
+      color: #bfffff;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.2s;
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 1px;
+    }
+    .link-button:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 16px #0ff;
+    }
+
+    .quote-text {
+      font-size: 1.1rem;
+      text-align: center;
+      font-style: normal;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 1.2rem;
+      border-radius: 40px;
+      letter-spacing: 1px;
+      font-weight: 400;
+      font-family: monospace;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.7rem;
+      opacity: 0.6;
+      border-top: 1px dashed cyan;
+      padding-top: 1.5rem;
+    }
+
+    @media (max-width: 750px) {
+      .container { padding: 1rem 1rem 2rem; }
+      .glitch { font-size: 2rem; letter-spacing: 3px; }
+      .bot-grid { flex-direction: column; align-items: stretch; }
+      .badge-row { flex-direction: column; align-items: center; gap: 0.8rem; }
+      .section-title { font-size: 1.3rem; }
+    }
+
+    .small-spacer {
+      margin-top: 0.8rem;
     }
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- SNOWY DEXRY WEXRY -->
-  <div class="name">SNOWY DEXRY WEXRY</div>
-  <div class="username">@SnowyOrj</div>
-
-  <!-- kanalların tagları - sadece linkler -->
-  <div class="links-section">
-    <div class="link-item"><a href="https://t.me/SnowyOrj" target="_blank">@SnowyOrj</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyOrjBio" target="_blank">@SnowyOrjBio</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyRoot" target="_blank">@SnowyRoot</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></div>
-  </div>
-
-  <!-- botlar -->
-  <div class="card">
-    <div class="link-item"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
-    <div class="link-item"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
-  </div>
-
-  <!-- web aracı -->
-  <div class="card">
-    <div class="description">
-      Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.
-    </div>
-    <div class="link-item" style="border-bottom: none; padding-top: 0.75rem;">
-      <a href="https://snowy.axondatarel.org" target="_blank">snowy.axondatarel.org</a>
-    </div>
-  </div>
-
-  <!-- açıklama -->
-  <div class="card">
-    <div class="description">
-      SNOWY DEXRY WEXRY, Siber Güvenlik alanına derin bir ilgi duyan, Python dilinde yetkin, güvenlik araçları (tools) geliştirme konusunda deneyimli ve kendini bu alanda sürekli geliştiren bir uzmandır.
-    </div>
-  </div>
-
-  <!-- alıntı -->
-  <div class="quote">
-    “Приезжает много людей, но те, кто остаётся, особенные...”
-  </div>
-
-  <hr>
-
-  <div class="footer">
-    Snowy Dexry Wexry
-  </div>
-
-</div>
-</body>
-</html>
+  <!-- ana başlık SNOWY DEXRY WEXRY -->
+  <div class="glitch-title">
+    <div class="glitch">SNOWY DEXRY WEXRY
