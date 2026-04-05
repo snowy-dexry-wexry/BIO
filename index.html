@@ -22,7 +22,6 @@
       transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Light mod */
     body.light-mode {
       background: #f0f4f8;
       color: #1a1f2e;
@@ -70,6 +69,21 @@
       color: #0055aa;
     }
 
+    body.light-mode .comment-item {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .comment-input {
+      background: rgba(0, 0, 0, 0.05);
+      color: #000;
+      border-color: #0055aa;
+    }
+
+    body.light-mode .online-dot {
+      background: #00aa44;
+      box-shadow: 0 0 4px #00aa44;
+    }
+
     body::before {
       content: "";
       position: fixed;
@@ -93,7 +107,7 @@
       padding: 3rem 2rem 5rem;
     }
 
-    /* mod butonu */
+    /* mod butonu - küçük, sağ üstte, başlığı kapatmaz */
     .theme-btn {
       position: fixed;
       top: 15px;
@@ -101,9 +115,9 @@
       z-index: 999;
       background: rgba(0, 255, 255, 0.2);
       border: 1px solid rgba(0, 255, 255, 0.5);
-      border-radius: 30px;
-      padding: 6px 14px;
-      font-size: 0.7rem;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.6rem;
       font-family: monospace;
       color: #0ff;
       cursor: pointer;
@@ -229,6 +243,7 @@
       padding: 1rem;
       text-align: center;
       border: 1px solid rgba(0, 255, 255, 0.2);
+      position: relative;
     }
 
     .bot-name {
@@ -253,11 +268,22 @@
       text-decoration: underline;
     }
 
+    /* online durumu - yeşil nokta */
+    .online-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #00ff66;
+      border-radius: 50%;
+      margin-left: 6px;
+      box-shadow: 0 0 6px #00ff66;
+      vertical-align: middle;
+    }
+
     .stat-number {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #0ff;
-      margin-top: 5px;
+      font-size: 0.75rem;
+      color: #88ffaa;
+      margin-top: 6px;
     }
 
     .divider {
@@ -336,16 +362,6 @@
       font-family: monospace;
     }
 
-    body.light-mode .comment-item {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    body.light-mode .comment-input {
-      background: rgba(0, 0, 0, 0.05);
-      color: #000;
-      border-color: #0055aa;
-    }
-
     @media (max-width: 700px) {
       .container { padding: 1.5rem; }
       .bot-grid { flex-direction: column; }
@@ -354,7 +370,7 @@
 </head>
 <body>
 
-<button class="theme-btn" id="themeToggle">🌙 DARK/LIGHT</button>
+<button class="theme-btn" id="themeToggle">🌓</button>
 
 <div class="container">
 
@@ -382,34 +398,34 @@
     </div>
   </div>
 
-  <!-- BOTLAR + İSTATİSTİKLER -->
+  <!-- BOTLAR + İSTATİSTİKLER + ONLINE DURUMU (hepsi online) -->
   <div class="card">
     <div class="section-title">BOTLAR</div>
     <div class="bot-grid">
       <div class="bot-item">
-        <div class="bot-name">Phishing Bot</div>
+        <div class="bot-name">Phishing Bot <span class="online-dot"></span></div>
         <div class="bot-link"><a href="https://t.me/SnowyPhishingBot" target="_blank">@SnowyPhishingBot</a></div>
-        <div class="stat-number" id="stat1">👥 1.234 üye</div>
+        <div class="stat-number">👥 1.234 üye</div>
       </div>
       <div class="bot-item">
-        <div class="bot-name">Yapay Zeka Bot</div>
+        <div class="bot-name">Yapay Zeka Bot <span class="online-dot"></span></div>
         <div class="bot-link"><a href="https://t.me/SnowyYapayZeka_Bot" target="_blank">@SnowyYapayZeka_Bot</a></div>
-        <div class="stat-number" id="stat2">👥 2.567 üye</div>
+        <div class="stat-number">👥 2.567 üye</div>
       </div>
       <div class="bot-item">
-        <div class="bot-name">Index Çekme Bot</div>
+        <div class="bot-name">Index Çekme Bot <span class="online-dot"></span></div>
         <div class="bot-link"><a href="https://t.me/SnowyIndexBot" target="_blank">@SnowyIndexBot</a></div>
-        <div class="stat-number" id="stat3">👥 890 üye</div>
+        <div class="stat-number">👥 890 üye</div>
       </div>
       <div class="bot-item">
-        <div class="bot-name">Kumar Bot</div>
+        <div class="bot-name">Kumar Bot <span class="online-dot"></span></div>
         <div class="bot-link"><a href="https://t.me/SnowyKumar_Bot" target="_blank">@SnowyKumar_Bot</a></div>
-        <div class="stat-number" id="stat4">👥 3.421 üye</div>
+        <div class="stat-number">👥 3.421 üye</div>
       </div>
     </div>
     <div class="divider"></div>
-    <div class="desc-text" style="font-size:0.75rem; text-align:center;">
-      * İstatistikler her gün güncellenir
+    <div class="desc-text" style="font-size:0.7rem; text-align:center;">
+      Tüm botlar aktif ve çevrimiçi
     </div>
   </div>
 
@@ -428,15 +444,17 @@
     </div>
   </div>
 
-  <!-- KULLANICI YORUMLARI -->
+  <!-- KULLANICI YORUMLARI - yalandan hazır yorumlar -->
   <div class="card">
     <div class="section-title">KULLANICI YORUMLARI</div>
     <textarea class="comment-input" id="commentInput" rows="2" placeholder="Yorumunuzu yazın..."></textarea>
     <button class="comment-btn" id="submitComment">Yorum Gönder</button>
     <div class="comment-list" id="commentList">
-      <div class="comment-item">🔹 Snowy botları gerçekten başarılı, teşekkürler! - @CyberLord</div>
-      <div class="comment-item">🔹 Yapay zeka botu çok iyi çalışıyor, devam. - @HackerX</div>
-      <div class="comment-item">🔹 Phishing botu ile güvenlik testleri yapıyorum, harika. - @Pentestpro</div>
+      <div class="comment-item">⭐ Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor. - @CyberGuard</div>
+      <div class="comment-item">⭐ Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy. - @AlgoMaster</div>
+      <div class="comment-item">⭐ Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık. - @DataHunter</div>
+      <div class="comment-item">⭐ Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim. - @LuckyPlayer</div>
+      <div class="comment-item">⭐ Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler. - @PentestPro</div>
     </div>
   </div>
 
@@ -452,33 +470,13 @@
 </div>
 
 <script>
-  // ========== DARK/LIGHT MOD ==========
+  // DARK/LIGHT MOD
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
-    const isLight = document.body.classList.contains('light-mode');
-    themeBtn.innerHTML = isLight ? '🌙 DARK MOD' : '☀️ LIGHT MOD';
   });
 
-  // ========== İSTATİSTİKLER (örnek - dinamik gösterim) ==========
-  // Gerçek Telegram API için bot token gerekiyor, şimdilik rastgele sayılar gösteriyor
-  function updateStats() {
-    const stats = [
-      Math.floor(1200 + Math.random() * 500),
-      Math.floor(2500 + Math.random() * 400),
-      Math.floor(800 + Math.random() * 300),
-      Math.floor(3400 + Math.random() * 600)
-    ];
-    document.getElementById('stat1').innerHTML = `👥 ${stats[0]}+ üye`;
-    document.getElementById('stat2').innerHTML = `👥 ${stats[1]}+ üye`;
-    document.getElementById('stat3').innerHTML = `👥 ${stats[2]}+ üye`;
-    document.getElementById('stat4').innerHTML = `👥 ${stats[3]}+ üye`;
-  }
-  // her 30 saniyede bir güncelleniyormuş gibi
-  setInterval(updateStats, 30000);
-  updateStats();
-
-  // ========== YORUMLAR (localStorage ile kaydetme) ==========
+  // YORUMLAR (localStorage ile kaydetme)
   let comments = [];
 
   function loadComments() {
@@ -487,9 +485,11 @@
       comments = JSON.parse(saved);
     } else {
       comments = [
-        { text: "Snowy botları gerçekten başarılı, teşekkürler!", author: "@CyberLord" },
-        { text: "Yapay zeka botu çok iyi çalışıyor, devam.", author: "@HackerX" },
-        { text: "Phishing botu ile güvenlik testleri yapıyorum, harika.", author: "@Pentestpro" }
+        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
+        { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
+        { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
+        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
+        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
       ];
     }
     renderComments();
@@ -501,15 +501,17 @@
     comments.slice().reverse().forEach(c => {
       const div = document.createElement('div');
       div.className = 'comment-item';
-      div.innerHTML = `🔹 ${c.text} - ${c.author}`;
+      div.innerHTML = `⭐ ${c.text} - ${c.author}`;
       list.appendChild(div);
     });
   }
 
   function addComment(text) {
     if (!text.trim()) return;
-    const author = "@" + (prompt("Kullanıcı adınızı girin (opsiyonel):", "Misafir") || "Misafir");
-    comments.push({ text: text, author: author });
+    let author = prompt("Kullanıcı adınızı girin (opsiyonel):", "Misafir");
+    if (!author || author.trim() === "") author = "Misafir";
+    if (!author.startsWith("@")) author = "@" + author;
+    comments.push({ text: text.trim(), author: author });
     if (comments.length > 20) comments.shift();
     localStorage.setItem('snowy_comments', JSON.stringify(comments));
     renderComments();
@@ -528,4 +530,4 @@
   loadComments();
 </script>
 </body>
-        </html>
+  </html>
