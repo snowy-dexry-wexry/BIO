@@ -506,6 +506,9 @@
       <div class="comment-item">⭐ Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık. - @DataHunter</div>
       <div class="comment-item">⭐ Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim. - @LuckyPlayer</div>
       <div class="comment-item">⭐ Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler. - @PentestPro</div>
+      <div class="comment-item">⭐ Şifreleme ve şifre çözme işlemlerim için harika bir bot, çok hızlı ve güvenilir. - @CryptoMaster</div>
+      <div class="comment-item">⭐ Base64, AES, MD5 gibi birçok algoritmayı desteklemesi çok iyi, işimi kolaylaştırıyor. - @DataEncoder</div>
+      <div class="comment-item">⭐ Enc & Dec Bot sayesinde encoding işlemlerim çok hızlandı, teşekkürler Snowy. - @DevCrypt</div>
     </div>
   </div>
 
@@ -594,13 +597,20 @@
   let botComments = [];
   function loadBotComments() {
     const saved = localStorage.getItem('snowy_bot_comments');
-    botComments = saved ? JSON.parse(saved) : [
-      { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
-      { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
-      { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
-      { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
-      { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
-    ];
+    if (saved) {
+      botComments = JSON.parse(saved);
+    } else {
+      botComments = [
+        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
+        { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
+        { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
+        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
+        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" },
+        { text: "Şifreleme ve şifre çözme işlemlerim için harika bir bot, çok hızlı ve güvenilir.", author: "@CryptoMaster" },
+        { text: "Base64, AES, MD5 gibi birçok algoritmayı desteklemesi çok iyi, işimi kolaylaştırıyor.", author: "@DataEncoder" },
+        { text: "Enc & Dec Bot sayesinde encoding işlemlerim çok hızlandı, teşekkürler Snowy.", author: "@DevCrypt" }
+      ];
+    }
     renderBotComments();
   }
   function renderBotComments() {
