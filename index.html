@@ -486,13 +486,7 @@
     <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">SİTE YORUMLARI</div>
     <textarea class="comment-input" id="siteCommentInput" rows="2" placeholder="snowy.axondatarel.org hakkında yorumunuz..."></textarea>
     <button class="comment-btn" id="submitSiteComment">Yorum Gönder</button>
-    <div class="comment-list" id="siteCommentList">
-      <div class="comment-item">🔹 Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı. - @CyberGuard</div>
-      <div class="comment-item">🔹 Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel. - @AlgoMaster</div>
-      <div class="comment-item">🔹 Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı. - @PentestPro</div>
-      <div class="comment-item">🔹 Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim. - @DataHunter</div>
-      <div class="comment-item">🔹 En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli. - @WhiteHatX</div>
-    </div>
+    <div class="comment-list" id="siteCommentList"></div>
     <div class="desc-text" style="margin-top: 1rem; font-size:0.85rem;">Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong></div>
   </div>
 
@@ -500,13 +494,7 @@
     <div class="section-title">BOT YORUMLARI</div>
     <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuz..."></textarea>
     <button class="comment-btn" id="submitBotComment">Yorum Gönder</button>
-    <div class="comment-list" id="botCommentList">
-      <div class="comment-item">⭐ Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor. - @CyberGuard</div>
-      <div class="comment-item">⭐ Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy. - @AlgoMaster</div>
-      <div class="comment-item">⭐ Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık. - @DataHunter</div>
-      <div class="comment-item">⭐ Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim. - @LuckyPlayer</div>
-      <div class="comment-item">⭐ Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler. - @PentestPro</div>
-    </div>
+    <div class="comment-list" id="botCommentList"></div>
   </div>
 
   <div class="quote">“Приезжает много людей, но те, кто остаётся, особенные...”</div>
@@ -514,7 +502,11 @@
 </div>
 
 <script>
-  // MÜZİK - sayfada herhangi bir yere tıklayınca başlasın
+  // STORAGE TEMİZLEME - eski hatalı yorumları sil
+  localStorage.removeItem('snowy_site_comments');
+  localStorage.removeItem('snowy_bot_comments');
+
+  // MÜZİK
   let audio = null;
   let musicStarted = false;
 
@@ -530,7 +522,6 @@
     } catch(e) { console.log(e); }
   }
 
-  // Tüm sayfaya tıklama dinleyicisi
   document.body.addEventListener('click', function() {
     if (!musicStarted) {
       initMusic();
@@ -551,19 +542,15 @@
     userCountElem.innerHTML = '+' + userCount.toLocaleString('tr-TR');
   }, 45000);
 
-  // Site Yorumları
-  let siteComments = [];
-  function loadSiteComments() {
-    const saved = localStorage.getItem('snowy_site_comments');
-    siteComments = saved ? JSON.parse(saved) : [
-      { text: "Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı.", author: "@CyberGuard" },
-      { text: "Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel.", author: "@AlgoMaster" },
-      { text: "Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı.", author: "@PentestPro" },
-      { text: "Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim.", author: "@DataHunter" },
-      { text: "En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli.", author: "@WhiteHatX" }
-    ];
-    renderSiteComments();
-  }
+  // ========== SİTE YORUMLARI ==========
+  let siteComments = [
+    { text: "Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı.", author: "@CyberGuard" },
+    { text: "Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel.", author: "@AlgoMaster" },
+    { text: "Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı.", author: "@PentestPro" },
+    { text: "Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim.", author: "@DataHunter" },
+    { text: "En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli.", author: "@WhiteHatX" }
+  ];
+
   function renderSiteComments() {
     const list = document.getElementById('siteCommentList');
     list.innerHTML = '';
@@ -574,6 +561,7 @@
       list.appendChild(div);
     });
   }
+
   function addSiteComment(text) {
     if (!text.trim()) return;
     let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
@@ -581,28 +569,31 @@
     if (!author.startsWith("@")) author = "@" + author;
     siteComments.push({ text: text.trim(), author: author });
     if (siteComments.length > 20) siteComments.shift();
-    localStorage.setItem('snowy_site_comments', JSON.stringify(siteComments));
     renderSiteComments();
   }
+
   document.getElementById('submitSiteComment').addEventListener('click', () => {
     const input = document.getElementById('siteCommentInput');
-    if (input.value.trim()) { addSiteComment(input.value.trim()); input.value = ''; }
-    else alert('Lütfen bir yorum yazın.');
+    if (input.value.trim()) { 
+      addSiteComment(input.value.trim()); 
+      input.value = ''; 
+    } else {
+      alert('Lütfen bir yorum yazın.');
+    }
   });
 
-  // Bot Yorumları
-  let botComments = [];
-  function loadBotComments() {
-    const saved = localStorage.getItem('snowy_bot_comments');
-    botComments = saved ? JSON.parse(saved) : [
-      { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
-      { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
-      { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
-      { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
-      { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
-    ];
-    renderBotComments();
-  }
+  // ========== BOT YORUMLARI (Enc & Dec Bot dahil) ==========
+  let botComments = [
+    { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
+    { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
+    { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
+    { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
+    { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" },
+    { text: "Şifreleme ve şifre çözme işlemlerim için harika bir bot, çok hızlı ve güvenilir.", author: "@CryptoMaster" },
+    { text: "Base64, AES, MD5 gibi birçok algoritmayı desteklemesi çok iyi, işimi kolaylaştırıyor.", author: "@DataEncoder" },
+    { text: "Enc & Dec Bot sayesinde encoding işlemlerim çok hızlandı, teşekkürler Snowy.", author: "@DevCrypt" }
+  ];
+
   function renderBotComments() {
     const list = document.getElementById('botCommentList');
     list.innerHTML = '';
@@ -613,6 +604,7 @@
       list.appendChild(div);
     });
   }
+
   function addBotComment(text) {
     if (!text.trim()) return;
     let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
@@ -620,17 +612,21 @@
     if (!author.startsWith("@")) author = "@" + author;
     botComments.push({ text: text.trim(), author: author });
     if (botComments.length > 20) botComments.shift();
-    localStorage.setItem('snowy_bot_comments', JSON.stringify(botComments));
     renderBotComments();
   }
+
   document.getElementById('submitBotComment').addEventListener('click', () => {
     const input = document.getElementById('botCommentInput');
-    if (input.value.trim()) { addBotComment(input.value.trim()); input.value = ''; }
-    else alert('Lütfen bir yorum yazın.');
+    if (input.value.trim()) { 
+      addBotComment(input.value.trim()); 
+      input.value = ''; 
+    } else {
+      alert('Lütfen bir yorum yazın.');
+    }
   });
 
-  loadSiteComments();
-  loadBotComments();
+  renderSiteComments();
+  renderBotComments();
 </script>
 </body>
   </html>
