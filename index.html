@@ -492,7 +492,6 @@
     <button class="comment-btn" id="submitBotComment">Yorum Gönder</button>
     <div class="comment-list" id="botCommentList">
       <div class="comment-item">⭐ Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor. - @CyberGuard</div>
-      <div class="comment-item">⭐ Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy. - @AlgoMaster</div>
       <div class="comment-item">⭐ Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık. - @DataHunter</div>
       <div class="comment-item">⭐ Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim. - @LuckyPlayer</div>
       <div class="comment-item">⭐ Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler. - @PentestPro</div>
@@ -580,13 +579,12 @@
     else alert('Lütfen bir yorum yazın.');
   });
 
-  // Bot Yorumları
+  // Bot Yorumları (Yapay Zeka bot yorumu kaldırıldı)
   let botComments = [];
   function loadBotComments() {
     const saved = localStorage.getItem('snowy_bot_comments');
     botComments = saved ? JSON.parse(saved) : [
       { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard" },
-      { text: "Yapay zeka botu sayesinde birçok işimi otomatikleştirdim, teşekkürler Snowy.", author: "@AlgoMaster" },
       { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter" },
       { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer" },
       { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro" }
