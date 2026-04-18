@@ -510,7 +510,8 @@
   function initMusic() {
     if (musicStarted) return;
     try {
-      audio = new Audio('https://snowy-dexry-wexry.github.io/Snowy/Hermès%202.0.mp3');
+      // URL değişti: /Snowy/ -> /BIO/
+      audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Hermès%202.0.mp3');
       audio.loop = true;
       audio.volume = 0.5;
       audio.play().then(() => {
