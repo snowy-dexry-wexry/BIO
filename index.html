@@ -84,7 +84,7 @@
       border-color: rgba(0, 100, 150, 0.3);
     }
 
-    /* 3D Arka Plan Animasyonu */
+    /* Basit Arka Plan - Performans için */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -92,72 +92,47 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.5;
+      opacity: 0.3;
       pointer-events: none;
     }
 
-    /* Kar tanesi efekti - geliştirilmiş */
+    /* Kar tanesi efekti - Hafif */
     .snowflake {
       position: fixed;
       user-select: none;
       pointer-events: none;
       z-index: 1;
-      font-size: 12px;
+      font-size: 10px;
       animation: fall linear infinite;
-      filter: drop-shadow(0 0 3px currentColor);
     }
 
     @keyframes fall {
       0% {
-        transform: translateY(-10vh) rotate(0deg);
-        opacity: 0.8;
+        transform: translateY(-10vh);
+        opacity: 0.6;
       }
       100% {
-        transform: translateY(100vh) rotate(360deg);
+        transform: translateY(100vh);
         opacity: 0;
       }
     }
 
-    /* Işın efekti - geliştirilmiş */
+    /* Işın efekti - Hafif */
     .ray {
       position: fixed;
-      width: 3px;
+      width: 2px;
       height: 100%;
-      background: linear-gradient(to bottom, transparent, #0ff, #0ff, #0ff, transparent);
-      animation: rayMove 6s linear infinite;
+      background: linear-gradient(to bottom, transparent, #0ff, transparent);
+      animation: rayMove 8s linear infinite;
       z-index: 0;
       pointer-events: none;
-      filter: blur(1px);
+      opacity: 0.3;
     }
 
     @keyframes rayMove {
-      0% { transform: translateX(-150px); opacity: 0; }
-      20% { opacity: 0.5; }
-      80% { opacity: 0.5; }
-      100% { transform: translateX(calc(100vw + 150px)); opacity: 0; }
-    }
-
-    /* Işık patlaması efekti - geliştirilmiş */
-    .light-burst {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      background: radial-gradient(circle, rgba(0,255,255,0.08) 0%, transparent 70%);
-      animation: burst 3s ease-in-out infinite;
-    }
-
-    @keyframes burst {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.8); }
-    }
-
-    /* Titreşim efekti */
-    @keyframes vibrate {
-      0%, 100% { transform: translate(0); }
-      25% { transform: translate(-1px, 1px); }
-      75% { transform: translate(1px, -1px); }
+      0% { transform: translateX(-100px); opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { transform: translateX(calc(100vw + 100px)); opacity: 0; }
     }
 
     .nav-menu {
@@ -190,7 +165,6 @@
       background: rgba(0, 255, 255, 0.2);
       color: #fff;
       transform: translateY(-2px);
-      text-shadow: 0 0 5px #0ff;
     }
 
     .theme-btn {
@@ -216,7 +190,6 @@
     .theme-btn:hover {
       background: rgba(0, 255, 255, 0.4);
       transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     }
 
     .container {
@@ -230,13 +203,13 @@
     .header {
       text-align: center;
       margin-bottom: 3rem;
-      animation: fadeInUp 0.8s ease;
+      animation: fadeInUp 0.6s ease;
     }
 
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(50px);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
@@ -245,44 +218,34 @@
     }
 
     .logo {
-      width: 130px;
-      height: 130px;
+      width: 120px;
+      height: 120px;
       margin: 0 auto 1rem;
       background: linear-gradient(135deg, #0088cc, #006699);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 4.5rem;
+      font-size: 4rem;
       color: #fff;
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
       box-shadow: 0 0 30px rgba(0, 136, 204, 0.5);
-      animation: pulse 2s infinite, float 3s ease-in-out infinite, rotate3d 5s ease-in-out infinite;
       transition: 0.3s;
-    }
-
-    @keyframes rotate3d {
-      0%, 100% { transform: rotateY(0deg); }
-      50% { transform: rotateY(15deg); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
+      animation: pulse 2s infinite;
     }
 
     .logo:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 50px rgba(0, 136, 204, 0.8);
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(0, 136, 204, 0.7);
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 136, 204, 0.5); }
-      50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(0, 136, 204, 0.8); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 136, 204, 0.4); }
+      50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(0, 136, 204, 0.6); }
     }
 
     .main-title {
-      font-size: 3.8rem;
+      font-size: 3.5rem;
       font-weight: 800;
       letter-spacing: 4px;
       background: linear-gradient(135deg, #b0f0ff, #0ff, #0088cc);
@@ -290,25 +253,6 @@
       background-clip: text;
       color: transparent;
       margin-bottom: 0.75rem;
-      animation: glitch 3s infinite, titlePulse 2s ease-in-out infinite, textGlow 2s infinite;
-    }
-
-    @keyframes textGlow {
-      0%, 100% { filter: drop-shadow(0 0 0px #0ff); }
-      50% { filter: drop-shadow(0 0 15px #0ff); }
-    }
-
-    @keyframes titlePulse {
-      0%, 100% { letter-spacing: 4px; }
-      50% { letter-spacing: 7px; }
-    }
-
-    @keyframes glitch {
-      0%, 100% { text-shadow: none; }
-      96% { text-shadow: none; }
-      97% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
-      98% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
-      99% { text-shadow: none; }
     }
 
     body.light-mode .main-title {
@@ -348,24 +292,13 @@
     }
 
     .subtitle {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-family: monospace;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       border-top: 2px solid #0ff;
       border-bottom: 2px solid #0ff;
       display: inline-block;
-      padding: 0.5rem 2rem;
-      animation: borderPulse 2s infinite, textPulse 1.5s infinite;
-    }
-
-    @keyframes textPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    @keyframes borderPulse {
-      0%, 100% { border-color: #0ff; box-shadow: 0 0 5px #0ff; }
-      50% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+      padding: 0.4rem 1.5rem;
     }
 
     .card {
@@ -373,25 +306,19 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(0, 255, 255, 0.3);
       border-radius: 20px;
-      padding: 2rem;
-      margin: 2rem 0;
-      transition: all 0.4s ease;
-      animation: fadeInUp 0.6s ease backwards, cardGlow 3s infinite;
-    }
-
-    @keyframes cardGlow {
-      0%, 100% { box-shadow: 0 0 0px rgba(0, 255, 255, 0); border-color: rgba(0, 255, 255, 0.3); }
-      50% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.15); border-color: rgba(0, 255, 255, 0.6); }
+      padding: 1.8rem;
+      margin: 1.8rem 0;
+      transition: all 0.3s ease;
     }
 
     .card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(0, 255, 255, 0.9);
-      box-shadow: 0 15px 40px rgba(0, 255, 255, 0.25);
+      transform: translateY(-5px);
+      border-color: rgba(0, 255, 255, 0.7);
+      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
     }
 
     .section-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 600;
       letter-spacing: 1px;
       border-left: 4px solid #0ff;
@@ -403,13 +330,7 @@
     }
 
     .section-title i {
-      font-size: 1.3rem;
-      animation: iconSpin 3s infinite;
-    }
-
-    @keyframes iconSpin {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(12deg) scale(1.1); }
+      font-size: 1.2rem;
     }
 
     .area-grid {
@@ -427,17 +348,11 @@
       flex: 1;
       min-width: 180px;
       text-align: center;
-      transition: 0.3s;
-      animation: areaGlow 3s infinite;
-    }
-
-    @keyframes areaGlow {
-      0%, 100% { border-color: rgba(0, 136, 204, 0.3); }
-      50% { border-color: rgba(0, 136, 204, 0.8); }
+      transition: 0.2s;
     }
 
     .area-card:hover {
-      transform: translateY(-5px) scale(1.02);
+      transform: translateY(-3px);
       background: rgba(0, 136, 204, 0.25);
     }
 
@@ -445,12 +360,6 @@
       font-size: 2rem;
       color: #0ff;
       margin-bottom: 0.5rem;
-      animation: iconColor 3s infinite;
-    }
-
-    @keyframes iconColor {
-      0%, 100% { color: #0ff; }
-      50% { color: #ff00ff; }
     }
 
     .area-card h4 {
@@ -480,17 +389,11 @@
       font-size: 0.8rem;
       font-family: monospace;
       transition: 0.2s;
-      animation: tagPulse 2s infinite;
-    }
-
-    @keyframes tagPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
     }
 
     .lang-tag:hover {
       background: rgba(255, 100, 0, 0.3);
-      transform: translateY(-2px) scale(1.05);
+      transform: translateY(-2px);
     }
 
     .contact-item {
@@ -500,18 +403,6 @@
       flex-wrap: wrap;
       padding: 0.8rem 0;
       border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-      animation: slideIn 0.5s ease backwards;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
     }
 
     .contact-label {
@@ -535,7 +426,6 @@
     .contact-value a:hover {
       color: #0ff;
       text-decoration: underline;
-      text-shadow: 0 0 5px #0ff;
     }
 
     .bot-grid {
@@ -556,35 +446,18 @@
       border: 1px solid rgba(0, 255, 255, 0.2);
       transition: all 0.3s ease;
       cursor: pointer;
-      animation: botGlow 3s infinite, floatSlow 4s ease-in-out infinite;
-    }
-
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-    }
-
-    @keyframes botGlow {
-      0%, 100% { border-color: rgba(0, 255, 255, 0.2); box-shadow: 0 0 0px rgba(0, 255, 255, 0); }
-      50% { border-color: rgba(0, 255, 255, 0.7); box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
     }
 
     .bot-item:hover {
-      transform: translateY(-10px);
+      transform: translateY(-5px);
       border-color: #0ff;
-      box-shadow: 0 5px 35px rgba(0, 255, 255, 0.35);
+      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.15);
     }
 
     .bot-icon {
       font-size: 2rem;
       margin-bottom: 0.5rem;
       color: #0ff;
-      animation: iconBounce 2s infinite, iconColor 3s infinite;
-    }
-
-    @keyframes iconBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
     }
 
     .bot-name {
@@ -602,23 +475,23 @@
 
     .online-dot {
       display: inline-block;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background: #00ff66;
       border-radius: 50%;
-      margin-left: 8px;
-      box-shadow: 0 0 8px #00ff66;
+      margin-left: 6px;
+      box-shadow: 0 0 4px #00ff66;
       vertical-align: middle;
       animation: blink 1.5s infinite;
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.7); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .stat-number {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #88ffaa;
       margin-top: 8px;
       display: flex;
@@ -631,18 +504,12 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
       margin: 1.2rem 0;
-      opacity: 0.4;
-      animation: dividerPulse 2s infinite;
-    }
-
-    @keyframes dividerPulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.7; }
+      opacity: 0.3;
     }
 
     .desc-text {
       color: #b8ccdd;
-      font-size: 1rem;
+      font-size: 0.95rem;
       line-height: 1.7;
       margin: 0.8rem 0;
     }
@@ -650,50 +517,33 @@
     .quote {
       text-align: center;
       font-family: monospace;
-      font-size: 1rem;
-      padding: 1.2rem;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+      font-size: 0.9rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15));
       border-radius: 40px;
       color: #aaccee;
       margin-top: 2rem;
       font-style: italic;
       border-left: 3px solid #0ff;
       border-right: 3px solid #0ff;
-      animation: quotePulse 2s infinite, bgShift 5s infinite;
-    }
-
-    @keyframes bgShift {
-      0%, 100% { background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)); }
-      50% { background: linear-gradient(135deg, rgba(0, 50, 100, 0.4), rgba(0, 0, 0, 0.2)); }
-    }
-
-    @keyframes quotePulse {
-      0%, 100% { border-color: #0ff; }
-      50% { border-color: #ff00ff; }
     }
 
     .footer {
       text-align: center;
       margin-top: 3rem;
-      font-size: 0.8rem;
-      opacity: 0.7;
-      animation: footerPulse 3s infinite;
-    }
-
-    @keyframes footerPulse {
-      0%, 100% { opacity: 0.4; letter-spacing: 0px; }
-      50% { opacity: 0.9; letter-spacing: 2px; }
+      font-size: 0.7rem;
+      opacity: 0.5;
     }
 
     .comment-input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border-radius: 12px;
       border: 1px solid #0ff;
       background: rgba(0, 0, 0, 0.5);
       color: #fff;
       font-family: monospace;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       resize: vertical;
       transition: 0.2s;
     }
@@ -701,13 +551,13 @@
     .comment-input:focus {
       outline: none;
       border-color: #2affaa;
-      box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 6px rgba(0, 255, 255, 0.2);
     }
 
     .comment-btn {
       background: transparent;
       border: 1px solid #0ff;
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 30px;
       color: #0ff;
       cursor: pointer;
@@ -722,44 +572,31 @@
       background: #0ff;
       color: #000;
       transform: translateY(-2px);
-      box-shadow: 0 0 15px #0ff;
     }
 
     .comment-list {
       margin-top: 20px;
-      max-height: 350px;
+      max-height: 300px;
       overflow-y: auto;
     }
 
     .comment-item {
       background: rgba(0, 0, 0, 0.3);
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 12px;
-      margin-bottom: 10px;
-      font-size: 0.85rem;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
       font-family: monospace;
       transition: 0.2s;
-      animation: commentSlide 0.3s ease;
-    }
-
-    @keyframes commentSlide {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
     }
 
     .comment-item:hover {
-      background: rgba(0, 255, 255, 0.15);
-      transform: translateX(5px);
+      background: rgba(0, 255, 255, 0.1);
+      transform: translateX(3px);
     }
 
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
 
     ::-webkit-scrollbar-track {
@@ -768,27 +605,20 @@
 
     ::-webkit-scrollbar-thumb {
       background: #0ff;
-      border-radius: 4px;
-      animation: scrollGlow 2s infinite;
-    }
-
-    @keyframes scrollGlow {
-      0%, 100% { background: #0ff; }
-      50% { background: #ff00ff; }
+      border-radius: 3px;
     }
   </style>
 </head>
 <body>
 
-<div class="light-burst"></div>
 <canvas id="canvas-bg"></canvas>
 
 <div class="nav-menu">
-  <a href="#home" data-target="home"><i class="fas fa-home"></i> Ana Sayfa</a>
-  <a href="#about" data-target="about"><i class="fas fa-user-secret"></i> Hakkımda</a>
-  <a href="#areas" data-target="areas"><i class="fas fa-cogs"></i> Alanlar</a>
-  <a href="#bots" data-target="bots"><i class="fas fa-robot"></i> Botlar</a>
-  <a href="#comments" data-target="comments"><i class="fas fa-comments"></i> Yorumlar</a>
+  <a href="#home"><i class="fas fa-home"></i> Ana Sayfa</a>
+  <a href="#about"><i class="fas fa-user-secret"></i> Hakkımda</a>
+  <a href="#areas"><i class="fas fa-cogs"></i> Alanlar</a>
+  <a href="#bots"><i class="fas fa-robot"></i> Botlar</a>
+  <a href="#comments"><i class="fas fa-comments"></i> Yorumlar</a>
   <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
 </div>
 
@@ -908,7 +738,7 @@
       </div>
     </div>
     <div class="divider"></div>
-    <div class="desc-text" style="font-size:0.75rem; text-align:center;">
+    <div class="desc-text" style="font-size:0.7rem; text-align:center;">
       <i class="fas fa-check-circle"></i> Tüm botlar aktif ve 7/24 çevrimiçi
     </div>
   </div>
@@ -928,7 +758,7 @@
   <div class="quote">
     <i class="fas fa-quote-left"></i> Приезжает много людей, но те, кто остаётся, особенные...
     <i class="fas fa-quote-right"></i><br>
-    <span style="font-size:0.7rem;">- Snowy Dexry Wexry | 2026</span>
+    <span style="font-size:0.65rem;">- Snowy Dexry Wexry | 2026</span>
   </div>
   
   <div class="footer">
@@ -937,38 +767,37 @@
 </div>
 
 <script>
-  // Işın efekti
-  for (let i = 0; i < 10; i++) {
+  // Işın efekti - azaltıldı
+  for (let i = 0; i < 4; i++) {
     const ray = document.createElement('div');
     ray.classList.add('ray');
     ray.style.left = Math.random() * 100 + '%';
-    ray.style.animationDelay = Math.random() * 6 + 's';
-    ray.style.animationDuration = Math.random() * 5 + 5 + 's';
+    ray.style.animationDelay = Math.random() * 5 + 's';
+    ray.style.animationDuration = Math.random() * 5 + 6 + 's';
     document.body.appendChild(ray);
   }
   
-  // Kar tanesi efekti - renkli ve gelişmiş
+  // Kar tanesi efekti - seyrek
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
-    const icons = ['❄', '●', '◆', '◈', '✧', '⚡', '🔷', '💠', '◉', '○', '⭐', '✦'];
+    const icons = ['❄', '●', '◆', '✧', '⚡'];
     snowflake.innerHTML = icons[Math.floor(Math.random() * icons.length)];
     snowflake.style.left = Math.random() * 100 + '%';
-    snowflake.style.animationDuration = Math.random() * 4 + 3 + 's';
-    snowflake.style.fontSize = Math.random() * 16 + 8 + 'px';
-    snowflake.style.opacity = Math.random() * 0.6 + 0.2;
-    const colors = ['#0ff', '#f0f', '#ff0', '#0f0', '#f60', '#f00'];
-    snowflake.style.color = colors[Math.floor(Math.random() * colors.length)];
+    snowflake.style.animationDuration = Math.random() * 4 + 5 + 's';
+    snowflake.style.fontSize = Math.random() * 10 + 6 + 'px';
+    snowflake.style.opacity = Math.random() * 0.4 + 0.1;
+    snowflake.style.color = '#0ff';
     document.body.appendChild(snowflake);
     
     setTimeout(() => {
       snowflake.remove();
-    }, 7000);
+    }, 8000);
   }
   
-  setInterval(createSnowflake, 120);
+  setInterval(createSnowflake, 400);
   
-  // 3D Arka Plan Animasyonu - gelişmiş
+  // Basit Arka Plan Animasyonu - Performans için
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
   
@@ -980,28 +809,26 @@
   window.addEventListener('resize', resizeCanvas);
   
   let particles = [];
-  const particleCount = 250;
+  const particleCount = 80;
   
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 3 + 0.5,
-      speedX: (Math.random() - 0.5) * 0.8,
-      speedY: (Math.random() - 0.5) * 0.8,
-      alpha: Math.random() * 0.3 + 0.05,
-      colorR: Math.random() * 100 + 100,
-      colorG: Math.random() * 100 + 100
+      radius: Math.random() * 2 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.2 + 0.05
     });
   }
   
-  function animate3D() {
+  function animateBG() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     for (let p of particles) {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.colorR}, ${p.colorG}, 255, ${p.alpha})`;
+      ctx.fillStyle = `rgba(0, 200, 255, ${p.alpha})`;
       ctx.fill();
       
       p.x += p.speedX;
@@ -1013,9 +840,9 @@
       if (p.y > canvas.height) p.y = 0;
     }
     
-    requestAnimationFrame(animate3D);
+    requestAnimationFrame(animateBG);
   }
-  animate3D();
+  animateBG();
   
   // Müzik
   let audio = null;
@@ -1026,7 +853,7 @@
     try {
       audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Herm%C3%A8s%202.0.mp3');
       audio.loop = true;
-      audio.volume = 0.3;
+      audio.volume = 0.2;
       audio.play().then(() => {
         musicStarted = true;
       }).catch(e => console.log('Müzik başlatılamadı:', e));
@@ -1098,7 +925,7 @@
     input.value = '';
   });
   
-  // Canlı üye sayısı güncelleme
+  // Canlı üye sayısı güncelleme - yavaş
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
@@ -1107,7 +934,7 @@
     if (phishingElem) {
       let current = parseInt(phishingElem.innerText);
       if (isNaN(current)) current = 3000;
-      current += Math.floor(Math.random() * 3);
+      current += Math.floor(Math.random() * 2);
       phishingElem.innerText = current;
     }
     if (indexElem) {
@@ -1119,14 +946,14 @@
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
       if (isNaN(current)) current = 4200;
-      current += Math.floor(Math.random() * 4);
+      current += Math.floor(Math.random() * 3);
       gambleElem.innerText = current;
     }
   }
   
-  setInterval(updateMemberCounts, 35000);
+  setInterval(updateMemberCounts, 60000);
   
-  // Smooth scroll - tam isabetli kaydırma
+  // Smooth scroll
   document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
