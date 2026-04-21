@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="Snowy Dexry Wexry - Siber Güvenlik Uzmanı, Tools Geliştirici">
-  <meta name="keywords" content="siber guvenlik, tools, phishing, telegram bot, cyber security, snowy">
+  <meta name="keywords" content="siber guvenlik, tools, phishing, telegram bot, cyber security, snowy, osint, web penetration">
   <meta name="author" content="Snowy Dexry Wexry">
   <title>SNOWY DEXRY WEXRY | CYBER SECURITY</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -77,6 +77,11 @@
 
     body.light-mode .comment-item {
       background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .area-card {
+      background: rgba(0, 100, 150, 0.1);
+      border-color: rgba(0, 100, 150, 0.3);
     }
 
     /* 3D Arka Plan Animasyonu */
@@ -158,7 +163,7 @@
       padding: 0.8rem 2rem;
       display: flex;
       justify-content: center;
-      gap: 1.5rem;
+      gap: 1rem;
       border-bottom: 1px solid rgba(0, 255, 255, 0.3);
       flex-wrap: wrap;
     }
@@ -318,8 +323,8 @@
         padding: 0.5rem 1rem;
       }
       .nav-menu a {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.5rem;
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
       }
       .theme-btn {
         top: 75px;
@@ -395,6 +400,75 @@
     @keyframes iconSpin {
       0%, 100% { transform: rotate(0deg); }
       50% { transform: rotate(10deg) scale(1.1); }
+    }
+
+    .area-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .area-card {
+      background: rgba(0, 136, 204, 0.15);
+      border: 1px solid rgba(0, 136, 204, 0.3);
+      border-radius: 16px;
+      padding: 1rem;
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      transition: 0.3s;
+      animation: areaGlow 3s infinite;
+    }
+
+    @keyframes areaGlow {
+      0%, 100% { border-color: rgba(0, 136, 204, 0.3); }
+      50% { border-color: rgba(0, 136, 204, 0.8); }
+    }
+
+    .area-card:hover {
+      transform: translateY(-5px);
+      background: rgba(0, 136, 204, 0.25);
+    }
+
+    .area-card i {
+      font-size: 2rem;
+      color: #0ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .area-card h4 {
+      color: #7df9ff;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .area-card p {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    .lang-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+
+    .lang-tag {
+      background: rgba(255, 100, 0, 0.15);
+      border: 1px solid rgba(255, 100, 0, 0.3);
+      border-radius: 30px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.8rem;
+      font-family: monospace;
+      transition: 0.2s;
+    }
+
+    .lang-tag:hover {
+      background: rgba(255, 100, 0, 0.3);
+      transform: translateY(-2px) scale(1.02);
     }
 
     .button-group {
@@ -730,6 +804,7 @@
 <div class="nav-menu">
   <a href="#home" data-target="home"><i class="fas fa-home"></i> Ana Sayfa</a>
   <a href="#about" data-target="about"><i class="fas fa-user-secret"></i> Hakkımda</a>
+  <a href="#areas" data-target="areas"><i class="fas fa-cogs"></i> Alanlar</a>
   <a href="#bots" data-target="bots"><i class="fas fa-robot"></i> Botlar</a>
   <a href="#comments" data-target="comments"><i class="fas fa-comments"></i> Yorumlar</a>
   <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
@@ -757,6 +832,48 @@
     </div>
     <div class="desc-text">
       <i class="fas fa-quote-left"></i> Snowy Dexry Wexry, Siber Güvenlik alanında uzmanlaşmış, güvenlik açığı tespiti ve özel güvenlik araçları (tools) geliştirme konusunda deneyimli bir siber güvenlik uzmanıdır.
+    </div>
+  </div>
+
+  <div class="card" id="areas">
+    <div class="section-title">
+      <i class="fas fa-cogs"></i>
+      <span>UZMANLIK ALANLARIM</span>
+    </div>
+    <div class="area-grid">
+      <div class="area-card">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Siber Güvenlik</h4>
+        <p>Güvenlik açığı tespiti ve analizi</p>
+      </div>
+      <div class="area-card">
+        <i class="fas fa-globe"></i>
+        <h4>Web Penetrasyon Testi</h4>
+        <p>Web uygulamalarında güvenlik testleri</p>
+      </div>
+      <div class="area-card">
+        <i class="fas fa-search"></i>
+        <h4>OSINT</h4>
+        <p>Açık kaynak istihbaratı ve veri toplama</p>
+      </div>
+      <div class="area-card">
+        <i class="fas fa-wrench"></i>
+        <h4>Tools Geliştirme</h4>
+        <p>Özel güvenlik araçları geliştirme</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">
+      <i class="fas fa-code"></i>
+      <span>YAZILIM DİLLERİ</span>
+    </div>
+    <div class="lang-grid">
+      <span class="lang-tag"><i class="fab fa-python"></i> Python</span>
+      <span class="lang-tag"><i class="fab fa-html5"></i> HTML</span>
+      <span class="lang-tag"><i class="fab fa-css3-alt"></i> CSS</span>
+      <span class="lang-tag"><i class="fab fa-js"></i> JavaScript</span>
+      <span class="lang-tag"><i class="fab fa-php"></i> PHP</span>
+      <span class="lang-tag"><i class="fas fa-terminal"></i> Bash</span>
     </div>
   </div>
 
