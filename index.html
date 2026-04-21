@@ -793,19 +793,19 @@
         <div class="bot-icon"><i class="fas fa-fish"></i></div>
         <div class="bot-name">Phishing Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyPhishingBot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span id="phishingCount">1234</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="phishingCount">3000</span> üye</div>
       </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyIndexBot','_blank')">
         <div class="bot-icon"><i class="fas fa-database"></i></div>
         <div class="bot-name">Index Çekme Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyIndexBot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span id="indexCount">890</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="indexCount">1200</span> üye</div>
       </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyKumar_Bot','_blank')">
         <div class="bot-icon"><i class="fas fa-dice-d6"></i></div>
         <div class="bot-name">Kumar Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyKumar_Bot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span id="gambleCount">3421</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="gambleCount">4200</span> üye</div>
       </div>
     </div>
     <div class="divider"></div>
@@ -995,7 +995,7 @@
     input.value = '';
   });
   
-  // Canlı üye sayısı güncelleme (sadece botlar için)
+  // Canlı üye sayısı güncelleme (sadece botlar için - yavaş artış)
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
@@ -1003,25 +1003,25 @@
     
     if (phishingElem) {
       let current = parseInt(phishingElem.innerText);
-      if (isNaN(current)) current = 1234;
+      if (isNaN(current)) current = 3000;
       current += Math.floor(Math.random() * 2);
       phishingElem.innerText = current;
     }
     if (indexElem) {
       let current = parseInt(indexElem.innerText);
-      if (isNaN(current)) current = 890;
+      if (isNaN(current)) current = 1200;
       current += Math.floor(Math.random() * 2);
       indexElem.innerText = current;
     }
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
-      if (isNaN(current)) current = 3421;
+      if (isNaN(current)) current = 4200;
       current += Math.floor(Math.random() * 3);
       gambleElem.innerText = current;
     }
   }
   
-  setInterval(updateMemberCounts, 30000);
+  setInterval(updateMemberCounts, 45000);
   
   // Smooth scroll
   document.querySelectorAll('.nav-menu a').forEach(anchor => {
