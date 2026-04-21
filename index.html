@@ -56,16 +56,6 @@
       color: #1a2a3a;
     }
 
-    body.light-mode .tg-btn {
-      border-color: #0055aa;
-      color: #0055aa;
-    }
-
-    body.light-mode .tg-btn:hover {
-      background: #0055aa;
-      color: #fff;
-    }
-
     body.light-mode .bot-item {
       background: rgba(0, 0, 0, 0.05);
     }
@@ -83,7 +73,6 @@
       border-color: rgba(0, 100, 150, 0.3);
     }
 
-    /* basit arkaplan - efekt yok */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -91,7 +80,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.3;
+      opacity: 0.25;
       pointer-events: none;
     }
 
@@ -512,6 +501,11 @@
       margin-bottom: 10px;
       font-size: 0.85rem;
       font-family: monospace;
+      transition: 0.1s;
+    }
+
+    .comment-item:hover {
+      background: rgba(0, 255, 255, 0.15);
     }
 
     ::-webkit-scrollbar {
@@ -662,10 +656,11 @@
     </div>
   </div>
 
+  <!-- BOT YORUMLARI bölümü - sade ve düzenli -->
   <div class="card" id="comments">
     <div class="section-title">
-      <i class="fas fa-star"></i>
-      <span>BOT YORUMLARI & DEĞERLENDİRMELER</span>
+      <i class="fas fa-comment-dots"></i>
+      <span>BOT YORUMLARI</span>
     </div>
     <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuzu yazın..."></textarea>
     <button class="comment-btn" id="submitBotComment">
@@ -686,7 +681,7 @@
 </div>
 
 <script>
-  // sade ve hafif arkaplan partikülleri (efektsiz, düşük opaklık)
+  // Sade arkaplan partikülleri (hafif)
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
   
@@ -698,16 +693,16 @@
   window.addEventListener('resize', resizeCanvas);
   
   let particles = [];
-  const particleCount = 120;
+  const particleCount = 100;
   
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.4,
-      speedY: (Math.random() - 0.5) * 0.4,
-      alpha: Math.random() * 0.2 + 0.05,
+      radius: Math.random() * 2 + 0.6,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.2 + 0.04,
     });
   }
   
@@ -716,7 +711,7 @@
     for (let p of particles) {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(100, 200, 255, ${p.alpha})`;
+      ctx.fillStyle = `rgba(80, 180, 255, ${p.alpha})`;
       ctx.fill();
       
       p.x += p.speedX;
@@ -731,7 +726,7 @@
   }
   drawBackground();
   
-  // Müzik (sadece tıklama ile)
+  // Müzik (tıklama ile başlat)
   let audio = null;
   let musicStarted = false;
   
@@ -751,7 +746,7 @@
     if (!musicStarted) initMusic();
   }, { once: false });
   
-  // Tema değişimi
+  // Tema
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
@@ -786,7 +781,7 @@
     botComments.slice().reverse().forEach(c => {
       const div = document.createElement('div');
       div.className = 'comment-item';
-      div.innerHTML = `⭐ ${c.text} - <strong>${c.author}</strong>`;
+      div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${c.text} - <strong>${c.author}</strong>`;
       list.appendChild(div);
     });
   }
@@ -812,7 +807,7 @@
     input.value = '';
   });
   
-  // üye sayıları basit güncelleme
+  // Üye sayıları (sade güncelleme)
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
@@ -837,7 +832,7 @@
       gambleElem.innerText = current;
     }
   }
-  setInterval(updateMemberCounts, 45000);
+  setInterval(updateMemberCounts, 50000);
   
   // Smooth scroll (menü için)
   document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
@@ -859,4 +854,4 @@
   loadBotComments();
 </script>
 </body>
-    </html>
+  </html>
