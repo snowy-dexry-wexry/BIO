@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="Snowy Dexry Wexry - Siber Güvenlik Uzmanı, Tools Geliştirici, OSINT Uzmanı">
-  <meta name="keywords" content="siber guvenlik, tools, osint, phishing, telegram bot, cyber security, snowy">
+  <meta name="description" content="Snowy Dexry Wexry - Siber Güvenlik Uzmanı, Tools Geliştirici">
+  <meta name="keywords" content="siber guvenlik, tools, phishing, telegram bot, cyber security, snowy">
   <meta name="author" content="Snowy Dexry Wexry">
   <title>SNOWY DEXRY WEXRY | CYBER SECURITY</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -79,16 +79,9 @@
       background: rgba(0, 0, 0, 0.05);
     }
 
-    body.light-mode .skill-tag {
+    body.light-mode .telegram-card {
       background: rgba(0, 100, 150, 0.1);
       border-color: rgba(0, 100, 150, 0.3);
-      color: #0055aa;
-    }
-
-    body.light-mode .tool-tag {
-      background: rgba(200, 80, 0, 0.1);
-      border-color: rgba(200, 80, 0, 0.3);
-      color: #aa4400;
     }
 
     /* 3D Arka Plan Animasyonu */
@@ -124,6 +117,23 @@
         transform: translateY(100vh) rotate(360deg);
         opacity: 0;
       }
+    }
+
+    /* Işın efekti */
+    .ray {
+      position: fixed;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, #0ff, transparent);
+      animation: rayMove 8s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes rayMove {
+      0% { transform: translateX(-100px); opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { transform: translateX(calc(100vw + 100px)); opacity: 0; }
     }
 
     .nav-menu {
@@ -356,54 +366,84 @@
       50% { transform: rotate(10deg); }
     }
 
-    .skill-grid {
+    .telegram-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.8rem;
+      gap: 1rem;
       margin-top: 1rem;
     }
 
-    .skill-tag {
-      background: rgba(0, 255, 255, 0.15);
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      border-radius: 30px;
-      padding: 0.5rem 1.2rem;
-      font-size: 0.8rem;
-      font-family: monospace;
-      transition: 0.2s;
-      animation: tagGlow 3s infinite;
+    .telegram-card {
+      background: rgba(0, 136, 204, 0.1);
+      border: 1px solid rgba(0, 136, 204, 0.3);
+      border-radius: 16px;
+      padding: 1rem;
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+      transition: 0.3s;
+      animation: telegramGlow 3s infinite;
     }
 
-    @keyframes tagGlow {
-      0%, 100% { box-shadow: 0 0 0px rgba(0, 255, 255, 0); }
-      50% { box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); }
+    @keyframes telegramGlow {
+      0%, 100% { border-color: rgba(0, 136, 204, 0.3); }
+      50% { border-color: rgba(0, 136, 204, 0.8); }
     }
 
-    .skill-tag:hover {
-      background: rgba(0, 255, 255, 0.3);
-      transform: translateY(-2px) scale(1.02);
+    .telegram-card:hover {
+      transform: translateY(-5px);
+      background: rgba(0, 136, 204, 0.2);
     }
 
-    .tool-grid {
+    .telegram-card i {
+      font-size: 2rem;
+      color: #0088cc;
+      margin-bottom: 0.5rem;
+    }
+
+    .telegram-card h4 {
+      color: #7df9ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .telegram-card p {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .stats-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.8rem;
+      gap: 1rem;
+      justify-content: center;
       margin-top: 1rem;
     }
 
-    .tool-tag {
-      background: rgba(255, 100, 0, 0.15);
-      border: 1px solid rgba(255, 100, 0, 0.3);
-      border-radius: 30px;
-      padding: 0.5rem 1.2rem;
-      font-size: 0.8rem;
-      font-family: monospace;
-      transition: 0.2s;
+    .stat-box {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: center;
+      min-width: 120px;
+      flex: 1;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      transition: 0.3s;
     }
 
-    .tool-tag:hover {
-      background: rgba(255, 100, 0, 0.3);
-      transform: translateY(-2px) scale(1.02);
+    .stat-box:hover {
+      transform: translateY(-3px);
+      border-color: #0ff;
+    }
+
+    .stat-box .number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #0ff;
+    }
+
+    .stat-box .label {
+      font-size: 0.7rem;
+      opacity: 0.7;
     }
 
     .button-group {
@@ -681,8 +721,9 @@
 <div class="nav-menu">
   <a href="#home"><i class="fas fa-home"></i> Ana Sayfa</a>
   <a href="#about"><i class="fas fa-user-secret"></i> Hakkımda</a>
-  <a href="#skills"><i class="fas fa-code"></i> Yetenekler</a>
+  <a href="#telegram"><i class="fab fa-telegram"></i> Telegram</a>
   <a href="#bots"><i class="fas fa-robot"></i> Botlar</a>
+  <a href="#stats"><i class="fas fa-chart-line"></i> İstatistik</a>
   <a href="#comments"><i class="fas fa-comments"></i> Yorumlar</a>
   <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
 </div>
@@ -708,44 +749,59 @@
       <span>HAKKIMDA</span>
     </div>
     <div class="desc-text">
-      <i class="fas fa-quote-left"></i> Snowy Dexry Wexry, Siber Güvenlik alanında uzmanlaşmış, güvenlik açığı tespiti ve özel güvenlik araçları (tools) geliştirme konusunda deneyimli bir siber güvenlik uzmanıdır. 5+ yıllık sektör tecrübesi ile birçok kurumsal firmaya danışmanlık hizmeti vermiştir.
+      <i class="fas fa-quote-left"></i> Snowy Dexry Wexry, Siber Güvenlik alanında uzmanlaşmış, güvenlik açığı tespiti ve özel güvenlik araçları (tools) geliştirme konusunda deneyimli bir siber güvenlik uzmanıdır.
     </div>
   </div>
 
-  <div class="card" id="skills">
+  <div class="card" id="telegram">
     <div class="section-title">
-      <i class="fas fa-cogs"></i>
-      <span>UZMANLIK ALANLARI & YETENEKLER</span>
+      <i class="fab fa-telegram"></i>
+      <span>TELEGRAM DÜNYASI</span>
     </div>
-    <div class="skill-grid">
-      <span class="skill-tag"><i class="fas fa-globe"></i> Web Güvenliği</span>
-      <span class="skill-tag"><i class="fas fa-fish"></i> Phishing Analizi</span>
-      <span class="skill-tag"><i class="fas fa-robot"></i> Bot Geliştirme</span>
-      <span class="skill-tag"><i class="fas fa-database"></i> Veri Madenciliği</span>
-      <span class="skill-tag"><i class="fas fa-network-wired"></i> Ağ Güvenliği</span>
-      <span class="skill-tag"><i class="fas fa-users"></i> Sosyal Mühendislik</span>
-      <span class="skill-tag"><i class="fas fa-wrench"></i> Tools Geliştirme</span>
-      <span class="skill-tag"><i class="fas fa-code"></i> Kod Yazma</span>
-      <span class="skill-tag"><i class="fas fa-search"></i> OSINT</span>
-      <span class="skill-tag"><i class="fas fa-shield-alt"></i> Penetrasyon Testi</span>
-      <span class="skill-tag"><i class="fas fa-key"></i> Şifre Çözümleme</span>
+    <div class="telegram-grid">
+      <div class="telegram-card">
+        <i class="fab fa-telegram-plane"></i>
+        <h4>Telegram Bot API</h4>
+        <p>Bot geliştirme ve otomasyon</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-lock"></i>
+        <h4>Gizli Sohbetler</h4>
+        <p>Uçtan uca şifreleme</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-users"></i>
+        <h4>Global Topluluk</h4>
+        <p>500M+ aktif kullanıcı</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-bot"></i>
+        <h4>Otomasyon</h4>
+        <p>Tam otomatik bot sistemleri</p>
+      </div>
     </div>
-    <div class="desc-text" style="margin-top: 1rem;">
-      <i class="fas fa-terminal"></i> <strong>Kullandığım Diller:</strong> Python, HTML, CSS, JavaScript
-    </div>
-    <div class="tool-grid">
-      <span class="tool-tag"><i class="fab fa-android"></i> Termux</span>
-      <span class="tool-tag"><i class="fas fa-chart-line"></i> SQL Injection</span>
-      <span class="tool-tag"><i class="fas fa-crosshairs"></i> XSS Strike</span>
-      <span class="tool-tag"><i class="fas fa-globe"></i> Web Penetrasyon Araçları</span>
-      <span class="tool-tag"><i class="fas fa-map"></i> Nmap</span>
-      <span class="tool-tag"><i class="fas fa-bolt"></i> Burp Suite</span>
-      <span class="tool-tag"><i class="fas fa-fingerprint"></i> Hydra</span>
-      <span class="tool-tag"><i class="fas fa-shield-virus"></i> Metasploit</span>
-      <span class="tool-tag"><i class="fas fa-wifi"></i> Aircrack-ng</span>
-      <span class="tool-tag"><i class="fas fa-database"></i> Sqlmap</span>
-      <span class="tool-tag"><i class="fas fa-eye"></i> TheHarvester</span>
-      <span class="tool-tag"><i class="fas fa-search"></i> Recon-ng</span>
+    <div class="divider"></div>
+    <div class="telegram-grid">
+      <div class="telegram-card">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Siber Güvenlik</h4>
+        <p>Güvenli iletişim ve veri koruma</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h4>Bulut Depolama</h4>
+        <p>Sınırsız dosya paylaşımı</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-code"></i>
+        <h4>Bot Geliştirme</h4>
+        <p>Python, JavaScript ile botlar</p>
+      </div>
+      <div class="telegram-card">
+        <i class="fas fa-chart-line"></i>
+        <h4>Analiz</h4>
+        <p>Veri madenciliği ve OSINT</p>
+      </div>
     </div>
   </div>
 
@@ -803,6 +859,31 @@
     </div>
   </div>
 
+  <div class="card" id="stats">
+    <div class="section-title">
+      <i class="fas fa-chart-line"></i>
+      <span>CANLI İSTATİSTİKLER</span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="number" id="totalMembers">0</div>
+        <div class="label">Toplam Üye</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="activeBots">3</div>
+        <div class="label">Aktif Bot</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="onlineNow">0</div>
+        <div class="label">Şu Anda Aktif</div>
+      </div>
+      <div class="stat-box">
+        <div class="number" id="totalMessages">0</div>
+        <div class="label">Toplam Mesaj</div>
+      </div>
+    </div>
+  </div>
+
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-star"></i>
@@ -827,14 +908,24 @@
 </div>
 
 <script>
+  // Işın efekti
+  for (let i = 0; i < 5; i++) {
+    const ray = document.createElement('div');
+    ray.classList.add('ray');
+    ray.style.left = Math.random() * 100 + '%';
+    ray.style.animationDelay = Math.random() * 5 + 's';
+    ray.style.animationDuration = Math.random() * 5 + 6 + 's';
+    document.body.appendChild(ray);
+  }
+  
   // Kar tanesi efekti
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
-    snowflake.innerHTML = ['❄', '●', '◆', '◈', '✧'][Math.floor(Math.random() * 5)];
+    snowflake.innerHTML = ['❄', '●', '◆', '◈', '✧', '⚡', '🔷', '💠'][Math.floor(Math.random() * 8)];
     snowflake.style.left = Math.random() * 100 + '%';
     snowflake.style.animationDuration = Math.random() * 3 + 4 + 's';
-    snowflake.style.fontSize = Math.random() * 10 + 8 + 'px';
+    snowflake.style.fontSize = Math.random() * 12 + 6 + 'px';
     snowflake.style.opacity = Math.random() * 0.5 + 0.2;
     document.body.appendChild(snowflake);
     
@@ -843,7 +934,7 @@
     }, 7000);
   }
   
-  setInterval(createSnowflake, 300);
+  setInterval(createSnowflake, 200);
   
   // 3D Arka Plan Animasyonu
   const canvas = document.getElementById('canvas-bg');
@@ -857,15 +948,15 @@
   window.addEventListener('resize', resizeCanvas);
   
   let particles = [];
-  const particleCount = 120;
+  const particleCount = 150;
   
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       radius: Math.random() * 2.5 + 0.5,
-      speedX: (Math.random() - 0.5) * 0.6,
-      speedY: (Math.random() - 0.5) * 0.6,
+      speedX: (Math.random() - 0.5) * 0.7,
+      speedY: (Math.random() - 0.5) * 0.7,
       color: `rgba(0, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.3 + 0.05})`
     });
   }
@@ -978,28 +1069,49 @@
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
     const gambleElem = document.getElementById('gambleCount');
+    const totalMembersElem = document.getElementById('totalMembers');
+    const onlineNowElem = document.getElementById('onlineNow');
+    const totalMessagesElem = document.getElementById('totalMessages');
+    
+    let phishing = 1234, index = 890, gamble = 3421;
     
     if (phishingElem) {
       let current = parseInt(phishingElem.innerText);
       if (isNaN(current)) current = 1234;
       current += Math.floor(Math.random() * 3);
       phishingElem.innerText = current;
+      phishing = current;
     }
     if (indexElem) {
       let current = parseInt(indexElem.innerText);
       if (isNaN(current)) current = 890;
       current += Math.floor(Math.random() * 2);
       indexElem.innerText = current;
+      index = current;
     }
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
       if (isNaN(current)) current = 3421;
       current += Math.floor(Math.random() * 4);
       gambleElem.innerText = current;
+      gamble = current;
+    }
+    
+    if (totalMembersElem) {
+      totalMembersElem.innerText = (phishing + index + gamble).toLocaleString();
+    }
+    if (onlineNowElem) {
+      let online = Math.floor(Math.random() * 500) + 100;
+      onlineNowElem.innerText = online;
+    }
+    if (totalMessagesElem) {
+      let messages = Math.floor(Math.random() * 50000) + 10000;
+      totalMessagesElem.innerText = messages.toLocaleString();
     }
   }
   
-  setInterval(updateStats, 30000);
+  setInterval(updateStats, 20000);
+  updateStats();
   
   // Smooth scroll
   document.querySelectorAll('.nav-menu a').forEach(anchor => {
