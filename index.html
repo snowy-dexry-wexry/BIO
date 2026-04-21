@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="Snowy Dexry Wexry - Siber Güvenlik Uzmanı, Telegram Botları ve Güvenlik Araçları">
-  <meta name="keywords" content="siber güvenlik, phishing, telegram bot, cyber security, snowy">
+  <meta name="description" content="Snowy Dexry Wexry - Siber Guvenlik Uzmani, Tools Gelistirici, OSINT Uzmani">
+  <meta name="keywords" content="siber guvenlik, tools, osint, phishing, telegram bot, cyber security, snowy">
   <meta name="author" content="Snowy Dexry Wexry">
-  <title>SNOWY DEXRY WEXRY | Siber Güvenlik Uzmanı</title>
+  <title>SNOWY DEXRY WEXRY | CYBER SECURITY</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -27,12 +27,12 @@
     }
 
     body.light-mode {
-      background: linear-gradient(135deg, #e8f0ff 0%, #d4e4ff 100%);
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e8ff 100%);
       color: #1a1f2e;
     }
 
     body.light-mode .card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
       border-color: rgba(0, 100, 150, 0.3);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -65,7 +65,6 @@
     body.light-mode .tg-btn:hover {
       background: #0055aa;
       color: #fff;
-      box-shadow: 0 0 12px #0055aa;
     }
 
     body.light-mode .bot-item {
@@ -80,72 +79,31 @@
       background: rgba(0, 0, 0, 0.05);
     }
 
-    body.light-mode .comment-input {
-      background: rgba(0, 0, 0, 0.05);
-      color: #000;
-      border-color: #0055aa;
-    }
-
-    body.light-mode .online-dot {
-      background: #00aa44;
-      box-shadow: 0 0 4px #00aa44;
-    }
-
-    body.light-mode .floating-shape {
-      opacity: 0.3;
-    }
-
-    body.light-mode .nav-menu a {
-      color: #0055aa;
-    }
-
-    body.light-mode .nav-menu a:hover {
-      color: #003366;
-    }
-
-    /* Arka plan animasyonlu ızgaralar */
-    body::before {
-      content: "";
+    /* 3D Arka Plan Animasyonu */
+    #canvas-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: 
-        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
       z-index: 0;
-      animation: gridMove 20s linear infinite;
-    }
-
-    @keyframes gridMove {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(40px, 40px); }
-    }
-
-    /* Uçan şekiller */
-    .floating-shape {
-      position: fixed;
+      opacity: 0.4;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0.1;
     }
 
-    /* Navigasyon Menüsü */
+    /* Navigasyon Menusu */
     .nav-menu {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(15px);
       z-index: 1000;
       padding: 0.8rem 2rem;
       display: flex;
       justify-content: center;
-      gap: 2rem;
+      gap: 1.5rem;
       border-bottom: 1px solid rgba(0, 255, 255, 0.3);
       flex-wrap: wrap;
     }
@@ -163,28 +121,28 @@
     .nav-menu a:hover {
       background: rgba(0, 255, 255, 0.2);
       color: #fff;
+      transform: translateY(-2px);
     }
 
-    body.light-mode .nav-menu {
-      background: rgba(255, 255, 255, 0.9);
-      border-bottom-color: #0055aa;
-    }
-
+    /* Tema Butonu - Duzenlendi */
     .theme-btn {
       position: fixed;
-      top: 70px;
-      right: 15px;
+      top: 85px;
+      right: 20px;
       z-index: 999;
       background: rgba(0, 255, 255, 0.2);
       border: 1px solid rgba(0, 255, 255, 0.5);
       border-radius: 30px;
-      padding: 8px 15px;
+      padding: 8px 18px;
       font-size: 0.8rem;
       font-family: monospace;
       color: #0ff;
       cursor: pointer;
       backdrop-filter: blur(5px);
       transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .theme-btn:hover {
@@ -200,6 +158,7 @@
       padding: 6rem 2rem 5rem;
     }
 
+    /* Header Animasyon */
     .header {
       text-align: center;
       margin-bottom: 3rem;
@@ -217,41 +176,62 @@
       }
     }
 
+    /* Logo - Telegram Logolu */
     .logo {
       width: 120px;
       height: 120px;
       margin: 0 auto 1rem;
-      background: linear-gradient(135deg, #0ff, #0066ff);
+      background: linear-gradient(135deg, #0088cc, #006699);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
+      font-size: 4rem;
       font-weight: bold;
       color: #fff;
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-      animation: pulse 2s infinite;
+      box-shadow: 0 0 30px rgba(0, 136, 204, 0.5);
+      animation: pulse 2s infinite, rotate3d 4s ease-in-out infinite;
+      transition: 0.3s;
+    }
+
+    .logo:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 50px rgba(0, 136, 204, 0.8);
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 255, 255, 0.3); }
-      50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 255, 255, 0.6); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 136, 204, 0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 136, 204, 0.8); }
+    }
+
+    @keyframes rotate3d {
+      0%, 100% { transform: rotateY(0deg); }
+      50% { transform: rotateY(10deg); }
     }
 
     .main-title {
       font-size: 3.5rem;
       font-weight: 800;
       letter-spacing: 4px;
-      background: linear-gradient(135deg, #b0f0ff, #0ff);
+      background: linear-gradient(135deg, #b0f0ff, #0ff, #0088cc);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 0.75rem;
+      animation: glitch 3s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 100% { text-shadow: none; }
+      95% { text-shadow: none; }
+      96% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
+      97% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+      98% { text-shadow: none; }
     }
 
     body.light-mode .main-title {
-      background: linear-gradient(135deg, #004488, #0066aa);
+      background: linear-gradient(135deg, #004488, #0066aa, #0088cc);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -265,7 +245,7 @@
       .logo {
         width: 80px;
         height: 80px;
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
       .nav-menu {
         gap: 0.5rem;
@@ -276,9 +256,9 @@
         padding: 0.2rem 0.5rem;
       }
       .theme-btn {
-        top: 60px;
+        top: 75px;
         right: 10px;
-        padding: 4px 10px;
+        padding: 4px 12px;
         font-size: 0.7rem;
       }
       .container {
@@ -311,11 +291,12 @@
     .card:nth-child(2) { animation-delay: 0.2s; }
     .card:nth-child(3) { animation-delay: 0.3s; }
     .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
 
     .card:hover {
       transform: translateY(-5px);
       border-color: rgba(0, 255, 255, 0.7);
-      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
     }
 
     .section-title {
@@ -332,6 +313,28 @@
 
     .section-title i {
       font-size: 1.2rem;
+    }
+
+    .skill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .skill-tag {
+      background: rgba(0, 255, 255, 0.15);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 30px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.8rem;
+      font-family: monospace;
+      transition: 0.2s;
+    }
+
+    .skill-tag:hover {
+      background: rgba(0, 255, 255, 0.3);
+      transform: translateY(-2px);
     }
 
     .button-group {
@@ -465,7 +468,7 @@
 
     @keyframes blink {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.4; }
     }
 
     .stat-number {
@@ -476,12 +479,6 @@
       align-items: center;
       justify-content: center;
       gap: 0.3rem;
-    }
-
-    .live-counter {
-      font-weight: bold;
-      font-size: 1rem;
-      color: #0ff;
     }
 
     .divider {
@@ -579,7 +576,6 @@
       transform: translateX(5px);
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -596,9 +592,12 @@
 </head>
 <body>
 
+<canvas id="canvas-bg"></canvas>
+
 <div class="nav-menu">
   <a href="#home"><i class="fas fa-home"></i> Ana Sayfa</a>
   <a href="#about"><i class="fas fa-user-secret"></i> Hakkımda</a>
+  <a href="#skills"><i class="fas fa-code"></i> Yetenekler</a>
   <a href="#bots"><i class="fas fa-robot"></i> Botlar</a>
   <a href="#comments"><i class="fas fa-comments"></i> Yorumlar</a>
   <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
@@ -611,35 +610,52 @@
 <div class="container" id="home">
   <div class="header">
     <div class="logo">
-      <i class="fas fa-shield-haltered"></i>
+      <i class="fab fa-telegram-plane"></i>
     </div>
     <div class="main-title">SNOWY DEXRY WEXRY</div>
     <div class="subtitle">
-      <i class="fas fa-terminal"></i> CYBER SECURITY EXPERT <i class="fas fa-shield-virus"></i>
+      <i class="fas fa-terminal"></i> CYBER SECURITY <i class="fas fa-shield-haltered"></i>
     </div>
   </div>
 
   <div class="card" id="about">
     <div class="section-title">
       <i class="fas fa-skull"></i>
-      <span>HAKKINDA</span>
+      <span>HAKKIMDA</span>
     </div>
     <div class="desc-text">
-      <i class="fas fa-quote-left"></i> 𝙎𝙉𝙊𝙒𝙔 𝘿𝙀𝙓𝙍𝙔 𝙒𝙀𝙓𝙍𝙔, Siber Güvenlik alanında uzmanlaşmış, güvenlik açığı tespiti ve özel güvenlik araçları (tools) geliştirme konusunda deneyimli bir siber güvenlik uzmanıdır. 5+ yıllık sektör tecrübesi ile birçok kurumsal firmaya danışmanlık hizmeti vermiştir.
+      <i class="fas fa-quote-left"></i> Snowy Dexry Wexry, Siber Guvenlik alaninda uzmanlasmis, guvenlik acigi tespiti ve ozel guvenlik araclari (tools) gelistirme konusunda deneyimli bir siber guvenlik uzmanidir. 5+ yillik sektor tecrubesi ile bircok kurumsal firmaya danismanlik hizmeti vermistir.
     </div>
-    <div class="desc-text">
-      <i class="fas fa-code"></i> <strong>Uzmanlık Alanları:</strong> Web Güvenliği, Phishing Analizi, Bot Geliştirme, Veri Madenciliği, Ağ Güvenliği ve Sosyal Mühendislik.
+  </div>
+
+  <div class="card" id="skills">
+    <div class="section-title">
+      <i class="fas fa-cogs"></i>
+      <span>UZMANLIK ALANLARI & YETENEKLER</span>
     </div>
-    <div class="button-group">
-      <a href="https://t.me/SnowyOrj" target="_blank" class="tg-btn"><i class="fab fa-telegram"></i> İletişim</a>
-      <a href="https://t.me/SnowyOrjBio" target="_blank" class="tg-btn"><i class="fas fa-info-circle"></i> Biyografi</a>
+    <div class="skill-grid">
+      <span class="skill-tag"><i class="fas fa-globe"></i> Web Guvenligi</span>
+      <span class="skill-tag"><i class="fas fa-fish"></i> Phishing Analizi</span>
+      <span class="skill-tag"><i class="fas fa-robot"></i> Bot Gelistirme</span>
+      <span class="skill-tag"><i class="fas fa-database"></i> Veri Madenciligi</span>
+      <span class="skill-tag"><i class="fas fa-network-wired"></i> Ag Guvenligi</span>
+      <span class="skill-tag"><i class="fas fa-users"></i> Sosyal Muhendislik</span>
+      <span class="skill-tag"><i class="fas fa-wrench"></i> Tools Gelistirme</span>
+      <span class="skill-tag"><i class="fas fa-code"></i> Kod Yazma</span>
+      <span class="skill-tag"><i class="fas fa-search"></i> OSINT</span>
+      <span class="skill-tag"><i class="fas fa-bug"></i> Exploit Gelistirme</span>
+      <span class="skill-tag"><i class="fas fa-shield-alt"></i> Penetrasyon Testi</span>
+      <span class="skill-tag"><i class="fas fa-key"></i> Sifre Cozumleme</span>
+    </div>
+    <div class="desc-text" style="margin-top: 1rem;">
+      <i class="fas fa-terminal"></i> <strong>Kullandigim Diller & Araclar:</strong> Python, JavaScript, Bash, C++, PHP, SQL, Metasploit, Nmap, Wireshark, Burp Suite, Kali Linux
     </div>
   </div>
 
   <div class="card">
     <div class="section-title">
       <i class="fas fa-link"></i>
-      <span>RESMİ BAĞLANTILAR</span>
+      <span>RESMI BAGLANTILAR</span>
     </div>
     <div class="contact-item">
       <span class="contact-label"><i class="fab fa-telegram"></i> OWNER:</span>
@@ -669,90 +685,130 @@
         <div class="bot-icon"><i class="fas fa-fish"></i></div>
         <div class="bot-name">Phishing Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyPhishingBot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span class="live-counter" id="phishingCount">1.234</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="phishingCount">1234</span> uye</div>
       </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyIndexBot','_blank')">
         <div class="bot-icon"><i class="fas fa-database"></i></div>
-        <div class="bot-name">Index Çekme Bot <span class="online-dot"></span></div>
+        <div class="bot-name">Index Cekme Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyIndexBot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span class="live-counter" id="indexCount">890</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="indexCount">890</span> uye</div>
       </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyKumar_Bot','_blank')">
         <div class="bot-icon"><i class="fas fa-dice-d6"></i></div>
         <div class="bot-name">Kumar Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyKumar_Bot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span class="live-counter" id="gambleCount">3.421</span> üye</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="gambleCount">3421</span> uye</div>
       </div>
     </div>
     <div class="divider"></div>
     <div class="desc-text" style="font-size:0.75rem; text-align:center;">
-      <i class="fas fa-check-circle"></i> Tüm botlar aktif ve 7/24 çevrimiçi | <i class="fas fa-chart-line"></i> Anlık istatistikler güncelleniyor
+      <i class="fas fa-check-circle"></i> Tum botlar aktif ve 7/24 cevrimici
     </div>
   </div>
 
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-star"></i>
-      <span>BOT YORUMLARI & DEĞERLENDİRMELER</span>
+      <span>BOT YORUMLARI & DEGERLENDIRMELER</span>
     </div>
-    <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuzu yazın..."></textarea>
+    <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkinda yorumunuzu yazin..."></textarea>
     <button class="comment-btn" id="submitBotComment">
-      <i class="fas fa-paper-plane"></i> Yorum Gönder
+      <i class="fas fa-paper-plane"></i> Yorum Gonder
     </button>
-    <div class="comment-list" id="botCommentList">
-      <!-- Yorumlar dinamik olarak yüklenecek -->
-    </div>
+    <div class="comment-list" id="botCommentList"></div>
   </div>
 
   <div class="quote">
-    <i class="fas fa-quote-left"></i> “Приезжает много людей, но те, кто остаётся, особенные...” 
+    <i class="fas fa-quote-left"></i> Priezzhayet mnogo lyudey, no te, kto ostayotsya, osobyennyye...
     <i class="fas fa-quote-right"></i><br>
     <span style="font-size:0.7rem;">- Snowy Dexry Wexry</span>
   </div>
   
   <div class="footer">
-    <i class="far fa-copyright"></i> 2024 Snowy Dexry Wexry | Siber Güvenlik ve Bot Geliştirme | <i class="fas fa-shield-alt"></i> Güvenlik her şeyden önce gelir
+    <i class="far fa-copyright"></i> 2024 Snowy Dexry Wexry | Siber Guvenlik ve Bot Gelistirme | <i class="fas fa-shield-alt"></i> Guvenlik her seyden once gelir
   </div>
 </div>
 
 <script>
-  // MÜZİK - sayfada herhangi bir yere tıklayınca başlasın
+  // 3D Arka Plan Animasyonu
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  let particles = [];
+  const particleCount = 100;
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      color: `rgba(0, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.3 + 0.1})`
+    });
+  }
+  
+  function animate3D() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      
+      p.x += p.speedX;
+      p.y += p.speedY;
+      
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+    }
+    
+    requestAnimationFrame(animate3D);
+  }
+  animate3D();
+  
+  // Muzik
   let audio = null;
   let musicStarted = false;
-
+  
   function initMusic() {
     if (musicStarted) return;
     try {
-      audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Hermès%202.0.mp3');
+      audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Herm%C3%A8s%202.0.mp3');
       audio.loop = true;
-      audio.volume = 0.4;
+      audio.volume = 0.3;
       audio.play().then(() => {
         musicStarted = true;
-        console.log('Müzik başlatıldı');
-      }).catch(e => console.log('Müzik başlatılamadı:', e));
+      }).catch(e => console.log('Muzik baslatilamadi:', e));
     } catch(e) { console.log(e); }
   }
-
-  // Sayfaya tıklama ile müzik başlat
+  
   document.body.addEventListener('click', function() {
-    if (!musicStarted) {
-      initMusic();
-    }
+    if (!musicStarted) initMusic();
   }, { once: false });
-
-  // Dark/Light Mod
+  
+  // Tema
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
     localStorage.setItem('snowyTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
   });
-
-  // Kaydedilmiş temayı yükle
+  
   if (localStorage.getItem('snowyTheme') === 'light') {
     document.body.classList.add('light-mode');
   }
-
-  // Bot Yorumları Sistemi
+  
+  // Yorumlar
   let botComments = [];
   
   function loadBotComments() {
@@ -761,10 +817,10 @@
       botComments = JSON.parse(saved);
     } else {
       botComments = [
-        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard", rating: 5 },
-        { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter", rating: 5 },
-        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer", rating: 4 },
-        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro", rating: 5 }
+        { text: "Snowy botlari gercekten cok basarili, phishing testlerinde harika is cikariyor.", author: "@CyberGuard", date: Date.now() },
+        { text: "Index cekme botu ile veri analizi yapmak cok kolaylasti. Emege saygi.", author: "@DataHunter", date: Date.now() },
+        { text: "Kumar botu eglenceli ve guvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer", date: Date.now() },
+        { text: "Snowy ekibi gercekten alaninda uzman, destekleri icin tesekkurler.", author: "@PentestPro", date: Date.now() }
       ];
     }
     renderBotComments();
@@ -776,31 +832,21 @@
     botComments.slice().reverse().forEach(c => {
       const div = document.createElement('div');
       div.className = 'comment-item';
-      const stars = '⭐'.repeat(c.rating || 5);
-      div.innerHTML = `${stars} ${c.text} - <strong>${c.author}</strong> <span style="font-size:0.7rem; opacity:0.7;">${new Date(c.date || Date.now()).toLocaleDateString('tr-TR')}</span>`;
+      div.innerHTML = `⭐ ${c.text} - <strong>${c.author}</strong>`;
       list.appendChild(div);
     });
   }
   
   function addBotComment(text) {
     if (!text.trim()) {
-      alert('Lütfen bir yorum yazın.');
+      alert('Lutfen bir yorum yazin.');
       return;
     }
-    let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
+    let author = prompt("Kullanici adiniz (opsiyonel):", "Misafir");
     if (!author || author.trim() === "") author = "Misafir";
     if (!author.startsWith("@")) author = "@" + author;
     
-    let rating = prompt("Puan verin (1-5 yıldız):", "5");
-    rating = Math.min(5, Math.max(1, parseInt(rating) || 5));
-    
-    botComments.push({ 
-      text: text.trim(), 
-      author: author, 
-      rating: rating,
-      date: Date.now()
-    });
-    
+    botComments.push({ text: text.trim(), author: author, date: Date.now() });
     if (botComments.length > 30) botComments.shift();
     localStorage.setItem('snowy_bot_comments', JSON.stringify(botComments));
     renderBotComments();
@@ -811,37 +857,34 @@
     addBotComment(input.value);
     input.value = '';
   });
-
-  // Canlı İstatistik Güncelleme (Simülasyon)
-  function updateLiveStats() {
+  
+  // Canli istatistikler
+  function updateStats() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
     const gambleElem = document.getElementById('gambleCount');
     
     if (phishingElem) {
-      let current = parseInt(phishingElem.innerText.replace(/\./g, ''));
+      let current = parseInt(phishingElem.innerText);
       if (isNaN(current)) current = 1234;
-      current += Math.floor(Math.random() * 3);
-      phishingElem.innerText = current.toLocaleString();
+      current += Math.floor(Math.random() * 2);
+      phishingElem.innerText = current;
     }
-    
     if (indexElem) {
       let current = parseInt(indexElem.innerText);
       if (isNaN(current)) current = 890;
       current += Math.floor(Math.random() * 2);
       indexElem.innerText = current;
     }
-    
     if (gambleElem) {
-      let current = parseInt(gambleElem.innerText.replace(/\./g, ''));
+      let current = parseInt(gambleElem.innerText);
       if (isNaN(current)) current = 3421;
-      current += Math.floor(Math.random() * 5);
-      gambleElem.innerText = current.toLocaleString();
+      current += Math.floor(Math.random() * 3);
+      gambleElem.innerText = current;
     }
   }
   
-  // Her 30 saniyede bir istatistikleri güncelle
-  setInterval(updateLiveStats, 30000);
+  setInterval(updateStats, 45000);
   
   // Smooth scroll
   document.querySelectorAll('.nav-menu a').forEach(anchor => {
@@ -858,37 +901,6 @@
   });
   
   loadBotComments();
-  
-  // Uçan şekiller efekti (dekoratif)
-  function createFloatingShapes() {
-    for(let i = 0; i < 10; i++) {
-      const shape = document.createElement('div');
-      shape.className = 'floating-shape';
-      shape.innerHTML = ['●', '◆', '■', '▲', '♥'][Math.floor(Math.random() * 5)];
-      shape.style.position = 'fixed';
-      shape.style.left = Math.random() * 100 + '%';
-      shape.style.top = Math.random() * 100 + '%';
-      shape.style.fontSize = (Math.random() * 20 + 10) + 'px';
-      shape.style.opacity = Math.random() * 0.1;
-      shape.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
-      shape.style.pointerEvents = 'none';
-      document.body.appendChild(shape);
-    }
-  }
-  
-  // CSS animasyonu ekle
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.1; }
-      90% { opacity: 0.1; }
-      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
-  
-  createFloatingShapes();
 </script>
 </body>
   </html>
