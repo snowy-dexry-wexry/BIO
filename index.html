@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="Snowy Dexry Wexry - Siber Güvenlik Uzmanı, Tools Geliştirici">
   <meta name="keywords" content="siber guvenlik, tools, phishing, telegram bot, cyber security, snowy, osint, web penetration">
   <meta name="author" content="Snowy Dexry Wexry">
@@ -22,8 +22,7 @@
       color: #d0eaff;
       line-height: 1.5;
       overflow-x: hidden;
-      position: relative;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
     body.light-mode {
@@ -33,9 +32,9 @@
 
     body.light-mode .card {
       background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(4px);
       border-color: rgba(0, 100, 150, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     body.light-mode .subtitle {
@@ -84,7 +83,7 @@
       border-color: rgba(0, 100, 150, 0.3);
     }
 
-    /* Basit Arka Plan - Performans için */
+    /* basit arkaplan - efekt yok */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -92,7 +91,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.2;
+      opacity: 0.3;
       pointer-events: none;
     }
 
@@ -101,8 +100,8 @@
       top: 0;
       left: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(8px);
       z-index: 1000;
       padding: 0.8rem 2rem;
       display: flex;
@@ -125,7 +124,6 @@
     .nav-menu a:hover {
       background: rgba(0, 255, 255, 0.2);
       color: #fff;
-      transform: translateY(-2px);
     }
 
     .theme-btn {
@@ -150,7 +148,6 @@
 
     .theme-btn:hover {
       background: rgba(0, 255, 255, 0.4);
-      transform: scale(1.05);
     }
 
     .container {
@@ -164,43 +161,30 @@
     .header {
       text-align: center;
       margin-bottom: 3rem;
-      animation: fadeInUp 0.6s ease;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .logo {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       margin: 0 auto 1rem;
       background: linear-gradient(135deg, #0088cc, #006699);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 4rem;
+      font-size: 4.5rem;
       color: #fff;
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
-      box-shadow: 0 0 20px rgba(0, 136, 204, 0.4);
-      transition: 0.3s;
+      box-shadow: 0 0 30px rgba(0, 136, 204, 0.5);
+      transition: 0.2s;
     }
 
     .logo:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(0, 136, 204, 0.6);
+      transform: scale(1.03);
     }
 
     .main-title {
-      font-size: 3.5rem;
+      font-size: 3.8rem;
       font-weight: 800;
       letter-spacing: 4px;
       background: linear-gradient(135deg, #b0f0ff, #0ff, #0088cc);
@@ -247,33 +231,32 @@
     }
 
     .subtitle {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-family: monospace;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       border-top: 2px solid #0ff;
       border-bottom: 2px solid #0ff;
       display: inline-block;
-      padding: 0.4rem 1.5rem;
+      padding: 0.5rem 2rem;
     }
 
     .card {
       background: rgba(10, 20, 30, 0.6);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
       border: 1px solid rgba(0, 255, 255, 0.3);
       border-radius: 20px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
-      transition: all 0.2s ease;
+      padding: 2rem;
+      margin: 2rem 0;
+      transition: 0.2s;
     }
 
     .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(0, 255, 255, 0.6);
-      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.08);
+      transform: translateY(-4px);
+      border-color: rgba(0, 255, 255, 0.7);
     }
 
     .section-title {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 600;
       letter-spacing: 1px;
       border-left: 4px solid #0ff;
@@ -284,10 +267,6 @@
       gap: 0.5rem;
     }
 
-    .section-title i {
-      font-size: 1.2rem;
-    }
-
     .area-grid {
       display: flex;
       flex-wrap: wrap;
@@ -296,58 +275,58 @@
     }
 
     .area-card {
-      background: rgba(0, 136, 204, 0.12);
+      background: rgba(0, 136, 204, 0.15);
       border: 1px solid rgba(0, 136, 204, 0.3);
       border-radius: 16px;
-      padding: 0.8rem;
+      padding: 1rem;
       flex: 1;
-      min-width: 170px;
+      min-width: 180px;
       text-align: center;
       transition: 0.2s;
     }
 
     .area-card:hover {
       transform: translateY(-3px);
-      background: rgba(0, 136, 204, 0.2);
+      background: rgba(0, 136, 204, 0.25);
     }
 
     .area-card i {
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: #0ff;
       margin-bottom: 0.5rem;
     }
 
     .area-card h4 {
       color: #7df9ff;
-      margin-bottom: 0.4rem;
-      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
     }
 
     .area-card p {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       opacity: 0.8;
     }
 
     .lang-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem;
+      gap: 0.8rem;
       margin-top: 1rem;
       justify-content: center;
     }
 
     .lang-tag {
-      background: rgba(255, 100, 0, 0.12);
+      background: rgba(255, 100, 0, 0.15);
       border: 1px solid rgba(255, 100, 0, 0.3);
       border-radius: 30px;
-      padding: 0.4rem 1rem;
-      font-size: 0.75rem;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.8rem;
       font-family: monospace;
       transition: 0.2s;
     }
 
     .lang-tag:hover {
-      background: rgba(255, 100, 0, 0.25);
+      background: rgba(255, 100, 0, 0.3);
       transform: translateY(-2px);
     }
 
@@ -356,15 +335,15 @@
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     }
 
     .contact-label {
       font-weight: 700;
       color: #7df9ff;
       letter-spacing: 1px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -374,7 +353,7 @@
       color: #bfffff;
       text-decoration: none;
       font-family: monospace;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       transition: 0.2s;
     }
 
@@ -386,31 +365,31 @@
     .bot-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.2rem;
+      gap: 1.5rem;
       justify-content: center;
       margin-top: 0.5rem;
     }
 
     .bot-item {
       flex: 1;
-      min-width: 190px;
+      min-width: 200px;
       background: rgba(0, 0, 0, 0.4);
       border-radius: 16px;
-      padding: 1rem;
+      padding: 1.2rem;
       text-align: center;
       border: 1px solid rgba(0, 255, 255, 0.2);
-      transition: all 0.2s ease;
+      transition: 0.2s;
       cursor: pointer;
     }
 
     .bot-item:hover {
-      transform: translateY(-3px);
+      transform: translateY(-6px);
       border-color: #0ff;
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.2);
     }
 
     .bot-icon {
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin-bottom: 0.5rem;
       color: #0ff;
     }
@@ -418,37 +397,31 @@
     .bot-name {
       font-weight: 700;
       color: #ffbc6e;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
+      margin-bottom: 8px;
+      font-size: 1rem;
     }
 
     .bot-link {
       font-family: monospace;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       word-break: break-all;
     }
 
     .online-dot {
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 10px;
+      height: 10px;
       background: #00ff66;
       border-radius: 50%;
-      margin-left: 5px;
-      box-shadow: 0 0 3px #00ff66;
+      margin-left: 8px;
+      box-shadow: 0 0 4px #00ff66;
       vertical-align: middle;
-      animation: blink 1.5s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
     }
 
     .stat-number {
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       color: #88ffaa;
-      margin-top: 6px;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -458,62 +431,59 @@
     .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
-      margin: 1rem 0;
-      opacity: 0.25;
+      margin: 1.2rem 0;
+      opacity: 0.4;
     }
 
     .desc-text {
       color: #b8ccdd;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin: 0.6rem 0;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin: 0.8rem 0;
     }
 
     .quote {
       text-align: center;
       font-family: monospace;
-      font-size: 0.85rem;
-      padding: 0.8rem;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1));
+      font-size: 1rem;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
       border-radius: 40px;
       color: #aaccee;
-      margin-top: 1.5rem;
+      margin-top: 2rem;
       font-style: italic;
-      border-left: 2px solid #0ff;
-      border-right: 2px solid #0ff;
+      border-left: 3px solid #0ff;
+      border-right: 3px solid #0ff;
     }
 
     .footer {
       text-align: center;
-      margin-top: 2.5rem;
-      font-size: 0.65rem;
-      opacity: 0.5;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
     }
 
     .comment-input {
       width: 100%;
-      padding: 8px;
+      padding: 12px;
       border-radius: 12px;
       border: 1px solid #0ff;
       background: rgba(0, 0, 0, 0.5);
       color: #fff;
       font-family: monospace;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       resize: vertical;
-      transition: 0.2s;
-      font-size: 0.8rem;
     }
 
     .comment-input:focus {
       outline: none;
       border-color: #2affaa;
-      box-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
     }
 
     .comment-btn {
       background: transparent;
       border: 1px solid #0ff;
-      padding: 5px 16px;
+      padding: 8px 20px;
       border-radius: 30px;
       color: #0ff;
       cursor: pointer;
@@ -521,47 +491,40 @@
       transition: 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
+      gap: 0.5rem;
     }
 
     .comment-btn:hover {
       background: #0ff;
       color: #000;
-      transform: translateY(-2px);
     }
 
     .comment-list {
-      margin-top: 15px;
-      max-height: 280px;
+      margin-top: 20px;
+      max-height: 350px;
       overflow-y: auto;
     }
 
     .comment-item {
       background: rgba(0, 0, 0, 0.3);
-      padding: 6px 10px;
+      padding: 10px 14px;
       border-radius: 12px;
-      margin-bottom: 6px;
-      font-size: 0.75rem;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
       font-family: monospace;
-      transition: 0.1s;
-    }
-
-    .comment-item:hover {
-      background: rgba(0, 255, 255, 0.08);
     }
 
     ::-webkit-scrollbar {
-      width: 5px;
+      width: 8px;
     }
 
     ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     ::-webkit-scrollbar-thumb {
       background: #0ff;
-      border-radius: 3px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -694,7 +657,7 @@
       </div>
     </div>
     <div class="divider"></div>
-    <div class="desc-text" style="font-size:0.7rem; text-align:center;">
+    <div class="desc-text" style="font-size:0.75rem; text-align:center;">
       <i class="fas fa-check-circle"></i> Tüm botlar aktif ve 7/24 çevrimiçi
     </div>
   </div>
@@ -702,7 +665,7 @@
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-star"></i>
-      <span>BOT YORUMLARI VE DEĞERLENDİRMELER</span>
+      <span>BOT YORUMLARI & DEĞERLENDİRMELER</span>
     </div>
     <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuzu yazın..."></textarea>
     <button class="comment-btn" id="submitBotComment">
@@ -714,7 +677,7 @@
   <div class="quote">
     <i class="fas fa-quote-left"></i> Приезжает много людей, но те, кто остаётся, особенные...
     <i class="fas fa-quote-right"></i><br>
-    <span style="font-size:0.6rem;">- Snowy Dexry Wexry | 2026</span>
+    <span style="font-size:0.7rem;">- Snowy Dexry Wexry | 2026</span>
   </div>
   
   <div class="footer">
@@ -723,7 +686,7 @@
 </div>
 
 <script>
-  // Basit Arka Plan - Çok Hafif
+  // sade ve hafif arkaplan partikülleri (efektsiz, düşük opaklık)
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
   
@@ -735,25 +698,25 @@
   window.addEventListener('resize', resizeCanvas);
   
   let particles = [];
-  const particleCount = 40;
+  const particleCount = 120;
   
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 1.5 + 0.5,
-      speedX: (Math.random() - 0.5) * 0.2,
-      speedY: (Math.random() - 0.5) * 0.2,
+      radius: Math.random() * 2 + 0.8,
+      speedX: (Math.random() - 0.5) * 0.4,
+      speedY: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.2 + 0.05,
     });
   }
   
-  function animateBG() {
+  function drawBackground() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     for (let p of particles) {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 180, 255, 0.15)`;
+      ctx.fillStyle = `rgba(100, 200, 255, ${p.alpha})`;
       ctx.fill();
       
       p.x += p.speedX;
@@ -764,12 +727,11 @@
       if (p.y < 0) p.y = canvas.height;
       if (p.y > canvas.height) p.y = 0;
     }
-    
-    requestAnimationFrame(animateBG);
+    requestAnimationFrame(drawBackground);
   }
-  animateBG();
+  drawBackground();
   
-  // Müzik
+  // Müzik (sadece tıklama ile)
   let audio = null;
   let musicStarted = false;
   
@@ -778,7 +740,7 @@
     try {
       audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Herm%C3%A8s%202.0.mp3');
       audio.loop = true;
-      audio.volume = 0.15;
+      audio.volume = 0.3;
       audio.play().then(() => {
         musicStarted = true;
       }).catch(e => console.log('Müzik başlatılamadı:', e));
@@ -789,7 +751,7 @@
     if (!musicStarted) initMusic();
   }, { once: false });
   
-  // Tema
+  // Tema değişimi
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
@@ -800,7 +762,7 @@
     document.body.classList.add('light-mode');
   }
   
-  // Yorumlar
+  // Yorumlar sistemi
   let botComments = [];
   
   function loadBotComments() {
@@ -850,7 +812,7 @@
     input.value = '';
   });
   
-  // Canlı üye sayısı güncelleme - yavaş
+  // üye sayıları basit güncelleme
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
@@ -871,14 +833,13 @@
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
       if (isNaN(current)) current = 4200;
-      current += Math.floor(Math.random() * 3);
+      current += Math.floor(Math.random() * 2);
       gambleElem.innerText = current;
     }
   }
+  setInterval(updateMemberCounts, 45000);
   
-  setInterval(updateMemberCounts, 90000);
-  
-  // Smooth scroll
+  // Smooth scroll (menü için)
   document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -886,15 +847,10 @@
         e.preventDefault();
         const targetId = href.substring(1);
         const targetElement = document.getElementById(targetId);
-        
         if (targetElement) {
           const navHeight = document.querySelector('.nav-menu').offsetHeight;
           const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
-          
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
         }
       }
     });
@@ -903,4 +859,4 @@
   loadBotComments();
 </script>
 </body>
-  </html>
+    </html>
