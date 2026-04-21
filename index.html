@@ -620,14 +620,14 @@
     .footer {
       text-align: center;
       margin-top: 3rem;
-      font-size: 0.7rem;
-      opacity: 0.6;
+      font-size: 0.8rem;
+      opacity: 0.7;
       animation: footerPulse 3s infinite;
     }
 
     @keyframes footerPulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
     }
 
     .comment-input {
@@ -728,10 +728,10 @@
 <canvas id="canvas-bg"></canvas>
 
 <div class="nav-menu">
-  <a href="#home"><i class="fas fa-home"></i> Ana Sayfa</a>
-  <a href="#about"><i class="fas fa-user-secret"></i> Hakkımda</a>
-  <a href="#bots"><i class="fas fa-robot"></i> Botlar</a>
-  <a href="#comments"><i class="fas fa-comments"></i> Yorumlar</a>
+  <a href="#home" data-target="home"><i class="fas fa-home"></i> Ana Sayfa</a>
+  <a href="#about" data-target="about"><i class="fas fa-user-secret"></i> Hakkımda</a>
+  <a href="#bots" data-target="bots"><i class="fas fa-robot"></i> Botlar</a>
+  <a href="#comments" data-target="comments"><i class="fas fa-comments"></i> Yorumlar</a>
   <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
 </div>
 
@@ -833,7 +833,7 @@
   </div>
   
   <div class="footer">
-    <i class="far fa-copyright"></i> 2026 Snowy Dexry Wexry | Siber Güvenlik ve Bot Geliştirme | <i class="fas fa-shield-alt"></i> Güvenlik her şeyden önce gelir
+    2026 - SNOWY DEXRY WEXRY
   </div>
 </div>
 
@@ -995,7 +995,7 @@
     input.value = '';
   });
   
-  // Canlı üye sayısı güncelleme (sadece botlar için - yavaş artış)
+  // Canlı üye sayısı güncelleme
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
@@ -1023,15 +1023,23 @@
   
   setInterval(updateMemberCounts, 45000);
   
-  // Smooth scroll
-  document.querySelectorAll('.nav-menu a').forEach(anchor => {
+  // Smooth scroll - tam isabetli kaydırma
+  document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
-      if (href && href.startsWith('#')) {
+      if (href && href !== '#' && href.startsWith('#')) {
         e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const targetId = href.substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          const navHeight = document.querySelector('.nav-menu').offsetHeight;
+          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
         }
       }
     });
