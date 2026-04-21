@@ -312,14 +312,6 @@
       margin-top: 6px;
     }
 
-    .big-stat {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #0ff;
-      text-align: center;
-      margin: 0.5rem 0;
-    }
-
     .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
@@ -437,6 +429,18 @@
       <span class="contact-label">CHAT:</span>
       <span class="contact-value"><a href="https://t.me/SnowyDork" target="_blank">@SnowyDork</a></span>
     </div>
+    <div class="contact-item">
+      <span class="contact-label">DISCORD:</span>
+      <span class="contact-value"><a href="https://discord.com/users/SnowyOrj" target="_blank">@SnowyOrj</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">TIKTOK:</span>
+      <span class="contact-value"><a href="https://tiktok.com/@SnowyOrj" target="_blank">@SnowyOrj</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">INSTAGRAM:</span>
+      <span class="contact-value"><a href="https://instagram.com/Snowy.Orj" target="_blank">@Snowy.Orj</a></span>
+    </div>
   </div>
 
   <div class="card">
@@ -463,30 +467,6 @@
   </div>
 
   <div class="card">
-    <div class="section-title">WEB ARACI</div>
-    <div class="desc-text">Pentester ve sistem yöneticileri için geliştirilmiş web tabanlı güvenlik aracıyla domain/IP analizlerini tek panelden yapabilirsiniz.</div>
-    <div class="button-group" style="justify-content: flex-start;">
-      <a href="https://snowy.axondatarel.org" target="_blank" class="tg-btn">snowy.axondatarel.org</a>
-    </div>
-    <div class="divider"></div>
-    <div class="desc-text" style="text-align: center; font-size:0.85rem;">Aktif Kullanıcılar</div>
-    <div class="big-stat" id="siteUserCount">+12.847</div>
-    <div class="desc-text" style="text-align: center; font-size:0.7rem;">son 30 gün içinde</div>
-    <div class="divider"></div>
-    <div class="section-title" style="font-size:1rem; margin-top:0.5rem;">SİTE YORUMLARI</div>
-    <textarea class="comment-input" id="siteCommentInput" rows="2" placeholder="snowy.axondatarel.org hakkında yorumunuz..."></textarea>
-    <button class="comment-btn" id="submitSiteComment">Yorum Gönder</button>
-    <div class="comment-list" id="siteCommentList">
-      <div class="comment-item">🔹 Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı. - @CyberGuard</div>
-      <div class="comment-item">🔹 Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel. - @AlgoMaster</div>
-      <div class="comment-item">🔹 Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı. - @PentestPro</div>
-      <div class="comment-item">🔹 Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim. - @DataHunter</div>
-      <div class="comment-item">🔹 En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli. - @WhiteHatX</div>
-    </div>
-    <div class="desc-text" style="margin-top: 1rem; font-size:0.85rem;">Daha fazla detay, kullanım rehberi ve tüm özellikler için <strong><a href="https://t.me/SnowyOrjBio" target="_blank" style="color:#0ff;">@SnowyOrjBio</a></strong></div>
-  </div>
-
-  <div class="card">
     <div class="section-title">BOT YORUMLARI</div>
     <textarea class="comment-input" id="botCommentInput" rows="2" placeholder="Botlar hakkında yorumunuz..."></textarea>
     <button class="comment-btn" id="submitBotComment">Yorum Gönder</button>
@@ -510,7 +490,6 @@
   function initMusic() {
     if (musicStarted) return;
     try {
-      // URL değişti: /Snowy/ -> /BIO/
       audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Hermès%202.0.mp3');
       audio.loop = true;
       audio.volume = 0.5;
@@ -533,54 +512,7 @@
     document.body.classList.toggle('light-mode');
   });
 
-  // Site Kullanıcı Sayısı
-  let userCount = 12847;
-  const userCountElem = document.getElementById('siteUserCount');
-  setInterval(() => {
-    userCount += Math.floor(Math.random() * 50);
-    userCountElem.innerHTML = '+' + userCount.toLocaleString('tr-TR');
-  }, 45000);
-
-  // Site Yorumları
-  let siteComments = [];
-  function loadSiteComments() {
-    const saved = localStorage.getItem('snowy_site_comments');
-    siteComments = saved ? JSON.parse(saved) : [
-      { text: "Domain/IP analizleri için harika bir araç, pentest sürecimi çok hızlandırdı.", author: "@CyberGuard" },
-      { text: "Tek panelden her şeyi yönetmek çok kolay, arayüz sade ve işlevsel.", author: "@AlgoMaster" },
-      { text: "Güvenlik testlerimde düzenli olarak kullanıyorum, güvenilir ve hızlı.", author: "@PentestPro" },
-      { text: "Snowy'nin bu aracı gerçekten işimi kolaylaştırıyor, tavsiye ederim.", author: "@DataHunter" },
-      { text: "En iyi güvenlik analiz araçlarından biri, ücretsiz ve kaliteli.", author: "@WhiteHatX" }
-    ];
-    renderSiteComments();
-  }
-  function renderSiteComments() {
-    const list = document.getElementById('siteCommentList');
-    list.innerHTML = '';
-    siteComments.slice().reverse().forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'comment-item';
-      div.innerHTML = `🔹 ${c.text} - ${c.author}`;
-      list.appendChild(div);
-    });
-  }
-  function addSiteComment(text) {
-    if (!text.trim()) return;
-    let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
-    if (!author || author.trim() === "") author = "Misafir";
-    if (!author.startsWith("@")) author = "@" + author;
-    siteComments.push({ text: text.trim(), author: author });
-    if (siteComments.length > 20) siteComments.shift();
-    localStorage.setItem('snowy_site_comments', JSON.stringify(siteComments));
-    renderSiteComments();
-  }
-  document.getElementById('submitSiteComment').addEventListener('click', () => {
-    const input = document.getElementById('siteCommentInput');
-    if (input.value.trim()) { addSiteComment(input.value.trim()); input.value = ''; }
-    else alert('Lütfen bir yorum yazın.');
-  });
-
-  // Bot Yorumları (Yapay Zeka bot yorumu kaldırıldı)
+  // Bot Yorumları
   let botComments = [];
   function loadBotComments() {
     const saved = localStorage.getItem('snowy_bot_comments');
@@ -618,8 +550,7 @@
     else alert('Lütfen bir yorum yazın.');
   });
 
-  loadSiteComments();
   loadBotComments();
 </script>
 </body>
-  </html>
+                                    </html>
