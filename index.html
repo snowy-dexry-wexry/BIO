@@ -85,6 +85,12 @@
       color: #0055aa;
     }
 
+    body.light-mode .tool-tag {
+      background: rgba(200, 80, 0, 0.1);
+      border-color: rgba(200, 80, 0, 0.3);
+      color: #aa4400;
+    }
+
     /* 3D Arka Plan Animasyonu */
     #canvas-bg {
       position: fixed;
@@ -95,6 +101,29 @@
       z-index: 0;
       opacity: 0.35;
       pointer-events: none;
+    }
+
+    /* Kar tanesi efekti */
+    .snowflake {
+      position: fixed;
+      color: #0ff;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+      font-size: 12px;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     .nav-menu {
@@ -192,8 +221,13 @@
       color: #fff;
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
       box-shadow: 0 0 30px rgba(0, 136, 204, 0.5);
-      animation: pulse 2s infinite;
+      animation: pulse 2s infinite, float 3s ease-in-out infinite;
       transition: 0.3s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
     .logo:hover {
@@ -215,7 +249,12 @@
       background-clip: text;
       color: transparent;
       margin-bottom: 0.75rem;
-      animation: glitch 3s infinite;
+      animation: glitch 3s infinite, titlePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { letter-spacing: 4px; }
+      50% { letter-spacing: 6px; }
     }
 
     @keyframes glitch {
@@ -270,6 +309,12 @@
       border-bottom: 2px solid #0ff;
       display: inline-block;
       padding: 0.4rem 1.5rem;
+      animation: borderPulse 2s infinite;
+    }
+
+    @keyframes borderPulse {
+      0%, 100% { border-color: #0ff; }
+      50% { border-color: #ff00ff; }
     }
 
     .card {
@@ -303,6 +348,12 @@
 
     .section-title i {
       font-size: 1.2rem;
+      animation: iconSpin 3s infinite;
+    }
+
+    @keyframes iconSpin {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
     }
 
     .skill-grid {
@@ -320,6 +371,12 @@
       font-size: 0.8rem;
       font-family: monospace;
       transition: 0.2s;
+      animation: tagGlow 3s infinite;
+    }
+
+    @keyframes tagGlow {
+      0%, 100% { box-shadow: 0 0 0px rgba(0, 255, 255, 0); }
+      50% { box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); }
     }
 
     .skill-tag:hover {
@@ -430,6 +487,12 @@
       border: 1px solid rgba(0, 255, 255, 0.2);
       transition: all 0.3s ease;
       cursor: pointer;
+      animation: botGlow 3s infinite;
+    }
+
+    @keyframes botGlow {
+      0%, 100% { border-color: rgba(0, 255, 255, 0.2); }
+      50% { border-color: rgba(0, 255, 255, 0.6); }
     }
 
     .bot-item:hover {
@@ -442,6 +505,12 @@
       font-size: 2rem;
       margin-bottom: 0.5rem;
       color: #0ff;
+      animation: iconBounce 2s infinite;
+    }
+
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
 
     .bot-name {
@@ -489,6 +558,12 @@
       background: linear-gradient(90deg, transparent, #0ff, #0ff, transparent);
       margin: 1.2rem 0;
       opacity: 0.4;
+      animation: dividerPulse 2s infinite;
+    }
+
+    @keyframes dividerPulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.6; }
     }
 
     .desc-text {
@@ -510,6 +585,12 @@
       font-style: italic;
       border-left: 3px solid #0ff;
       border-right: 3px solid #0ff;
+      animation: quotePulse 2s infinite;
+    }
+
+    @keyframes quotePulse {
+      0%, 100% { border-color: #0ff; }
+      50% { border-color: #ff00ff; }
     }
 
     .footer {
@@ -646,7 +727,6 @@
       <span class="skill-tag"><i class="fas fa-wrench"></i> Tools Geliştirme</span>
       <span class="skill-tag"><i class="fas fa-code"></i> Kod Yazma</span>
       <span class="skill-tag"><i class="fas fa-search"></i> OSINT</span>
-      <span class="skill-tag"><i class="fas fa-bug"></i> Exploit Geliştirme</span>
       <span class="skill-tag"><i class="fas fa-shield-alt"></i> Penetrasyon Testi</span>
       <span class="skill-tag"><i class="fas fa-key"></i> Şifre Çözümleme</span>
     </div>
@@ -660,6 +740,12 @@
       <span class="tool-tag"><i class="fas fa-globe"></i> Web Penetrasyon Araçları</span>
       <span class="tool-tag"><i class="fas fa-map"></i> Nmap</span>
       <span class="tool-tag"><i class="fas fa-bolt"></i> Burp Suite</span>
+      <span class="tool-tag"><i class="fas fa-fingerprint"></i> Hydra</span>
+      <span class="tool-tag"><i class="fas fa-shield-virus"></i> Metasploit</span>
+      <span class="tool-tag"><i class="fas fa-wifi"></i> Aircrack-ng</span>
+      <span class="tool-tag"><i class="fas fa-database"></i> Sqlmap</span>
+      <span class="tool-tag"><i class="fas fa-eye"></i> TheHarvester</span>
+      <span class="tool-tag"><i class="fas fa-search"></i> Recon-ng</span>
     </div>
   </div>
 
@@ -730,17 +816,35 @@
   </div>
 
   <div class="quote">
-    <i class="fas fa-quote-left"></i> Priezzhayet mnogo lyudey, no te, kto ostayotsya, osobyennyye...
+    <i class="fas fa-quote-left"></i> Приезжает много людей, но те, кто остаётся, особенные...
     <i class="fas fa-quote-right"></i><br>
-    <span style="font-size:0.7rem;">- Snowy Dexry Wexry</span>
+    <span style="font-size:0.7rem;">- Snowy Dexry Wexry | 2026</span>
   </div>
   
   <div class="footer">
-    <i class="far fa-copyright"></i> 2024 Snowy Dexry Wexry | Siber Güvenlik ve Bot Geliştirme | <i class="fas fa-shield-alt"></i> Güvenlik her şeyden önce gelir
+    <i class="far fa-copyright"></i> 2026 Snowy Dexry Wexry | Siber Güvenlik ve Bot Geliştirme | <i class="fas fa-shield-alt"></i> Güvenlik her şeyden önce gelir
   </div>
 </div>
 
 <script>
+  // Kar tanesi efekti
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.innerHTML = ['❄', '●', '◆', '◈', '✧'][Math.floor(Math.random() * 5)];
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = Math.random() * 3 + 4 + 's';
+    snowflake.style.fontSize = Math.random() * 10 + 8 + 'px';
+    snowflake.style.opacity = Math.random() * 0.5 + 0.2;
+    document.body.appendChild(snowflake);
+    
+    setTimeout(() => {
+      snowflake.remove();
+    }, 7000);
+  }
+  
+  setInterval(createSnowflake, 300);
+  
   // 3D Arka Plan Animasyonu
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
@@ -753,16 +857,16 @@
   window.addEventListener('resize', resizeCanvas);
   
   let particles = [];
-  const particleCount = 80;
+  const particleCount = 120;
   
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 1,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      color: `rgba(0, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.25 + 0.05})`
+      radius: Math.random() * 2.5 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.6,
+      speedY: (Math.random() - 0.5) * 0.6,
+      color: `rgba(0, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.3 + 0.05})`
     });
   }
   
@@ -878,7 +982,7 @@
     if (phishingElem) {
       let current = parseInt(phishingElem.innerText);
       if (isNaN(current)) current = 1234;
-      current += Math.floor(Math.random() * 2);
+      current += Math.floor(Math.random() * 3);
       phishingElem.innerText = current;
     }
     if (indexElem) {
@@ -890,12 +994,12 @@
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
       if (isNaN(current)) current = 3421;
-      current += Math.floor(Math.random() * 3);
+      current += Math.floor(Math.random() * 4);
       gambleElem.innerText = current;
     }
   }
   
-  setInterval(updateStats, 45000);
+  setInterval(updateStats, 30000);
   
   // Smooth scroll
   document.querySelectorAll('.nav-menu a').forEach(anchor => {
