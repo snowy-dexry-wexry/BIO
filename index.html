@@ -662,7 +662,7 @@
     </div>
   </div>
 
-  <!-- BOT YORUMLARI bölümü - sade ve düzenli -->
+  <!-- BOT YORUMLARI bölümü - sıralama her 10 saniyede değişir -->
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-comment-dots"></i>
@@ -763,8 +763,9 @@
     document.body.classList.add('light-mode');
   }
   
-  // Yorumlar sistemi
+  // Yorumlar sistemi - SIRALAMA HER 10 SANİYEDE RASTGELE DEĞİŞİR
   let botComments = [];
+  let shuffleInterval = null;
   
   function loadBotComments() {
     const saved = localStorage.getItem('snowy_bot_comments');
@@ -781,12 +782,33 @@
       ];
     }
     renderBotComments();
+    startShuffleTimer();
+  }
+  
+  // Yorumları karıştır (rastgele sırala)
+  function shuffleComments() {
+    if (!botComments.length) return;
+    // Fisher-Yates karıştırma algoritması
+    for (let i = botComments.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [botComments[i], botComments[j]] = [botComments[j], botComments[i]];
+    }
+    renderBotComments();
+  }
+  
+  // Belli aralıklarla karıştırmayı başlat
+  function startShuffleTimer() {
+    if (shuffleInterval) clearInterval(shuffleInterval);
+    shuffleInterval = setInterval(() => {
+      shuffleComments();
+    }, 10000); // Her 10 saniyede bir sıralama değişir
   }
   
   function renderBotComments() {
     const list = document.getElementById('botCommentList');
     list.innerHTML = '';
-    botComments.slice().reverse().forEach(c => {
+    // Mevcut sırayla (zaten karışmış olabilir) göster
+    botComments.forEach(c => {
       const div = document.createElement('div');
       div.className = 'comment-item';
       div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${c.text} - <strong>${c.author}</strong>`;
