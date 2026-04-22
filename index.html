@@ -644,12 +644,6 @@
         <div class="bot-link">@SnowyVds_Bot</div>
         <div class="stat-number"><i class="fas fa-users"></i> <span id="vdsCount">1879</span> üye</div>
       </div>
-      <div class="bot-item" onclick="window.open('https://t.me/SnowyIndexBot','_blank')">
-        <div class="bot-icon"><i class="fas fa-database"></i></div>
-        <div class="bot-name">Index Çekme Bot <span class="online-dot"></span></div>
-        <div class="bot-link">@SnowyIndexBot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span id="indexCount">1200</span> üye</div>
-      </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyKumar_Bot','_blank')">
         <div class="bot-icon"><i class="fas fa-dice-d6"></i></div>
         <div class="bot-name">Kumar Bot <span class="online-dot"></span></div>
@@ -775,7 +769,6 @@
     } else {
       botComments = [
         { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard", date: Date.now() },
-        { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter", date: Date.now() },
         { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer", date: Date.now() },
         { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro", date: Date.now() },
         { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "@ServerAdmin", date: Date.now() },
@@ -841,7 +834,6 @@
   // Üye sayıları (sade güncelleme)
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
-    const indexElem = document.getElementById('indexCount');
     const gambleElem = document.getElementById('gambleCount');
     const vdsElem = document.getElementById('vdsCount');
     
@@ -850,12 +842,6 @@
       if (isNaN(current)) current = 3000;
       current += Math.floor(Math.random() * 2);
       phishingElem.innerText = current;
-    }
-    if (indexElem) {
-      let current = parseInt(indexElem.innerText);
-      if (isNaN(current)) current = 1200;
-      current += Math.floor(Math.random() * 2);
-      indexElem.innerText = current;
     }
     if (gambleElem) {
       let current = parseInt(gambleElem.innerText);
@@ -892,4 +878,4 @@
   loadBotComments();
 </script>
 </body>
-  </html>
+                    </html>
