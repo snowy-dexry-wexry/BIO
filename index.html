@@ -637,6 +637,12 @@
         <div class="bot-link">@SnowyPhishingBot</div>
         <div class="stat-number"><i class="fas fa-users"></i> <span id="phishingCount">3000</span> üye</div>
       </div>
+      <div class="bot-item" onclick="window.open('https://t.me/SnowyVds_Bot','_blank')">
+        <div class="bot-icon"><i class="fas fa-server"></i></div>
+        <div class="bot-name">VDS Bot <span class="online-dot"></span></div>
+        <div class="bot-link">@SnowyVds_Bot</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="vdsCount">1879</span> üye</div>
+      </div>
       <div class="bot-item" onclick="window.open('https://t.me/SnowyIndexBot','_blank')">
         <div class="bot-icon"><i class="fas fa-database"></i></div>
         <div class="bot-name">Index Çekme Bot <span class="online-dot"></span></div>
@@ -648,13 +654,6 @@
         <div class="bot-name">Kumar Bot <span class="online-dot"></span></div>
         <div class="bot-link">@SnowyKumar_Bot</div>
         <div class="stat-number"><i class="fas fa-users"></i> <span id="gambleCount">4200</span> üye</div>
-      </div>
-      <!-- Yeni eklenen VDS Bot -->
-      <div class="bot-item" onclick="window.open('https://t.me/SnowyVds_Bot','_blank')">
-        <div class="bot-icon"><i class="fas fa-server"></i></div>
-        <div class="bot-name">VDS Bot <span class="online-dot"></span></div>
-        <div class="bot-link">@SnowyVds_Bot</div>
-        <div class="stat-number"><i class="fas fa-users"></i> <span id="vdsCount">850</span> üye</div>
       </div>
     </div>
     <div class="divider"></div>
@@ -776,7 +775,9 @@
         { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard", date: Date.now() },
         { text: "Index çekme botu ile veri analizi yapmak çok kolaylaştı. Emeğinize sağlık.", author: "@DataHunter", date: Date.now() },
         { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer", date: Date.now() },
-        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro", date: Date.now() }
+        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro", date: Date.now() },
+        { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "@ServerAdmin", date: Date.now() },
+        { text: "SnowyVds_Bot sayesinde sunucu yönetimi çok kolaylaştı. Emeği geçenlere teşekkürler.", author: "@CloudMaster", date: Date.now() }
       ];
     }
     renderBotComments();
@@ -841,7 +842,7 @@
     }
     if (vdsElem) {
       let current = parseInt(vdsElem.innerText);
-      if (isNaN(current)) current = 850;
+      if (isNaN(current)) current = 1879;
       current += Math.floor(Math.random() * 2);
       vdsElem.innerText = current;
     }
