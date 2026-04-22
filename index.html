@@ -649,6 +649,13 @@
         <div class="bot-link">@SnowyKumar_Bot</div>
         <div class="stat-number"><i class="fas fa-users"></i> <span id="gambleCount">4200</span> üye</div>
       </div>
+      <!-- Yeni eklenen VDS Bot -->
+      <div class="bot-item" onclick="window.open('https://t.me/SnowyVds_Bot','_blank')">
+        <div class="bot-icon"><i class="fas fa-server"></i></div>
+        <div class="bot-name">VDS Bot <span class="online-dot"></span></div>
+        <div class="bot-link">@SnowyVds_Bot</div>
+        <div class="stat-number"><i class="fas fa-users"></i> <span id="vdsCount">850</span> üye</div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="desc-text" style="font-size:0.75rem; text-align:center;">
@@ -812,6 +819,7 @@
     const phishingElem = document.getElementById('phishingCount');
     const indexElem = document.getElementById('indexCount');
     const gambleElem = document.getElementById('gambleCount');
+    const vdsElem = document.getElementById('vdsCount');
     
     if (phishingElem) {
       let current = parseInt(phishingElem.innerText);
@@ -830,6 +838,12 @@
       if (isNaN(current)) current = 4200;
       current += Math.floor(Math.random() * 2);
       gambleElem.innerText = current;
+    }
+    if (vdsElem) {
+      let current = parseInt(vdsElem.innerText);
+      if (isNaN(current)) current = 850;
+      current += Math.floor(Math.random() * 2);
+      vdsElem.innerText = current;
     }
   }
   setInterval(updateMemberCounts, 50000);
