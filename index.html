@@ -657,7 +657,6 @@
     </div>
   </div>
 
-  <!-- BOT YORUMLARI bölümü - sıralama her 10 saniyede değişir -->
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-comment-dots"></i>
@@ -682,7 +681,12 @@
 </div>
 
 <script>
-  // Sade arkaplan partikülleri (hafif)
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   const canvas = document.getElementById('canvas-bg');
   const ctx = canvas.getContext('2d');
   
@@ -727,7 +731,6 @@
   }
   drawBackground();
   
-  // Müzik (tıklama ile başlat)
   let audio = null;
   let musicStarted = false;
   
@@ -747,7 +750,6 @@
     if (!musicStarted) initMusic();
   }, { once: false });
   
-  // Tema
   const themeBtn = document.getElementById('themeToggle');
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
@@ -758,31 +760,40 @@
     document.body.classList.add('light-mode');
   }
   
-  // Yorumlar sistemi - SIRALAMA HER 10 SANİYEDE RASTGELE DEĞİŞİR
   let botComments = [];
   let shuffleInterval = null;
   
   function loadBotComments() {
-    const saved = localStorage.getItem('snowy_bot_comments');
+    const saved = localStorage.getItem('snowy_bot_comments_v2');
     if (saved) {
-      botComments = JSON.parse(saved);
-    } else {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          botComments = parsed;
+        } else {
+          botComments = [];
+        }
+      } catch(e) {
+        botComments = [];
+      }
+    }
+    
+    if (!botComments || botComments.length === 0) {
       botComments = [
-        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "@CyberGuard", date: Date.now() },
-        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "@LuckyPlayer", date: Date.now() },
-        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "@PentestPro", date: Date.now() },
-        { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "@ServerAdmin", date: Date.now() },
-        { text: "SnowyVds_Bot sayesinde sunucu yönetimi çok kolaylaştı. Emeği geçenlere teşekkürler.", author: "@CloudMaster", date: Date.now() }
+        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "CyberGuard", date: Date.now() },
+        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "LuckyPlayer", date: Date.now() },
+        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "PentestPro", date: Date.now() },
+        { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "ServerAdmin", date: Date.now() },
+        { text: "SnowyVds_Bot sayesinde sunucu yönetimi çok kolaylaştı. Emeği geçenlere teşekkürler.", author: "CloudMaster", date: Date.now() }
       ];
+      localStorage.setItem('snowy_bot_comments_v2', JSON.stringify(botComments));
     }
     renderBotComments();
     startShuffleTimer();
   }
   
-  // Yorumları karıştır (rastgele sırala)
   function shuffleComments() {
     if (!botComments.length) return;
-    // Fisher-Yates karıştırma algoritması
     for (let i = botComments.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [botComments[i], botComments[j]] = [botComments[j], botComments[i]];
@@ -790,48 +801,67 @@
     renderBotComments();
   }
   
-  // Belli aralıklarla karıştırmayı başlat
   function startShuffleTimer() {
     if (shuffleInterval) clearInterval(shuffleInterval);
     shuffleInterval = setInterval(() => {
       shuffleComments();
-    }, 10000); // Her 10 saniyede bir sıralama değişir
+    }, 10000);
   }
   
   function renderBotComments() {
     const list = document.getElementById('botCommentList');
+    if (!list) return;
     list.innerHTML = '';
-    // Mevcut sırayla (zaten karışmış olabilir) göster
-    botComments.forEach(c => {
+    for (const c of botComments) {
       const div = document.createElement('div');
       div.className = 'comment-item';
-      div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${c.text} - <strong>${c.author}</strong>`;
+      const safeText = escapeHtml(c.text);
+      const safeAuthor = escapeHtml(c.author);
+      div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${safeText} - <strong>${safeAuthor}</strong>`;
       list.appendChild(div);
-    });
+    }
   }
   
   function addBotComment(text) {
-    if (!text.trim()) {
+    const trimmedText = text.trim();
+    if (!trimmedText) {
       alert('Lütfen bir yorum yazın.');
       return;
     }
-    let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
-    if (!author || author.trim() === "") author = "Misafir";
-    if (!author.startsWith("@")) author = "@" + author;
     
-    botComments.push({ text: text.trim(), author: author, date: Date.now() });
-    if (botComments.length > 30) botComments.shift();
-    localStorage.setItem('snowy_bot_comments', JSON.stringify(botComments));
+    if (trimmedText.length > 500) {
+      alert('Yorum çok uzun. En fazla 500 karakter.');
+      return;
+    }
+    
+    let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
+    if (!author || author.trim() === "") {
+      author = "Misafir";
+    } else {
+      author = author.trim();
+      if (author.length > 30) author = author.substring(0, 30);
+    }
+    
+    const safeAuthor = author;
+    const safeText = trimmedText;
+    
+    botComments.push({ text: safeText, author: safeAuthor, date: Date.now() });
+    if (botComments.length > 50) botComments.shift();
+    localStorage.setItem('snowy_bot_comments_v2', JSON.stringify(botComments));
     renderBotComments();
   }
   
-  document.getElementById('submitBotComment').addEventListener('click', () => {
-    const input = document.getElementById('botCommentInput');
-    addBotComment(input.value);
-    input.value = '';
-  });
+  const submitBtn = document.getElementById('submitBotComment');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      const input = document.getElementById('botCommentInput');
+      if (input) {
+        addBotComment(input.value);
+        input.value = '';
+      }
+    });
+  }
   
-  // Üye sayıları (sade güncelleme)
   function updateMemberCounts() {
     const phishingElem = document.getElementById('phishingCount');
     const gambleElem = document.getElementById('gambleCount');
@@ -858,7 +888,6 @@
   }
   setInterval(updateMemberCounts, 50000);
   
-  // Smooth scroll (menü için)
   document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -867,7 +896,8 @@
         const targetId = href.substring(1);
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-          const navHeight = document.querySelector('.nav-menu').offsetHeight;
+          const navMenu = document.querySelector('.nav-menu');
+          const navHeight = navMenu ? navMenu.offsetHeight : 70;
           const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
           window.scrollTo({ top: targetPosition, behavior: 'smooth' });
         }
@@ -878,4 +908,4 @@
   loadBotComments();
 </script>
 </body>
-                    </html>
+  </html>
