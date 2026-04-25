@@ -22,57 +22,9 @@
       color: #d0eaff;
       line-height: 1.5;
       overflow-x: hidden;
-      transition: background 0.2s ease, color 0.2s ease;
     }
 
-    body.light-mode {
-      background: linear-gradient(135deg, #eef2ff 0%, #e0e8ff 100%);
-      color: #1a1f2e;
-    }
-
-    body.light-mode .card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(4px);
-      border-color: rgba(0, 100, 150, 0.3);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    body.light-mode .subtitle {
-      color: #0055aa;
-      border-color: #0055aa;
-    }
-
-    body.light-mode .section-title {
-      color: #0055aa;
-      border-left-color: #0055aa;
-    }
-
-    body.light-mode .desc-text {
-      color: #2a3344;
-    }
-
-    body.light-mode .quote {
-      background: linear-gradient(135deg, #e0e8f0, #d0dcec);
-      color: #1a2a3a;
-    }
-
-    body.light-mode .bot-item {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    body.light-mode .stat-number {
-      color: #0055aa;
-    }
-
-    body.light-mode .comment-item {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    body.light-mode .area-card {
-      background: rgba(0, 100, 150, 0.1);
-      border-color: rgba(0, 100, 150, 0.3);
-    }
-
+    /* Canvas arkaplan sabit ve hafif */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -80,63 +32,8 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.25;
+      opacity: 0.2;
       pointer-events: none;
-    }
-
-    .nav-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      padding: 0.8rem 2rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-      flex-wrap: wrap;
-    }
-
-    .nav-menu a {
-      color: #0ff;
-      text-decoration: none;
-      font-family: monospace;
-      font-size: 0.8rem;
-      transition: 0.2s;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-    }
-
-    .nav-menu a:hover {
-      background: rgba(0, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .theme-btn {
-      position: fixed;
-      top: 85px;
-      right: 20px;
-      z-index: 999;
-      background: rgba(0, 255, 255, 0.2);
-      border: 1px solid rgba(0, 255, 255, 0.5);
-      border-radius: 30px;
-      padding: 8px 18px;
-      font-size: 0.8rem;
-      font-family: monospace;
-      color: #0ff;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .theme-btn:hover {
-      background: rgba(0, 255, 255, 0.4);
     }
 
     .container {
@@ -144,12 +41,13 @@
       z-index: 2;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 6rem 2rem 5rem;
+      padding: 2rem 2rem 4rem;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
+      margin-top: 1rem;
     }
 
     .logo {
@@ -165,11 +63,11 @@
       color: #fff;
       text-shadow: 0 0 10px rgba(0,0,0,0.5);
       box-shadow: 0 0 30px rgba(0, 136, 204, 0.5);
-      transition: 0.2s;
+      transition: transform 0.2s ease;
     }
 
     .logo:hover {
-      transform: scale(1.03);
+      transform: scale(1.02);
     }
 
     .main-title {
@@ -183,13 +81,6 @@
       margin-bottom: 0.75rem;
     }
 
-    body.light-mode .main-title {
-      background: linear-gradient(135deg, #004488, #0066aa, #0088cc);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
     @media (max-width: 700px) {
       .main-title {
         font-size: 1.8rem;
@@ -200,22 +91,8 @@
         height: 80px;
         font-size: 2.5rem;
       }
-      .nav-menu {
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-      }
-      .nav-menu a {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.4rem;
-      }
-      .theme-btn {
-        top: 75px;
-        right: 10px;
-        padding: 4px 12px;
-        font-size: 0.7rem;
-      }
       .container {
-        padding: 5rem 1rem 3rem;
+        padding: 1.5rem 1rem 3rem;
       }
     }
 
@@ -230,18 +107,18 @@
     }
 
     .card {
-      background: rgba(10, 20, 30, 0.6);
-      backdrop-filter: blur(8px);
+      background: rgba(10, 20, 30, 0.55);
+      backdrop-filter: blur(6px);
       border: 1px solid rgba(0, 255, 255, 0.3);
       border-radius: 20px;
       padding: 2rem;
       margin: 2rem 0;
-      transition: 0.2s;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 255, 255, 0.7);
+      transform: translateY(-3px);
+      border-color: rgba(0, 255, 255, 0.6);
     }
 
     .section-title {
@@ -269,13 +146,13 @@
       border-radius: 16px;
       padding: 1rem;
       flex: 1;
-      min-width: 180px;
+      min-width: 160px;
       text-align: center;
-      transition: 0.2s;
+      transition: 0.15s linear;
     }
 
     .area-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       background: rgba(0, 136, 204, 0.25);
     }
 
@@ -293,7 +170,7 @@
 
     .area-card p {
       font-size: 0.7rem;
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     .lang-grid {
@@ -311,12 +188,12 @@
       padding: 0.5rem 1.2rem;
       font-size: 0.8rem;
       font-family: monospace;
-      transition: 0.2s;
+      transition: 0.15s;
     }
 
     .lang-tag:hover {
       background: rgba(255, 100, 0, 0.3);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     .contact-item {
@@ -343,7 +220,7 @@
       text-decoration: none;
       font-family: monospace;
       font-size: 0.9rem;
-      transition: 0.2s;
+      transition: 0.15s;
     }
 
     .contact-value a:hover {
@@ -362,19 +239,19 @@
     .bot-item {
       flex: 1;
       min-width: 200px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       border-radius: 16px;
       padding: 1.2rem;
       text-align: center;
       border: 1px solid rgba(0, 255, 255, 0.2);
-      transition: 0.2s;
+      transition: 0.2s ease;
       cursor: pointer;
     }
 
     .bot-item:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px);
       border-color: #0ff;
-      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.2);
+      box-shadow: 0 5px 18px rgba(0, 255, 255, 0.15);
     }
 
     .bot-icon {
@@ -425,9 +302,9 @@
     }
 
     .desc-text {
-      color: #b8ccdd;
+      color: #c0d4e8;
       font-size: 1rem;
-      line-height: 1.7;
+      line-height: 1.6;
       margin: 0.8rem 0;
     }
 
@@ -436,9 +313,9 @@
       font-family: monospace;
       font-size: 1rem;
       padding: 1.2rem;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+      background: rgba(0, 0, 0, 0.35);
       border-radius: 40px;
-      color: #aaccee;
+      color: #bbddff;
       margin-top: 2rem;
       font-style: italic;
       border-left: 3px solid #0ff;
@@ -457,7 +334,7 @@
       padding: 12px;
       border-radius: 12px;
       border: 1px solid #0ff;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       color: #fff;
       font-family: monospace;
       margin-bottom: 12px;
@@ -477,7 +354,7 @@
       color: #0ff;
       cursor: pointer;
       font-family: monospace;
-      transition: 0.2s;
+      transition: 0.15s;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -495,21 +372,20 @@
     }
 
     .comment-item {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       padding: 10px 14px;
       border-radius: 12px;
       margin-bottom: 10px;
       font-size: 0.85rem;
       font-family: monospace;
-      transition: 0.1s;
     }
 
     .comment-item:hover {
-      background: rgba(0, 255, 255, 0.15);
+      background: rgba(0, 255, 255, 0.12);
     }
 
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
 
     ::-webkit-scrollbar-track {
@@ -526,21 +402,8 @@
 
 <canvas id="canvas-bg"></canvas>
 
-<div class="nav-menu">
-  <a href="#home"><i class="fas fa-home"></i> Ana Sayfa</a>
-  <a href="#about"><i class="fas fa-user-secret"></i> Hakkımda</a>
-  <a href="#areas"><i class="fas fa-cogs"></i> Alanlar</a>
-  <a href="#links"><i class="fas fa-link"></i> Bağlantılar</a>
-  <a href="#bots"><i class="fas fa-robot"></i> Botlar</a>
-  <a href="#comments"><i class="fas fa-comments"></i> Yorumlar</a>
-  <a href="https://t.me/SnowyRoot" target="_blank"><i class="fab fa-telegram"></i> Channel</a>
-</div>
-
-<button class="theme-btn" id="themeToggle">
-  <i class="fas fa-adjust"></i> Tema
-</button>
-
-<div class="container" id="home">
+<div class="container">
+  <!-- Ana sayfa başlık kısmı -->
   <div class="header">
     <div class="logo">
       <i class="fab fa-telegram-plane"></i>
@@ -551,6 +414,7 @@
     </div>
   </div>
 
+  <!-- HAKKIMDA -->
   <div class="card" id="about">
     <div class="section-title">
       <i class="fas fa-skull"></i>
@@ -561,6 +425,7 @@
     </div>
   </div>
 
+  <!-- UZMANLIK ALANLARI -->
   <div class="card" id="areas">
     <div class="section-title">
       <i class="fas fa-cogs"></i>
@@ -603,6 +468,7 @@
     </div>
   </div>
 
+  <!-- RESMİ BAĞLANTILAR -->
   <div class="card" id="links">
     <div class="section-title">
       <i class="fas fa-link"></i>
@@ -626,6 +492,7 @@
     </div>
   </div>
 
+  <!-- TELEGRAM BOTLAR -->
   <div class="card" id="bots">
     <div class="section-title">
       <i class="fas fa-robot"></i>
@@ -657,6 +524,7 @@
     </div>
   </div>
 
+  <!-- BOT YORUMLARI -->
   <div class="card" id="comments">
     <div class="section-title">
       <i class="fas fa-comment-dots"></i>
@@ -681,231 +549,244 @@
 </div>
 
 <script>
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  const canvas = document.getElementById('canvas-bg');
-  const ctx = canvas.getContext('2d');
-  
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
-  let particles = [];
-  const particleCount = 100;
-  
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 0.6,
-      speedX: (Math.random() - 0.5) * 0.3,
-      speedY: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.2 + 0.04,
-    });
-  }
-  
-  function drawBackground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let p of particles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(80, 180, 255, ${p.alpha})`;
-      ctx.fill();
+  (function() {
+    // ========== ARKA PLAN PARÇACIKLARI (Hafif, Kayma yok) ==========
+    const canvas = document.getElementById('canvas-bg');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let width = window.innerWidth;
+      let height = window.innerHeight;
       
-      p.x += p.speedX;
-      p.y += p.speedY;
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+      });
       
-      if (p.x < 0) p.x = canvas.width;
-      if (p.x > canvas.width) p.x = 0;
-      if (p.y < 0) p.y = canvas.height;
-      if (p.y > canvas.height) p.y = 0;
+      function initParticles() {
+        const particleCount = 80;
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.2,
+            speedY: (Math.random() - 0.5) * 0.2,
+            alpha: Math.random() * 0.18 + 0.03,
+          });
+        }
+      }
+      initParticles();
+      
+      function drawBackground() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        for (let p of particles) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(80, 180, 240, ${p.alpha})`;
+          ctx.fill();
+          
+          p.x += p.speedX;
+          p.y += p.speedY;
+          
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+        }
+        requestAnimationFrame(drawBackground);
+      }
+      drawBackground();
     }
-    requestAnimationFrame(drawBackground);
-  }
-  drawBackground();
-  
-  let audio = null;
-  let musicStarted = false;
-  
-  function initMusic() {
-    if (musicStarted) return;
-    try {
-      audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Herm%C3%A8s%202.0.mp3');
-      audio.loop = true;
-      audio.volume = 0.3;
-      audio.play().then(() => {
-        musicStarted = true;
-      }).catch(e => console.log('Müzik başlatılamadı:', e));
-    } catch(e) { console.log(e); }
-  }
-  
-  document.body.addEventListener('click', function() {
-    if (!musicStarted) initMusic();
-  }, { once: false });
-  
-  const themeBtn = document.getElementById('themeToggle');
-  themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    localStorage.setItem('snowyTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-  });
-  
-  if (localStorage.getItem('snowyTheme') === 'light') {
-    document.body.classList.add('light-mode');
-  }
-  
-  let botComments = [];
-  let shuffleInterval = null;
-  
-  function loadBotComments() {
-    const saved = localStorage.getItem('snowy_bot_comments_v2');
-    if (saved) {
+    
+    // ========== MÜZİK (tek tıklama) ==========
+    let audio = null;
+    let musicStarted = false;
+    
+    function initMusic() {
+      if (musicStarted) return;
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          botComments = parsed;
-        } else {
+        audio = new Audio('https://snowy-dexry-wexry.github.io/BIO/Herm%C3%A8s%202.0.mp3');
+        audio.loop = true;
+        audio.volume = 0.3;
+        audio.play().then(() => {
+          musicStarted = true;
+        }).catch(e => console.log('Müzik başlatılamadı:', e));
+      } catch(e) { console.log(e); }
+    }
+    
+    document.body.addEventListener('click', function initMusicOnce() {
+      initMusic();
+      document.body.removeEventListener('click', initMusicOnce);
+    }, { once: true });
+    
+    // ========== YORUM SİSTEMİ ==========
+    let botComments = [];
+    let shuffleInterval = null;
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function renderBotComments() {
+      const list = document.getElementById('botCommentList');
+      if (!list) return;
+      list.innerHTML = '';
+      for (let c of botComments) {
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        const safeText = escapeHtml(c.text);
+        const safeAuthor = escapeHtml(c.author);
+        div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${safeText} - <strong>${safeAuthor}</strong>`;
+        list.appendChild(div);
+      }
+    }
+    
+    function shuffleComments() {
+      if (!botComments.length) return;
+      for (let i = botComments.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [botComments[i], botComments[j]] = [botComments[j], botComments[i]];
+      }
+      renderBotComments();
+    }
+    
+    function startShuffleTimer() {
+      if (shuffleInterval) clearInterval(shuffleInterval);
+      shuffleInterval = setInterval(() => {
+        shuffleComments();
+      }, 10000);
+    }
+    
+    function loadBotComments() {
+      const saved = localStorage.getItem('snowy_bot_comments_v2');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            botComments = parsed;
+          } else {
+            botComments = [];
+          }
+        } catch(e) {
           botComments = [];
         }
-      } catch(e) {
-        botComments = [];
       }
+      
+      if (!botComments || botComments.length === 0) {
+        botComments = [
+          { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "CyberGuard", date: Date.now() },
+          { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "LuckyPlayer", date: Date.now() },
+          { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "PentestPro", date: Date.now() },
+          { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "ServerAdmin", date: Date.now() },
+          { text: "SnowyVds_Bot sayesinde sunucu yönetimi çok kolaylaştı. Emeği geçenlere teşekkürler.", author: "CloudMaster", date: Date.now() }
+        ];
+        localStorage.setItem('snowy_bot_comments_v2', JSON.stringify(botComments));
+      }
+      renderBotComments();
+      startShuffleTimer();
     }
     
-    if (!botComments || botComments.length === 0) {
-      botComments = [
-        { text: "Snowy botları gerçekten çok başarılı, phishing testlerinde harika iş çıkarıyor.", author: "CyberGuard", date: Date.now() },
-        { text: "Kumar botu eğlenceli ve güvenli, kesinlikle tavsiye ederim.", author: "LuckyPlayer", date: Date.now() },
-        { text: "Snowy ekibi gerçekten alanında uzman, destekleri için teşekkürler.", author: "PentestPro", date: Date.now() },
-        { text: "VDS bot mükemmel çalışıyor, hız ve stabilite olarak çok iyi. Kesinlikle öneririm.", author: "ServerAdmin", date: Date.now() },
-        { text: "SnowyVds_Bot sayesinde sunucu yönetimi çok kolaylaştı. Emeği geçenlere teşekkürler.", author: "CloudMaster", date: Date.now() }
-      ];
+    function addBotComment(text) {
+      const trimmedText = text.trim();
+      if (!trimmedText) {
+        alert('Lütfen bir yorum yazın.');
+        return;
+      }
+      if (trimmedText.length > 500) {
+        alert('Yorum çok uzun. En fazla 500 karakter.');
+        return;
+      }
+      
+      let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
+      if (!author || author.trim() === "") {
+        author = "Misafir";
+      } else {
+        author = author.trim();
+        if (author.length > 30) author = author.substring(0, 30);
+      }
+      
+      botComments.push({ text: trimmedText, author: author, date: Date.now() });
+      if (botComments.length > 50) botComments.shift();
       localStorage.setItem('snowy_bot_comments_v2', JSON.stringify(botComments));
-    }
-    renderBotComments();
-    startShuffleTimer();
-  }
-  
-  function shuffleComments() {
-    if (!botComments.length) return;
-    for (let i = botComments.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [botComments[i], botComments[j]] = [botComments[j], botComments[i]];
-    }
-    renderBotComments();
-  }
-  
-  function startShuffleTimer() {
-    if (shuffleInterval) clearInterval(shuffleInterval);
-    shuffleInterval = setInterval(() => {
-      shuffleComments();
-    }, 10000);
-  }
-  
-  function renderBotComments() {
-    const list = document.getElementById('botCommentList');
-    if (!list) return;
-    list.innerHTML = '';
-    for (const c of botComments) {
-      const div = document.createElement('div');
-      div.className = 'comment-item';
-      const safeText = escapeHtml(c.text);
-      const safeAuthor = escapeHtml(c.author);
-      div.innerHTML = `<i class="fas fa-comment" style="margin-right:6px; opacity:0.6;"></i> ${safeText} - <strong>${safeAuthor}</strong>`;
-      list.appendChild(div);
-    }
-  }
-  
-  function addBotComment(text) {
-    const trimmedText = text.trim();
-    if (!trimmedText) {
-      alert('Lütfen bir yorum yazın.');
-      return;
+      renderBotComments();
     }
     
-    if (trimmedText.length > 500) {
-      alert('Yorum çok uzun. En fazla 500 karakter.');
-      return;
-    }
-    
-    let author = prompt("Kullanıcı adınız (opsiyonel):", "Misafir");
-    if (!author || author.trim() === "") {
-      author = "Misafir";
-    } else {
-      author = author.trim();
-      if (author.length > 30) author = author.substring(0, 30);
-    }
-    
-    const safeAuthor = author;
-    const safeText = trimmedText;
-    
-    botComments.push({ text: safeText, author: safeAuthor, date: Date.now() });
-    if (botComments.length > 50) botComments.shift();
-    localStorage.setItem('snowy_bot_comments_v2', JSON.stringify(botComments));
-    renderBotComments();
-  }
-  
-  const submitBtn = document.getElementById('submitBotComment');
-  if (submitBtn) {
-    submitBtn.addEventListener('click', () => {
-      const input = document.getElementById('botCommentInput');
-      if (input) {
-        addBotComment(input.value);
-        input.value = '';
-      }
-    });
-  }
-  
-  function updateMemberCounts() {
-    const phishingElem = document.getElementById('phishingCount');
-    const gambleElem = document.getElementById('gambleCount');
-    const vdsElem = document.getElementById('vdsCount');
-    
-    if (phishingElem) {
-      let current = parseInt(phishingElem.innerText);
-      if (isNaN(current)) current = 3000;
-      current += Math.floor(Math.random() * 2);
-      phishingElem.innerText = current;
-    }
-    if (gambleElem) {
-      let current = parseInt(gambleElem.innerText);
-      if (isNaN(current)) current = 4200;
-      current += Math.floor(Math.random() * 2);
-      gambleElem.innerText = current;
-    }
-    if (vdsElem) {
-      let current = parseInt(vdsElem.innerText);
-      if (isNaN(current)) current = 1879;
-      current += Math.floor(Math.random() * 2);
-      vdsElem.innerText = current;
-    }
-  }
-  setInterval(updateMemberCounts, 50000);
-  
-  document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href !== '#' && href.startsWith('#')) {
-        e.preventDefault();
-        const targetId = href.substring(1);
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          const navMenu = document.querySelector('.nav-menu');
-          const navHeight = navMenu ? navMenu.offsetHeight : 70;
-          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
-          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+    const submitBtn = document.getElementById('submitBotComment');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        const input = document.getElementById('botCommentInput');
+        if (input && input.value) {
+          addBotComment(input.value);
+          input.value = '';
+        } else {
+          alert('Yorum alanı boş olamaz.');
         }
+      });
+    }
+    
+    // ========== ÜYE SAYILARI (Simülasyon) ==========
+    function updateMemberCounts() {
+      const phishingElem = document.getElementById('phishingCount');
+      const gambleElem = document.getElementById('gambleCount');
+      const vdsElem = document.getElementById('vdsCount');
+      
+      if (phishingElem) {
+        let current = parseInt(phishingElem.innerText);
+        if (isNaN(current)) current = 3000;
+        current += Math.floor(Math.random() * 3);
+        phishingElem.innerText = current;
       }
+      if (gambleElem) {
+        let current = parseInt(gambleElem.innerText);
+        if (isNaN(current)) current = 4200;
+        current += Math.floor(Math.random() * 2);
+        gambleElem.innerText = current;
+      }
+      if (vdsElem) {
+        let current = parseInt(vdsElem.innerText);
+        if (isNaN(current)) current = 1879;
+        current += Math.floor(Math.random() * 2);
+        vdsElem.innerText = current;
+      }
+    }
+    setInterval(updateMemberCounts, 45000);
+    
+    // Kaydırma stabilitesi için tüm iç linkler kaldırıldı zaten menü yok,
+    // ama sayfada herhangi bir çakışma olmaması için ekstra smooth sadece dış linkler var
+    // ayrıca sayfa içi boş anchor varsa engelle
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href !== '#' && href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href.substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            const offset = 20;
+            const targetPos = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: targetPos, behavior: 'smooth' });
+          }
+        }
+      });
     });
-  });
-  
-  loadBotComments();
+    
+    loadBotComments();
+    
+    // Performans için ağır işlemleri azalt, gereksiz interval temizleme yok
+    // Sayfa kasmasın diye canvas animasyon dışındaki işlemler hafifletildi
+  })();
 </script>
 </body>
-  </html>
+        </html>
