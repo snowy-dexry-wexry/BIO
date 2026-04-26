@@ -164,13 +164,8 @@
 
     .area-card h4 {
       color: #7df9ff;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0;
       font-size: 1rem;
-    }
-
-    .area-card p {
-      font-size: 0.7rem;
-      opacity: 0.85;
     }
 
     .lang-grid {
@@ -425,7 +420,7 @@
     </div>
   </div>
 
-  <!-- UZMANLIK ALANLARI -->
+  <!-- UZMANLIK ALANLARI (ALT METİNLER KALDIRILDI) -->
   <div class="card" id="areas">
     <div class="section-title">
       <i class="fas fa-cogs"></i>
@@ -435,22 +430,18 @@
       <div class="area-card">
         <i class="fas fa-shield-alt"></i>
         <h4>Siber Güvenlik</h4>
-        <p>Güvenlik açığı tespiti ve analizi</p>
       </div>
       <div class="area-card">
         <i class="fas fa-globe"></i>
         <h4>Web Penetrasyon Testi</h4>
-        <p>Web uygulamalarında güvenlik testleri</p>
       </div>
       <div class="area-card">
         <i class="fas fa-search"></i>
         <h4>OSINT</h4>
-        <p>Açık kaynak istihbaratı ve veri toplama</p>
       </div>
       <div class="area-card">
         <i class="fas fa-wrench"></i>
         <h4>Tools Geliştirme</h4>
-        <p>Özel güvenlik araçları geliştirme</p>
       </div>
     </div>
     <div class="divider"></div>
@@ -763,9 +754,7 @@
     }
     setInterval(updateMemberCounts, 45000);
     
-    // Kaydırma stabilitesi için tüm iç linkler kaldırıldı zaten menü yok,
-    // ama sayfada herhangi bir çakışma olmaması için ekstra smooth sadece dış linkler var
-    // ayrıca sayfa içi boş anchor varsa engelle
+    // Kaydırma stabilitesi
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -783,10 +772,7 @@
     });
     
     loadBotComments();
-    
-    // Performans için ağır işlemleri azalt, gereksiz interval temizleme yok
-    // Sayfa kasmasın diye canvas animasyon dışındaki işlemler hafifletildi
   })();
 </script>
 </body>
-        </html>
+  </html>
